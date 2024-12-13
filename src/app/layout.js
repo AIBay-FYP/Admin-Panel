@@ -1,20 +1,13 @@
 import { Montserrat } from 'next/font/google';
 import "./globals.css";
-
-// const geistSans = localFont({
-//   src: "./fonts/GeistVF.woff",
-//   variable: "--font-geist-sans",
-//   weight: "100 900",
-// });
-// const geistMono = localFont({
-//   src: "./fonts/GeistMonoVF.woff",
-//   variable: "--font-geist-mono",
-//   weight: "100 900",
-// });
+import Sidebar from './components/Sidebar';
+import Sidebaroo from './components/Sidebar2';
+import ReactQueryProvider from './services/react-query/queryClient';
 
 const montserrat = Montserrat({
-  subsets: ['latin'], // Optional: Choose subsets for better performance
-  weight: ['400', '700'], // Include only the font weights you need
+  subsets: ['latin'], // Include necessary subsets
+  weight: ['400', '700'], // Specify required font weights
+  display: 'swap', // Ensure font loads gracefully
 });
 
 export const metadata = {
@@ -25,10 +18,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={montserrat.className}
-      >
+      <body className={montserrat.className}>
+        <ReactQueryProvider>
+          
+        <Sidebar/>
         {children}
+        <Sidebaroo/>
+        </ReactQueryProvider>
       </body>
     </html>
   );

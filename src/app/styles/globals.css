@@ -1,9 +1,10 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
 :root {
+  
     --sidebar: linear-gradient(180deg,#133C3C,#475D5D);
     --metric-1: linear-gradient(180deg,#3AF5F5,#D42BC9);
     --metric-2: linear-gradient(180deg,#E7C60F,#784908);
@@ -16,4 +17,4 @@
     --popup: linear-gradient(180deg,#000000,#4F4F4F);
     --red1:#FF3D00;
   }
-  
+   */
