@@ -2,7 +2,14 @@ import { Montserrat } from 'next/font/google';
 import "./globals.css";
 import Sidebar from './components/Sidebar';
 import Sidebaroo from './components/Sidebar2';
+import ClientSearchSection from './components/ClientSearchSection';
+import ComplianceSearches from './pages/complianceSearches';
+import ComplianceServices from './pages/ComplianceServices';
+import ContractMonitoring from './pages/contractMonitoring';
+import ServiceDetails from './pages/ServiceDetails';
+import AdminActionModal from './components/consumerPopup';
 import ReactQueryProvider from './services/react-query/queryClient';
+
 
 const montserrat = Montserrat({
   subsets: ['latin'], // Include necessary subsets
@@ -16,12 +23,40 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  
   return (
     <html lang="en">
       <body className={montserrat.className}>
         <ReactQueryProvider>
           
-        <Sidebar/>
+         <Sidebar/>
+        <div className="flex justify-center w-full bg-light py-2 px-1">
+            <div className="w-full max-w-2xl bg-light">
+              <ClientSearchSection />
+            </div>
+          </div>       
+
+        
+        {/* <div className="flex justify-center w-full bg-light py-2 px-2">
+            <div className="w-full max-w-3xl bg-light">
+              <ComplianceServices/>
+            </div>
+          </div> */}
+
+        {/* <div className="flex justify-center w-full bg-light py-2 px-2">
+            <div className="w-full max-w-3xl bg-light">
+              <ComplianceSearches/>
+            </div>
+          </div>  */}
+
+        {/* <div className="flex justify-center w-full bg-light py-2 px-2">
+            <div className="w-full max-w-3xl bg-light">
+              <ContractMonitoring/>
+            </div>
+          </div>  */}
+
+          {/* <ServiceDetails/> */}          
+          <AdminActionModal/>
         {children}
         <Sidebaroo/>
         </ReactQueryProvider>

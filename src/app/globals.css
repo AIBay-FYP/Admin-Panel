@@ -9,6 +9,11 @@
   --mid-green:#264848;
   --dark-green: #003333;
   --red1: #ff0000;
+  
+}
+
+.bg-custom {
+  background-color: #046C71; /* Matching the image background */
 }
 
 

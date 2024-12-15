@@ -8,6 +8,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        ltgreen:'E1EFE6',
+        greenbg: '#046C71',
+        darkgreen:'hsl(180, 51.90%, 15.50%)',
+        customGray: 'rgba(51, 50, 50, 1)',
         background: "var(--background)",
         foreground: "var(--foreground)",
         'light-green': 'var(--light-green)',
