@@ -1,8 +1,9 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine, faUsers, faClipboardCheck } from '@fortawesome/free-solid-svg-icons';
+import { useRouter } from 'next/navigation';
 
 // Simulate API call for data update
 const updateSelectedCard = async (selectedCardId) => {
@@ -13,36 +14,32 @@ const updateSelectedCard = async (selectedCardId) => {
 
 const MetricsCard = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
-  // Initialize selectedCard query
-  const { data: selectedCard, isLoading } = useQuery({
-    queryKey: ['selectedCard'],
-    queryFn: () => null, // Default to no selection
-    initialData: null,
-  });
+  // Initialize state for selected card
+  const [selectedCard, setSelectedCard] = useState(null);
+
+  useEffect(() => {
+    // Check localStorage for the selected card ID on initial load
+    const storedSelectedCard = localStorage.getItem('selectedCard');
+    if (storedSelectedCard) {
+      setSelectedCard(Number(storedSelectedCard)); // Parse and set selected card ID
+    }
+  }, []);
 
   // Handle state changes with mutation
   const mutation = useMutation({
     mutationFn: updateSelectedCard,
     onMutate: async (newSelectedId) => {
-      await queryClient.cancelQueries({ queryKey: ['selectedCard'] });
-      const previousSelectedId = queryClient.getQueryData(['selectedCard']);
-
-      // Toggle logic: If the clicked card is already selected, deselect it
-      const newSelection = selectedCard === newSelectedId ? null : newSelectedId;
-      queryClient.setQueryData(['selectedCard'], newSelection);
-
-      return { previousSelectedId };
+      // Store the selected card in localStorage
+      localStorage.setItem('selectedCard', newSelectedId);
+      
+      // Update the state of selected card
+      setSelectedCard(newSelectedId);
     },
     onError: (error, newSelectedId, context) => {
       console.error('Error updating card:', error);
-      if (context?.previousSelectedId) {
-        queryClient.setQueryData(['selectedCard'], context.previousSelectedId);
-      }
-    },
-    // Avoid invalidating the query to prevent resetting
-    onSettled: () => {
-      // Optionally, refresh other data if needed
+      // Handle potential errors
     },
   });
 
@@ -53,6 +50,7 @@ const MetricsCard = () => {
       count: 133,
       color: 'bg-metric-1',
       icon: faUsers,
+      route: '/registeredusers',
     },
     {
       id: 2,
@@ -60,6 +58,7 @@ const MetricsCard = () => {
       count: 78,
       color: 'bg-metric-2',
       icon: faClipboardCheck,
+      route: '/listedServices',
     },
     {
       id: 3,
@@ -67,33 +66,35 @@ const MetricsCard = () => {
       count: 25,
       color: 'bg-metric-3',
       icon: faChartLine,
+      route: '/transactions',
     },
   ];
+
+  const handleCardClick = (cardId, route) => {
+    // Trigger the mutation to update the selected card
+    mutation.mutate(cardId);
+
+    // Navigate to the appropriate route
+    router.push(route);
+  };
 
   return (
     <div className="flex flex-col gap-4">
       {cards.map((card) => (
         <div
           key={card.id}
-          onClick={() => mutation.mutate(card.id)}
+          onClick={() => handleCardClick(card.id, card.route)}
           className={`cursor-pointer transition-all duration-300 
-            ${
-              selectedCard === card.id
-                ? 'h-[150px]'
-                : 'h-[110px]'
-            }
+            ${selectedCard === card.id ? 'h-[150px]' : 'h-[110px]'}
             w-[180px] ${card.color} rounded-lg flex flex-col items-center justify-between shadow-lg p-3`}
         >
-          {isLoading && selectedCard === card.id ? (
+          {mutation.isLoading && selectedCard === card.id ? (
             <p className="text-white text-lg">Loading...</p>
           ) : (
             <>
               <div className="flex items-center justify-between w-full">
                 <h1 className="text-3xl font-bold text-white">{card.count}</h1>
-                <FontAwesomeIcon
-                  icon={card.icon}
-                  className="text-white text-2xl"
-                />
+                <FontAwesomeIcon icon={card.icon} className="text-white text-2xl" />
               </div>
               <p className="text-sm text-white">{card.title}</p>
             </>

@@ -3,7 +3,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import React, { useState, useEffect } from "react";
 
-const SearchBarWithFilters = ({ onSearch, onFilter }) => {
+const SearchBarWithFilters = ({ placeholder, onSearch, onFilter, filterOptions }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState("");
   const [isClient, setIsClient] = useState(false);
@@ -37,8 +37,8 @@ const SearchBarWithFilters = ({ onSearch, onFilter }) => {
       >
         <input
           type="text"
-          className="flex-grow bg-customGray p-2 border border-gray-500 border-r-0 rounded-l-md focus:outline-none focus:ring-2 focus:ring-white"
-          placeholder="Search compliances by ID, Service Name, Consumer or Provider Name..."
+          className="flex-grow bg-customGray p-2 border border-gray-500 text-sm border-r-0 rounded-l-md focus:outline-none"
+          placeholder={placeholder}  // Use the customizable placeholder
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -61,32 +61,18 @@ const SearchBarWithFilters = ({ onSearch, onFilter }) => {
         </button>
 
         {isFilterOpen && (
-          <div className="absolute top-full right-0 mt-2 p-2 bg-white border border-gray-500 rounded-md shadow-lg w-58">
+          <div className="absolute top-full right-0 mt-2 p-2 bg-white border border-gray-500 rounded-md shadow-lg w-[50%]">
             <ul className="space-y-2">
-              <li
-                onClick={() => handleFilterChange("restricted")}
-                className="p-2 cursor-pointer hover:bg-gray-200 w-full text-left whitespace-nowrap text-gray-400"
-              >
-                Restricted Keywords
-              </li>
-              <li
-                onClick={() => handleFilterChange("frequency")}
-                className="p-2 cursor-pointer hover:bg-gray-200 w-full text-left whitespace-nowrap text-gray-400"
-              >
-                Excessive Search Frequency
-              </li>
-              <li
-                onClick={() => handleFilterChange("out-of-scope")}
-                className="p-2 cursor-pointer hover:bg-gray-200 w-full text-left whitespace-nowrap text-gray-400"
-              >
-                Out-of-Scope Searches
-              </li>
-              <li
-                onClick={() => handleFilterChange("high-risk")}
-                className="p-2 cursor-pointer hover:bg-gray-200 w-full text-left whitespace-nowrap text-gray-400"
-              >
-                High-Risk Behavior
-              </li>
+              {/* Dynamically render filter options from the prop */}
+              {filterOptions.map((option, index) => (
+                <li
+                  key={index}
+                  onClick={() => handleFilterChange(option.value)}
+                  className="p-2 cursor-pointer hover:bg-gray-200 w-full text-left whitespace-nowrap text-gray-400"
+                >
+                  {option.label} {/* Display the label for each filter option */}
+                </li>
+              ))}
             </ul>
           </div>
         )}
