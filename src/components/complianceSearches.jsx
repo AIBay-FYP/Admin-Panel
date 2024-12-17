@@ -318,6 +318,7 @@ export default function ComplianceSearches() {
         columns={columns}
         data={dummyTableData}
         dropdownOptions={dropdownOptions}
+        openPopup = {true}
       />
     </>
   );

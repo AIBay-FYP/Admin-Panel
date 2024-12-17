@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from "react";
+import GenericModal from "./consumerPopup";
 
-const Table = ({ columns, data, dropdownOptions }) => {
+const Table = ({ columns, data, dropdownOptions, openPopup }) => {
     return (
         <div className="flex justify-center items-start w-full p-4">
             <div className="overflow-x-auto w-full">
-                <table className="w-full  bg-white shadow-md rounded-lg text-sm">
+                <table className="w-full bg-white shadow-md rounded-lg text-sm">
                     {/* Table Header */}
                     <thead className="bg-gray-200">
                         <tr>
@@ -57,7 +58,11 @@ const Table = ({ columns, data, dropdownOptions }) => {
                                         rowIndex === data.length - 1 ? "rounded-br-lg" : ""
                                     }`}
                                 >
-                                    <Dropdown options={dropdownOptions} />
+                                    <Dropdown
+                                        options={dropdownOptions}
+                                        openPopup={openPopup}
+                                        row={row}
+                                    />
                                 </td>
                             </tr>
                         ))}
@@ -68,11 +73,27 @@ const Table = ({ columns, data, dropdownOptions }) => {
     );
 };
 
-const Dropdown = ({ options }) => {
-    const [selected, setSelected] = useState(options[0]?.label || 'Status');
+const Dropdown = ({ options, openPopup, row }) => {
+    const [selected, setSelected] = useState(options[0]?.label || "Status");
+    const [isModalOpen, setModalOpen] = useState(false);
 
     const handleSelectChange = (event) => {
         setSelected(event.target.value);
+
+        // Trigger modal if openPopup is true
+        if (openPopup) {
+            setModalOpen(true);
+        }
+    };
+
+    const closeModal = () => {
+        setModalOpen(false);
+    };
+
+    const handlePrimaryAction = () => {
+        // Handle confirm action
+        console.log(`Confirmed for ${row.name || "this row"}`);
+        setModalOpen(false);
     };
 
     return (
@@ -83,11 +104,26 @@ const Dropdown = ({ options }) => {
                 className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md focus:outline-none text-xs w-full"
             >
                 {options.map((option, index) => (
-                    <option key={index} value={option.label} className={`${option.color} rounded-lg` || "text-gray-700"}>
+                    <option
+                        key={index}
+                        value={option.label}
+                        className={`${option.color} rounded-lg` || "text-gray-700"}
+                    >
                         {option.label}
                     </option>
                 ))}
             </select>
+
+            {/* Modal */}
+            <GenericModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                title="Confirm Your Action"
+                message={`Are you sure you want to set status to "${selected}" for ${row.name || "this row"}?`}
+                primaryAction={handlePrimaryAction}
+                primaryButtonText="Yes, Confirm"
+                secondaryButtonText="Cancel"
+            />
         </div>
     );
 };

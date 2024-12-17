@@ -79,6 +79,7 @@ const finalData = data.map((row, index) => ({
         columns={columns}
         data={finalData}
         dropdownOptions={dropdownOptions}
+        openPopup={true}
       />
     </div>
   );

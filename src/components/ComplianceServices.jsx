@@ -338,6 +338,7 @@ Chart.register(CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, B
 
 // Dummy data for chart and table
 const dummyChartValues = [1500, 3000, 2000];
+const Popup = true;
 const dummyTableData = [
   {
     serviceName: 'Service A',
@@ -454,6 +455,7 @@ export default function ComplianceServices() {
         columns={columns}
         data={dummyTableData}
         dropdownOptions={dropdownOptions}
+        openPopup={true}
       />
     </>
   );
