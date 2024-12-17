@@ -119,7 +119,8 @@ import { Chart, PieController, Title, Tooltip, Legend, ArcElement } from 'chart.
 Chart.register(PieController, Title, Tooltip, Legend, ArcElement);
 
 export default function ContractMonitoring() {
-  const chartRef = useRef(null);
+  const chartRef = useRef(null); // Reference to the canvas element
+  const chartInstance = useRef(null); // To store the Chart instance
 
   // Dummy data for the pie chart
   const chartData = {
@@ -138,12 +139,12 @@ export default function ContractMonitoring() {
     plugins: {
       legend: {
         position: 'right',
-      labels: {
-        font: { size: 13 },
-        color: '#333',
-        boxWidth: 10,   // Size of the square legend box
-        boxHeight: 10,  // Height of the square legend box
-        usePointStyle: true,
+        labels: {
+          font: { size: 13 },
+          color: '#333',
+          boxWidth: 10, // Size of the square legend box
+          boxHeight: 10, // Height of the square legend box
+          usePointStyle: true,
         },
       },
       tooltip: {
@@ -157,14 +158,27 @@ export default function ContractMonitoring() {
   };
 
   useEffect(() => {
+    // Destroy previous chart instance if it exists
+    if (chartInstance.current) {
+      chartInstance.current.destroy();
+    }
+
+    // Create new chart instance
     if (chartRef.current) {
-      new Chart(chartRef.current, {
+      chartInstance.current = new Chart(chartRef.current, {
         type: 'pie',
         data: chartData,
         options: chartOptions,
       });
     }
-  }, []);
+
+    // Cleanup chart instance on unmount
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+    };
+  }, []); // Empty dependency array ensures it runs only once on mount
 
   return (
     <div className="bg-[#E6F8F4] p-6 rounded-lg text-gray-800 w-full">
@@ -181,9 +195,9 @@ export default function ContractMonitoring() {
 
       {/* Table Section */}
       <div>
-        <table className="w-full bg-white  text-sm text-gray-600 rounded-lg overflow-hidden">
+        <table className="w-full bg-white text-sm text-gray-600 rounded-lg overflow-hidden">
           <thead>
-            <tr className="bg-[#E6F8F4]  rounded-lg text-gray-700">
+            <tr className="bg-[#E6F8F4] text-gray-700">
               <th className="p-3 text-left">Contract ID</th>
               <th className="p-3 text-left">Consumer Name</th>
               <th className="p-3 text-left">Provider Name</th>
@@ -194,7 +208,7 @@ export default function ContractMonitoring() {
           </thead>
           <tbody>
             {Array.from({ length: 4 }).map((_, index) => (
-              <tr key={index} className="border-b rounded-lg hover:bg-gray-50">
+              <tr key={index} className="border-b hover:bg-gray-50">
                 <td className="p-3">#00{index + 1}</td>
                 <td className="p-3">John Doe</td>
                 <td className="p-3">Provider {index + 1}</td>
@@ -215,4 +229,3 @@ export default function ContractMonitoring() {
     </div>
   );
 }
-
