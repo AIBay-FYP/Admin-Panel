@@ -188,7 +188,7 @@ const dropdownOptions = [
 ];
 
 const dummyChartData = {
-  labels: ['Spam', 'Malware', 'Phishing', 'Other'],
+  labels: ['High Risk Behavior', 'Excessive Search frequency', 'Out of Scope', 'Restricted keywords'],
   data: [12, 19, 3, 5],
 };
 
