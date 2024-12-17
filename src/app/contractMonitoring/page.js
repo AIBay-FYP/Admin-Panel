@@ -1,133 +1,33 @@
-// 'use client';
-// import React, { useRef, useEffect } from 'react';
-// import { useQuery } from '@tanstack/react-query';
-// import { Chart, PieController, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-
-// // Register required components for Chart.js
-// Chart.register(PieController, Title, Tooltip, Legend, ArcElement);
-
-// // Mock API fetch function
-// const fetchContractMonitoringData = async () => {
-//   const response = await fetch('/api/contract-monitoring'); // Update with actual API endpoint
-//   if (!response.ok) throw new Error('Failed to fetch contract monitoring data');
-//   return response.json();
-// };
-
-// export default function ContractMonitoring() {
-//   const chartRef = useRef(null);
-
-//   // Fetch data using React Query
-//   const { data, isLoading, isError } = useQuery(['contractMonitoringData'], fetchContractMonitoringData);
-
-//   // Handle loading and error states
-//   if (isLoading) return <div>Loading...</div>;
-//   if (isError) return <div>Error fetching contract monitoring data.</div>;
-
-//   // Extract data from the fetched API response
-//   const chartData = {
-//     labels: ['On-going', 'Disputed', 'Completed'],
-//     datasets: [
-//       {
-//         data: data.chartData || [0, 0, 0], // Fallback to zeros if data is unavailable
-//         backgroundColor: ['#F8D568', '#D9534F', '#5BC0DE'],
-//         borderColor: ['#F8D568', '#D9534F', '#5BC0DE'],
-//         hoverOffset: 4,
-//       },
-//     ],
-//   };
-
-//   const chartOptions = {
-//     plugins: {
-//       legend: {
-//         position: 'right',
-//         labels: {
-//           font: { size: 13 },
-//           color: '#333',
-//           boxWidth: 10, // Size of the square legend box
-//           boxHeight: 10, // Height of the square legend box
-//           usePointStyle: true,
-//         },
-//       },
-//       tooltip: {
-//         callbacks: {
-//           label: (context) => `${context.label}: ${context.raw}`,
-//         },
-//       },
-//     },
-//     responsive: true,
-//     maintainAspectRatio: false,
-//   };
-
-//   useEffect(() => {
-//     if (chartRef.current) {
-//       new Chart(chartRef.current, {
-//         type: 'pie',
-//         data: chartData,
-//         options: chartOptions,
-//       });
-//     }
-//   }, [chartData]);
-
-//   return (
-//     <div className="bg-[#E6F8F4] p-6 rounded-lg text-gray-800 w-full">
-//       <h2 className="text-2xl font-bold mb-4 text-left text-[#013220]">
-//         Contract Monitoring
-//       </h2>
-
-//       {/* Chart Section */}
-//       <div className="flex justify-center mb-6">
-//         <div className="w-64 h-64">
-//           <canvas ref={chartRef}></canvas>
-//         </div>
-//       </div>
-
-//       {/* Table Section */}
-//       <div>
-//         <table className="w-full bg-white text-sm text-gray-600 rounded-lg overflow-hidden">
-//           <thead>
-//             <tr className="bg-[#E6F8F4] text-gray-700">
-//               <th className="p-3 text-left">Contract ID</th>
-//               <th className="p-3 text-left">Consumer Name</th>
-//               <th className="p-3 text-left">Provider Name</th>
-//               <th className="p-3 text-left">Service Name</th>
-//               <th className="p-3 text-left">Date Created</th>
-//               <th className="p-3 text-left">Status</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {data.tableData.map((row, index) => (
-//               <tr key={index} className="border-b hover:bg-gray-50">
-//                 <td className="p-3">{row.contractId}</td>
-//                 <td className="p-3">{row.consumerName}</td>
-//                 <td className="p-3">{row.providerName}</td>
-//                 <td className="p-3">{row.serviceName}</td>
-//                 <td className="p-3">{row.dateCreated}</td>
-//                 <td className="p-3">{row.status}</td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-//     </div>
-//   );
-// }
 'use client';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import SearchBarWithFilters from '@/components/SearchBarWithFilters';
 import { Chart, PieController, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import Table from '@/components/Table'; // Import the Table component
 
-// Register required components for Chart.js
 Chart.register(PieController, Title, Tooltip, Legend, ArcElement);
 
 export default function ContractMonitoring() {
-  const chartRef = useRef(null); // Reference to the canvas element
-  const chartInstance = useRef(null); // To store the Chart instance
+  const chartRef = useRef(null);
+  const chartInstance = useRef(null);
 
-  // Dummy data for the pie chart
+  const filterOptions = [
+    { label: "Restricted Keywords", value: "restricted" },
+    { label: "Excessive Search Frequency", value: "frequency" },
+  ];
+
+  const handleSearch = (query) => {
+    console.log("Search query:", query);
+  };
+
+  const handleFilter = (filter) => {
+    console.log("Selected filter:", filter);
+  };
+
   const chartData = {
     labels: ['On-going', 'Disputed', 'Completed'],
     datasets: [
       {
-        data: [722, 748, 947], // Replace these with actual API data if needed
+        data: [722, 748, 947],
         backgroundColor: ['#F8D568', '#D9534F', '#5BC0DE'],
         borderColor: ['#F8D568', '#D9534F', '#5BC0DE'],
         hoverOffset: 4,
@@ -142,8 +42,8 @@ export default function ContractMonitoring() {
         labels: {
           font: { size: 13 },
           color: '#333',
-          boxWidth: 10, // Size of the square legend box
-          boxHeight: 10, // Height of the square legend box
+          boxWidth: 10,
+          boxHeight: 10,
           usePointStyle: true,
         },
       },
@@ -158,12 +58,10 @@ export default function ContractMonitoring() {
   };
 
   useEffect(() => {
-    // Destroy previous chart instance if it exists
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
 
-    // Create new chart instance
     if (chartRef.current) {
       chartInstance.current = new Chart(chartRef.current, {
         type: 'pie',
@@ -172,17 +70,46 @@ export default function ContractMonitoring() {
       });
     }
 
-    // Cleanup chart instance on unmount
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();
       }
     };
-  }, []); // Empty dependency array ensures it runs only once on mount
+  }, []);
+
+  // Table data
+  const columns = [
+    { header: 'Contract ID', accessor: 'contractId' },
+    { header: 'Consumer Name', accessor: 'consumerName' },
+    { header: 'Provider Name', accessor: 'providerName' },
+    { header: 'Service Name', accessor: 'serviceName' },
+    { header: 'Date Created', accessor: 'dateCreated' },
+  ];
+
+  const data = [
+    { contractId: '#001', consumerName: 'John Doe', providerName: 'Provider 1', serviceName: 'Service 1', dateCreated: '2024-06-14', status: 'On-going' },
+    { contractId: '#002', consumerName: 'Jane Smith', providerName: 'Provider 2', serviceName: 'Service 2', dateCreated: '2024-06-15', status: 'Disputed' },
+    { contractId: '#003', consumerName: 'Jim Beam', providerName: 'Provider 3', serviceName: 'Service 3', dateCreated: '2024-06-16', status: 'Completed' },
+    { contractId: '#004', consumerName: 'Jake White', providerName: 'Provider 4', serviceName: 'Service 4', dateCreated: '2024-06-17', status: 'On-going' },
+  ];
+
+  const dropdownOptions = [
+    { label: 'On-going', color: 'text-green-500' },
+    { label: 'Disputed', color: 'text-red-500' },
+    { label: 'Completed', color: 'text-blue-500' },
+  ];
+
+  const openPopup = true; // This could be based on a condition
 
   return (
-    <div className="bg-[#E6F8F4] p-6 rounded-lg text-gray-800 w-full">
-      <h2 className="text-2xl font-bold mb-4 text-left text-[#013220]">
+    <div className="py-6 rounded-lg">
+      <SearchBarWithFilters
+        placeholder="Search by Contract Id, Service Name or Provider Name"
+        filterOptions={filterOptions}
+        onSearch={handleSearch}
+        onFilter={handleFilter}
+      />
+      <h2 className="text-heading text-2xl font-bold my-10 text-left">
         Contract Monitoring
       </h2>
 
@@ -194,38 +121,12 @@ export default function ContractMonitoring() {
       </div>
 
       {/* Table Section */}
-      <div>
-        <table className="w-full bg-white text-sm text-gray-600 rounded-lg overflow-hidden">
-          <thead>
-            <tr className="bg-[#E6F8F4] text-gray-700">
-              <th className="p-3 text-left">Contract ID</th>
-              <th className="p-3 text-left">Consumer Name</th>
-              <th className="p-3 text-left">Provider Name</th>
-              <th className="p-3 text-left">Service Name</th>
-              <th className="p-3 text-left">Date Created</th>
-              <th className="p-3 text-left">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.from({ length: 4 }).map((_, index) => (
-              <tr key={index} className="border-b hover:bg-gray-50">
-                <td className="p-3">#00{index + 1}</td>
-                <td className="p-3">John Doe</td>
-                <td className="p-3">Provider {index + 1}</td>
-                <td className="p-3">Service {index + 1}</td>
-                <td className="p-3">2024-06-14</td>
-                <td className="p-3">
-                  {index % 3 === 0
-                    ? 'On-going'
-                    : index % 3 === 1
-                    ? 'Disputed'
-                    : 'Completed'}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table
+        columns={columns}
+        data={data}
+        dropdownOptions={dropdownOptions}
+        openPopup={openPopup} // Pass openPopup to the Table component
+      />
     </div>
   );
 }

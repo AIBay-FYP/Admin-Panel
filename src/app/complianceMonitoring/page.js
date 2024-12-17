@@ -12,7 +12,7 @@ const ComplianceMonitoring = ()=>{
         console.log('Switched to:', selectedTab);
       };
     return (
-        <div className="bg-dark text-white mt-3 rounded">
+        <div className="bg-dark mt-10 rounded">
         <ClientSearchSection/>
         <ToggleSwitch
         title="Compliance Monitoring"

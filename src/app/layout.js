@@ -3,7 +3,7 @@ import "./globals.css";
 import Sidebar from '../components/Sidebar';
 import Sidebaroo from '../components/Sidebar2'; // Optional, if you're using a second sidebar
 import ClientSearchSection from '../components/ClientSearchSection';
-import AdminActionModal from '../components/consumerPopup';
+import AdminActionModal from '../components/genericModal';
 import ReactQueryProvider from './services/react-query/queryClient';
 import ModeratorsRegistration from './moderatorsRegistration/page';
 import EditProfile from './editProfile/page';

@@ -4,7 +4,7 @@ import React from "react";
 
 const ModeratorsRegistration = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-green-50 p-8">
+    <div className="min-h-screen flex flex-col p-8">
       {/* Header */}
       <div className="flex items-center mb-6">
         {/* Back Button */}
@@ -95,7 +95,7 @@ const ModeratorsRegistration = () => {
               Cancel
             </button>
             <button
-              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 text-sm"
+              className="bg-dark-green text-white px-4 py-2 rounded-md hover:bg-light-green text-sm"
             >
               Register
             </button>

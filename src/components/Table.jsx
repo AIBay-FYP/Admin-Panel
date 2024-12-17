@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from "react";
-import GenericModal from "./consumerPopup";
+import GenericModal from "./genericModal";
 
 const Table = ({ columns, data, dropdownOptions, openPopup }) => {
     return (
-        <div className="flex justify-center items-start w-full p-4">
+        <div className="flex justify-center items-start w-full">
             <div className="overflow-x-auto w-full">
                 <table className="w-full bg-white shadow-md rounded-lg text-sm">
                     {/* Table Header */}

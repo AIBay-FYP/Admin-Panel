@@ -71,7 +71,7 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`bg-sidebar fixed top-0 left-0 z-50 h-full rounded-lg p-5 flex flex-col justify-between shadow-lg transition-transform duration-300 ${
+      className={`bg-sidebar fixed top-0 left-0 z-50 h-full p-5 flex flex-col justify-between shadow-lg transition-transform duration-300 ${
         isOpen ? 'transform-none' : '-translate-x-full'
       } sm:w-[25%] md:w-[18%]`}
     >

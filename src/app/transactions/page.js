@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import Table from '@/components/Table';
-import Search from '@/components/SearchBarWithFilters';
+import SearchBarWithFilters from '@/components/SearchBarWithFilters';
 import { Chart, CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController } from 'chart.js';
 
 // Register Chart.js components
@@ -35,7 +35,6 @@ export default function Transactions() {
                             backgroundColor: ['#FF6384', '#FFCE56', '#36A2EB'],
                             borderColor: ['#FF6384', '#FFCE56', '#36A2EB'],
                             borderWidth: 1,
-                            borderRadius: 10, // Rounded bars
                         },
                     ],
                 },
@@ -118,7 +117,7 @@ export default function Transactions() {
 
     const data = [
         {
-            paymentId: '#12345',
+            paymentId: '12345',
             providerName: 'Provider 1',
             consumerName: 'Consumer 1',
             date: '2024-06-16',
@@ -127,7 +126,7 @@ export default function Transactions() {
             status: 'Completed',
         },
         {
-            paymentId: '#12346',
+            paymentId: '12346',
             providerName: 'Provider 2',
             consumerName: 'Consumer 2',
             date: '2024-06-17',
@@ -136,7 +135,7 @@ export default function Transactions() {
             status: 'Pending',
         },
         {
-            paymentId: '#12347',
+            paymentId: '12347',
             providerName: 'Provider 3',
             consumerName: 'Consumer 3',
             date: '2024-06-18',
@@ -152,6 +151,21 @@ export default function Transactions() {
         { label: 'Refunded', color: 'text-green-500' },
     ];
 
+
+    const filterOptions = [
+        { label: "Restricted Keywords", value: "restricted" },
+        { label: "Excessive Search Frequency", value: "frequency" },
+      ];
+    
+      const handleSearch = (query) => {
+        console.log("Search query:", query);
+      };
+    
+      const handleFilter = (filter) => {
+        console.log("Selected filter:", filter);
+      };
+
+
     return (
         <div
             style={{ backgroundColor: 'var(--background)' }}
@@ -159,7 +173,12 @@ export default function Transactions() {
         >
             {/* Search Component */}
             <div className="md:flex-row items-center justify-between my-4">
-                <Search />
+            <SearchBarWithFilters
+                placeholder="Search by Id or Service name"
+                filterOptions={filterOptions}
+                onSearch={handleSearch}
+                onFilter={handleFilter}
+            />
             </div>
 
             <div className="flex flex-row w-full mt-8">
@@ -167,7 +186,7 @@ export default function Transactions() {
                 <div>
                     {/* Bar Chart Section */}
                     <div style={{ width: '400px', height: '300px' }} className="mb-8">
-                        <h2 className="text-lg font-semibold mb-4">Successful Transactions</h2>
+                        <h2 className="text-heading text-2xl font-semibold mb-4">Successful Transactions</h2>
                         <div className="flex justify-center" style={{ width: '100%', height: '100%' }}>
                             <canvas ref={chartRef}></canvas>
                         </div>

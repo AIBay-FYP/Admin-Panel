@@ -13,6 +13,8 @@ module.exports = {
         darkgreen:'hsl(180, 51.90%, 15.50%)',
         customGray: 'rgba(51, 50, 50, 1)',
         background: "var(--background)",
+        searchbar: "#D9D9D9",
+        heading: "hsl(180, 51.90%, 15.50%)",
         foreground: "var(--foreground)",
         'light-green': 'var(--light-green)',
         'dark-green': 'var(--dark-green)',
@@ -24,8 +26,8 @@ module.exports = {
       backgroundImage: {
         'sidebar': 'linear-gradient(180deg, #133C3C 0%, #475D5D 100%)',
         'metric-1': 'linear-gradient(180deg, #0E60EE 0%, #8A4189 100%)',
-        'metric-2': 'linear-gradient(180deg, #E7C60F 0%, #784908 100%)',
-        'metric-3': 'linear-gradient(180deg, #7D0034 0%, #CC4911 100%)',
+        'metric-2': 'linear-gradient(180deg, #103535 0%, #EDCC48 100%)',
+        'metric-3': 'linear-gradient(180deg, #660909 0%, #CC1114 100%)',
         'popup': 'linear-gradient(180deg, #000000 0%, #4F4F4F 100%)',
       },
       

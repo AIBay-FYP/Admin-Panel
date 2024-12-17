@@ -50,11 +50,11 @@ const DocumentVerification = () => {
     { label: 'Approve', color: 'text-green-600' },
   ];
 
-// Custom row renderer for document links (inside a button)
-const renderCustomDocument = (documentText, rowId) => {
+
+  const renderCustomDocument = (documentText, rowId) => {
   return (
     <button
-      className="bg-light-green hover:bg-dark-green text-white font-medium py-1 px-3 rounded text-xs"
+      className="bg-customGray hover:bg-dark-green text-white font-medium py-1 px-3 rounded text-xs"
       onClick={() => router.push(`/documents/${rowId}`)} // Navigate to a new screen for the document
     >
       {documentText}
@@ -62,16 +62,16 @@ const renderCustomDocument = (documentText, rowId) => {
   );
 };
 
-// Final table data with render logic for custom cells
+
 const finalData = data.map((row, index) => ({
   ...row,
   document: renderCustomDocument("View Document", index + 1), // Adding unique row ID for navigation
 }));
 
   return (
-    <div className="flex flex-col items-center p-4">
+    <div className="flex flex-col py-10">
       {/* Page Header */}
-      <h1 className="text-2xl font-semibold mb-6">Document Verification</h1>
+      <h1 className="text-heading text-2xl font-semibold mb-6">Document Verification</h1>
 
       {/* Table Component */}
       <Table

@@ -10,7 +10,24 @@
   --dark-green: #003333;
   --red1: #ff0000;
   
+
 }
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+.backface-visible {
+  backface-visibility: visible;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
 
 .bg-custom {
   background-color: #046C71; /* Matching the image background */
@@ -19,7 +36,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1B1B1B;
+    --background: #E1EFE6;
     --foreground: #ededed;
   }
 }

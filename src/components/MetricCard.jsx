@@ -50,7 +50,7 @@ const MetricsCard = () => {
       count: 133,
       color: 'bg-metric-1',
       icon: faUsers,
-      route: '/registeredusers',
+      route: '/totalUsers',
     },
     {
       id: 2,
