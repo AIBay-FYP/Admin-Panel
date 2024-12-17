@@ -53,8 +53,8 @@ const Sidebar = () => {
     { label: 'Compliance Monitoring', icon: faClipboardList, route: '/complianceMonitoring' },
     { label: 'Contract Monitoring', icon: faFileContract, route: '/contractMonitoring' },
     { label: 'Feedback', icon: faCommentDots, route: '/feedback' },
-    { label: 'Moderators Registration', icon: faShieldAlt, route: '/moderators' },
-    { label: 'Document Verification', icon: faFileSignature, route: '/documents' },
+    { label: 'Moderators Registration', icon: faShieldAlt, route: '/moderatorsRegistration' },
+    { label: 'Document Verification', icon: faFileSignature, route: '/documentVerification' },
     { label: 'Settings', icon: faCog, route: '/settings' },
     { label: 'Log Out', icon: faSignOutAlt, route: '/logout' },
   ];
@@ -102,7 +102,7 @@ const Sidebar = () => {
         {menuItems.map((item) => (
           <button
             key={item.label}
-            className={`flex items-center gap-3 py-3 px-3 text-sm rounded-md transition duration-200 ${
+            className={`flex items-center gap-3 py-3 px-3 text-xs rounded-md transition duration-200 ${
               selected === item.label
                 ? 'bg-white text-black'
                 : 'text-white hover:bg-[#066a73] active:bg-white active:text-black focus:outline-none focus:bg-white focus:text-black'

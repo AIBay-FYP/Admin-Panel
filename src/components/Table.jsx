@@ -6,7 +6,7 @@ const Table = ({ columns, data, dropdownOptions }) => {
     return (
         <div className="flex justify-center items-start w-full p-4">
             <div className="overflow-x-auto w-full">
-                <table className="min-w-full border border-gray-300 bg-white shadow-md rounded-lg text-sm">
+                <table className="w-full  bg-white shadow-md rounded-lg text-sm">
                     {/* Table Header */}
                     <thead className="bg-gray-200">
                         <tr>
