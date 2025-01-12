@@ -7,6 +7,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      rotate: {
+        'y-180': 'rotateY(180deg)',
+      },
+      perspective: {
+        '1000': '1000px',
+      },
+      backfaceVisibility: {
+        'hidden': 'hidden',
+      },
       colors: {
         ltgreen:'E1EFE6',
         greenbg: '#046C71',
@@ -14,7 +23,11 @@ module.exports = {
         customGray: 'rgba(51, 50, 50, 1)',
         background: "var(--background)",
         searchbar: "#D9D9D9",
+        midgreen:'var(--mid-green)',
         heading: "hsl(180, 51.90%, 15.50%)",
+        'board-new': 'var(--board-new)',
+        'board-working': 'var(--board-working)',
+        'board-resolved': 'var(--board-resolved)',
         foreground: "var(--foreground)",
         'light-green': 'var(--light-green)',
         'dark-green': 'var(--dark-green)',
@@ -33,5 +46,24 @@ module.exports = {
       
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+    addUtilities({
+      '.perspective-1000': {
+        perspective: '1000px',
+      },
+      '.backface-hidden': {
+        backfaceVisibility: 'hidden',
+      },
+      '.transform-style-preserve': {
+        transformStyle: 'preserve-3d',
+      },
+      '.rotate-y-180': {
+        transform: 'rotateY(180deg)',
+      },
+      '.transition-background': {
+        transition: 'background-color 500ms ease-in-out',
+      },
+    });
+  },],
 };

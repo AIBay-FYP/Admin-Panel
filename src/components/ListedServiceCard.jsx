@@ -2,7 +2,7 @@ import Image from "next/image"; // Assuming you're using Next.js for image handl
 
 const ListedServiceCard = ({ mainImage, serviceName, serviceType, priceType, location }) => {
   return (
-    <div className="flex w-full bg-white rounded-lg shadow-md overflow-hidden cursor-pointer">
+    <div className="flex w-full bg-white rounded-lg shadow-md cursor-pointer">
       {/* Left part: Image */}
       <div className="flex-shrink-0 w-1/3 relative">
         <Image

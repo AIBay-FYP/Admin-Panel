@@ -6,6 +6,9 @@
   --background: #1B1B1B;
   --foreground: #343a40;
   --light-green: #90ee90;
+  --board-new: #809393;
+  --board-working: #72A09B;
+  --board-resolved: #8CD5CD;
   --mid-green:#264848;
   --dark-green: #003333;
   --red1: #ff0000;
@@ -13,6 +16,7 @@
 
 }
 
+/* Add these styles to your global CSS file or in a style tag if using Tailwind CSS */
 .perspective-1000 {
   perspective: 1000px;
 }
@@ -20,12 +24,41 @@
 .backface-hidden {
   backface-visibility: hidden;
 }
-.backface-visible {
-  backface-visibility: visible;
-}
 
 .rotate-y-180 {
   transform: rotateY(180deg);
+}
+
+.transition-transform {
+  transition: transform 0.7s;
+}
+
+/* Style the scrollbar container */
+::-webkit-scrollbar {
+  width: 8px; /* Adjust width for vertical scrollbar */
+  height: 8px; /* Adjust height for horizontal scrollbar */
+}
+
+/* Style the scrollbar track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Light background for the scrollbar track */
+  border-radius: 10px; /* Rounded corners for the track */
+}
+
+/* Style the scrollbar thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+  background: #888; /* Default color of the thumb */
+  border-radius: 10px; /* Rounded corners for the thumb */
+}
+
+/* Style the scrollbar thumb when hovered */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker color when hovering */
+}
+
+/* Optional: Style the scrollbar corner (when both scrollbars are visible) */
+::-webkit-scrollbar-corner {
+  background: #f1f1f1; /* Background of the corner where the two scrollbars meet */
 }
 
 
@@ -33,6 +66,9 @@
   background-color: #046C71; /* Matching the image background */
 }
 
+html {
+  scroll-behavior: smooth;
+}
 
 @media (prefers-color-scheme: dark) {
   :root {

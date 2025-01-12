@@ -1,111 +1,18 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
-import Table from '@/components/Table';
+import React from 'react';
+import ToggleSwitch from '@/components/ToggleSwitch';
 import SearchBarWithFilters from '@/components/SearchBarWithFilters';
-import { Chart, CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController } from 'chart.js';
-
-// Register Chart.js components
-Chart.register(CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController);
+import DisputesBoard from '../disputes/page';
+import TransactionsComponent from '@/components/Transactions';
 
 export default function Transactions() {
-    const chartRef = useRef(null);
-    const chartInstance = useRef(null);
-
-    const dummyChartData = {
+    const chartData = {
         labels: ['Funds Withheld', 'Pending', 'Refund'],
         data: [150, 100, 50],
     };
 
-    useEffect(() => {
-        if (chartInstance.current) {
-            chartInstance.current.destroy(); // Destroy previous chart instance
-        }
-
-        if (chartRef.current) {
-            const ctx = chartRef.current.getContext('2d');
-            chartInstance.current = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: dummyChartData.labels,
-                    datasets: [
-                        {
-                            label: 'Transaction Status',
-                            data: dummyChartData.data,
-                            backgroundColor: ['#FF6384', '#FFCE56', '#36A2EB'],
-                            borderColor: ['#FF6384', '#FFCE56', '#36A2EB'],
-                            borderWidth: 1,
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    layout: {
-                        padding: { right: 1 },
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                font: { size: 8 },
-                                color: '#000',
-                                boxWidth: 8,
-                                boxHeight: 8,
-                                usePointStyle: true,
-                                padding: 8,
-                                generateLabels: function (chart) {
-                                    const labels = chart.data.labels;
-                                    const datasets = chart.data.datasets;
-
-                                    return labels.map((label, index) => {
-                                        const datasetIndex = 0;
-                                        const dataset = datasets[datasetIndex];
-
-                                        return {
-                                            text: label,
-                                            fillStyle: dataset.backgroundColor[index],
-                                            strokeStyle: dataset.backgroundColor[index],
-                                            lineWidth: 2,
-                                            hidden: false,
-                                            datasetIndex,
-                                        };
-                                    });
-                                },
-                            },
-                        },
-                    },
-                    scales: {
-                        x: {
-                            title: { display: true, text: 'Transaction Status' },
-                            ticks: {
-                                autoSkip: false,
-                                minRotation: 0,
-                                maxRotation: 0,
-                                font: { size: 8 },
-                            },
-                        },
-                        y: {
-                            beginAtZero: true,
-                            title: { display: true, text: 'Number of Transactions' },
-                        },
-                    },
-                },
-            });
-        }
-
-        return () => {
-            if (chartInstance.current) chartInstance.current.destroy();
-        };
-    }, []);
-
-    const legend = [
-        { label: 'Funds Withheld', color: '#FF6384' },
-        { label: 'Pending', color: '#FFCE56' },
-        { label: 'Refund', color: '#36A2EB' },
-    ];
-
-    const columns = [
+    const tableColumns = [
         { header: 'Payment ID', accessor: 'paymentId' },
         { header: 'Provider Name', accessor: 'providerName' },
         { header: 'Consumer Name', accessor: 'consumerName' },
@@ -115,7 +22,7 @@ export default function Transactions() {
         { header: 'Status', accessor: 'status' },
     ];
 
-    const data = [
+    const tableData = [
         {
             paymentId: '12345',
             providerName: 'Provider 1',
@@ -151,53 +58,52 @@ export default function Transactions() {
         { label: 'Refunded', color: 'text-green-500' },
     ];
 
-
     const filterOptions = [
-        { label: "Restricted Keywords", value: "restricted" },
-        { label: "Excessive Search Frequency", value: "frequency" },
-      ];
-    
-      const handleSearch = (query) => {
-        console.log("Search query:", query);
-      };
-    
-      const handleFilter = (filter) => {
-        console.log("Selected filter:", filter);
-      };
+        { label: 'Restricted Keywords', value: 'restricted' },
+        { label: 'Excessive Search Frequency', value: 'frequency' },
+    ];
 
+    const handleSearch = (query) => {
+        console.log('Search query:', query);
+    };
+
+    const handleFilter = (filter) => {
+        console.log('Selected filter:', filter);
+    };
+
+    const handleSwitch = (view) => {
+        console.log('Switch view:', view);
+    };
 
     return (
-        <div
-            style={{ backgroundColor: 'var(--background)' }}
-            className="min-h-screen bg-gray-100"
-        >
-            {/* Search Component */}
-            <div className="md:flex-row items-center justify-between my-4">
-            <SearchBarWithFilters
-                placeholder="Search by Id or Service name"
-                filterOptions={filterOptions}
-                onSearch={handleSearch}
-                onFilter={handleFilter}
+        <div className="min-h-screen">
+            {/* Search Bar */}
+            <div className="my-4">
+                <SearchBarWithFilters
+                    placeholder="Search by Id or Service name"
+                    filterOptions={filterOptions}
+                    onSearch={handleSearch}
+                    onFilter={handleFilter}
+                />
+            </div>
+
+            {/* ToggleSwitch with Transactions Display */}
+            <ToggleSwitch
+                title="Successful transactions and Disputes"
+                buttonLabels={['Transactions','Disputes']}
+                components={{
+                    Transactions: () => (
+                        <TransactionsComponent
+                            chartData={chartData}
+                            tableData={tableData}
+                            tableColumns={tableColumns}
+                            dropdownOptions={dropdownOptions}
+                        />
+                    ),
+                    Disputes: DisputesBoard
+                }}
+                onSwitch={handleSwitch}
             />
-            </div>
-
-            <div className="flex flex-row w-full mt-8">
-                {/* Main Content */}
-                <div>
-                    {/* Bar Chart Section */}
-                    <div style={{ width: '400px', height: '300px' }} className="mb-8">
-                        <h2 className="text-heading text-2xl font-semibold mb-4">Successful Transactions</h2>
-                        <div className="flex justify-center" style={{ width: '100%', height: '100%' }}>
-                            <canvas ref={chartRef}></canvas>
-                        </div>
-                    </div>
-
-                    {/* Table Section */}
-                    <div className="mt-8">
-                        <Table columns={columns} data={data} dropdownOptions={dropdownOptions} />
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }

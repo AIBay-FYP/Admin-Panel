@@ -22,62 +22,65 @@ const Flashcard = () => {
   };
 
   return (
-
-      <div className="relative w-48 h-64 perspective-1000">
+    <div className="relative w-48 h-64 perspective-1000">
+      {/* Container for the flip effect */}
+      <div
+        className={`relative w-full h-full transition-transform duration-700 transform-style-preserve  ${isFlipped ? 'rotate-y-180' : ''}`}
+      >
+        {/* Front Side */}
         <div
-          className={`relative w-full h-full transition-transform duration-700 transform ${
-            isFlipped ? 'rotate-y-180' : ''
-          }`}
+          className="absolute w-full h-full bg-[#6AA6A6] text-white rounded-lg p-4 shadow-lg backface-hidden z-10 cursor-pointer"
+          style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
+          onClick={handleFlip}
         >
-          {/* Front Side */}
-          <div
-            className="absolute w-full h-full bg-[#6AA6A6] text-white rounded-lg p-4 shadow-lg backface-hidden cursor-pointer"
-            onClick={handleFlip}
-          >
-            <h2 className="text-xl font-bold">001</h2>
-            <p className="text-sm mt-2">Title</p>
-            <p className="text-xs mt-1">Sept 20, 2023</p>
-            <div className="mt-4 flex items-center">
-              <img
-                src="/assets/no-pfp.jpg"
-                alt="Provider"
-                className="rounded-full mr-2 w-[20px]"
-              />
-              <span>Provider</span>
-            </div>
-            <p className="mt-2 text-xs italic">Hover to see the description</p>
-
-            {/* Actions Dropdown */}
-            <div
-              className="mt-4"
-              onClick={(e) => e.stopPropagation()} // Prevent flip on dropdown click
-            >
-              <select
-                className="w-full bg-white text-black p-2 rounded cursor-pointer focus:outline-none"
-                onChange={(e) => handleDropdownChange(e.target.value)}
-              >
-                <option value="">Actions</option>
-                <option value="Review">Review</option>
-                <option value="Implement">Implement</option>
-                <option value="Acknowledge">Acknowledge</option>
-              </select>
-            </div>
+          <h2 className="text-xl font-bold">001</h2>
+          <p className="text-sm mt-2">Title</p>
+          <p className="text-xs mt-1">Sept 20, 2023</p>
+          <div className="mt-4 flex items-center">
+            <img
+              src="/assets/no-pfp.jpg"
+              alt="Provider"
+              className="rounded-full mr-2 w-[20px]"
+            />
+            <span>Provider</span>
           </div>
+          <p className="mt-2 text-xs italic">Hover to see the description</p>
 
-          {/* Back Side */}
+          {/* Actions Dropdown */}
           <div
-            className="absolute w-full h-full bg-[#4F9D9D] text-white rounded-lg p-4 shadow-lg backface-hidden rotate-y-180 cursor-pointer"
-            onClick={handleFlip}
+            className="mt-4"
+            onClick={(e) => e.stopPropagation()} // Prevent flip on dropdown click
           >
-            <h2 className="text-lg font-semibold mb-2">Description</h2>
-            <p className="text-xs leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-              ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat.
-            </p>
+            <select
+              className="w-full bg-white text-black p-2 rounded cursor-pointer focus:outline-none"
+              onChange={(e) => handleDropdownChange(e.target.value)}
+            >
+              <option value="">Actions</option>
+              <option value="Review">Review</option>
+              <option value="Implement">Implement</option>
+              <option value="Acknowledge">Acknowledge</option>
+            </select>
           </div>
         </div>
+
+        {/* Back Side */}
+        <div
+          className="absolute w-full h-full bg-midgreen text-white rounded-lg p-4 shadow-lg backface-hidden rotate-y-180 z-10 cursor-pointer"
+          style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
+          onClick={handleFlip}
+        >
+          <h2 className="text-lg font-semibold mb-2">Description</h2>
+          <p className="text-xs overflow-y-auto leading-relaxed max-h-40 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-200 scrollbar-rounded">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </p>
+        </div>
+
+
+
+      </div>
 
       {/* Generic Modal */}
       <GenericModal
