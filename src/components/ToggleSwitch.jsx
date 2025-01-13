@@ -23,7 +23,7 @@ export default function ToggleSwitch({ onSwitch, title, buttonLabels, components
             key={label}
             onClick={() => handleSwitch(label)}
             className={`px-4 py-2 ${
-              active === label ? 'bg-darkgreen text-white' : 'bg-customGray'
+              active === label ? 'bg-darkgreen text-white' : 'border.darkgreen text-darkgreen'
             } rounded`}
           >
             {label}
