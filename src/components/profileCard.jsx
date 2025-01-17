@@ -3,6 +3,7 @@ import StarDisplay from "./StarDisplay";
 import Image from "next/image";
 import ConsumerProfile from "./ConsumerProfile"; // Import the ConsumerProfile component
 import ProviderProfile from "./ProviderProfile"; // Import the ProviderProfile component
+import ModeratorProfile from "./ModeratorProfile";
 
 const ProfileCard = ({ name, role, rating }) => {
   const [isOverlayVisible, setOverlayVisible] = useState(false);
@@ -36,7 +37,7 @@ const ProfileCard = ({ name, role, rating }) => {
   }, [isOverlayVisible]);
 
   // Conditionally render the profile based on the role
-  const ProfileComponent = role === "Provider" ? ProviderProfile : ConsumerProfile;
+  const ProfileComponent = role === "Provider" ? ProviderProfile : role == 'Moderator' ? ModeratorProfile : ConsumerProfile;
 
   return (
     <div className="bg-white flex flex-col justify-center items-center p-7 rounded-lg gap-2 hover:bg-gray-100">

@@ -53,7 +53,7 @@ const Sidebar = () => {
     { label: 'Compliance Monitoring', icon: faClipboardList, route: '/complianceMonitoring' },
     { label: 'Contract Monitoring', icon: faFileContract, route: '/contractMonitoring' },
     { label: 'Feedback', icon: faCommentDots, route: '/feedback' },
-    { label: 'Moderators Registration', icon: faShieldAlt, route: '/moderatorsRegistration' },
+    { label: 'Moderators Registration', icon: faShieldAlt, route: '/moderatorPage' },
     { label: 'Document Verification', icon: faFileSignature, route: '/documentVerification' },
     { label: 'Settings', icon: faCog, route: '/settings' },
     { label: 'Log Out', icon: faSignOutAlt, route: '/logout' },

@@ -1,7 +1,8 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProfileCard from "@/components/profileCard";
 import SearchBarWithFilters from "@/components/SearchBarWithFilters";
+import { useRouter } from "next/navigation";
 
 // Mock data for ProfileCard
 const moderators = Array(8).fill({
@@ -11,6 +12,14 @@ const moderators = Array(8).fill({
 });
 
 const ModeratorRegistration = () => {
+  const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+      setIsMounted(true);
+    }, []);
+
+
   const handleSearch = (query) => {
     console.log("Search query:", query);
   };
@@ -21,11 +30,11 @@ const ModeratorRegistration = () => {
 
   const handleNewRegistration = () => {
     // Navigate to the moderator registration screen
-    window.location.href = "/moderatorsRegistration";
+    router.push("/moderatorsRegistration");
   };
 
   return (
-    <div className="min-h-screen p-6 bg-darkgreen">
+    <div className="min-h-screen">
       {/* Search Bar */}
       <div className="mb-6">
         <SearchBarWithFilters
@@ -41,7 +50,7 @@ const ModeratorRegistration = () => {
 
       {/* Page Heading and Button */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-white">Moderators</h1>
+        <h1 className="text-3xl font-bold text-heading">Moderators</h1>
         <button
           onClick={handleNewRegistration}
           className="flex items-center gap-2 bg-darkgreen text-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-darkgreen hover:border-darkgreen border"
@@ -53,14 +62,14 @@ const ModeratorRegistration = () => {
 
       {/* Metrics Card */}
       <div className="mb-6">
-        <div className="w-[250px] h-[110px] bg-[#4CAF50] text-white rounded-lg shadow-lg p-4 flex flex-col justify-between">
+        <div className="w-[250px] h-[110px] border border-darkgreen text-heading rounded-lg p-4 flex flex-col justify-between hover:shadow-lg">
           <h1 className="text-4xl font-bold">21</h1>
           <p className="text-sm font-semibold">Total Registered</p>
         </div>
       </div>
 
       {/* Moderators Section */}
-      <div className="rounded-lg bg-gray-100 p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="rounded-lg bg-customGray p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {moderators.map((moderator, index) => (
           <ProfileCard
             key={index}

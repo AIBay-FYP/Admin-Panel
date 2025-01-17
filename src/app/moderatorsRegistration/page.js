@@ -1,15 +1,24 @@
 'use client'
 
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const ModeratorsRegistration = () => {
+  const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+      setIsMounted(true);
+    }, []);
+
+
   return (
     <div className="min-h-screen flex flex-col p-8">
       {/* Header */}
       <div className="flex items-center mb-6">
         {/* Back Button */}
         <button
-          onClick={() => window.history.back()}
+          onClick={() => router.back()}
           className="text-gray-600 hover:text-gray-800 text-base mr-2"
         >
           &larr; 
