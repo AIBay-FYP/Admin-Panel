@@ -20,7 +20,9 @@ const GenericModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-1000"
+    style={{ zIndex: 9999 }}
+    >
       <div className="bg-[#1E3A3A] p-6 rounded-lg w-[500px] text-white">
         {/* Title */}
         <h2 className="text-lg font-semibold mb-4">{title}</h2>

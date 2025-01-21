@@ -41,6 +41,7 @@ module.exports = {
         'metric-1': 'linear-gradient(180deg, #0E60EE 0%, #8A4189 100%)',
         'metric-2': 'linear-gradient(180deg, #103535 0%, #EDCC48 100%)',
         'metric-3': 'linear-gradient(180deg, #660909 0%, #CC1114 100%)',
+        'login-bg': 'linear-gradient(180deg, #04E2E2 0%, #296667 100%)',
         'popup': 'linear-gradient(180deg, #000000 0%, #4F4F4F 100%)',
       },
       

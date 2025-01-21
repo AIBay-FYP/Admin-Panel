@@ -123,9 +123,10 @@ export default function ContractMonitoring() {
       {/* Table Section */}
       <Table
         columns={columns}
+        contract={true}
         data={data}
         dropdownOptions={dropdownOptions}
-        openPopup={openPopup} // Pass openPopup to the Table component
+        openPopup={openPopup} 
       />
     </div>
   );

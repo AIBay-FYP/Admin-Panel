@@ -1,11 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine, faUsers, faClipboardCheck } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
 
-// Simulate API call for data update
 const updateSelectedCard = async (selectedCardId) => {
   return new Promise((resolve) => {
     setTimeout(() => resolve(selectedCardId), 300); // Simulate API delay
@@ -16,30 +15,39 @@ const MetricsCard = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  // Initialize state for selected card
   const [selectedCard, setSelectedCard] = useState(null);
+  const [selectedSidebar, setSelectedSidebar] = useState(null);
 
+  // Sync with localStorage on mount
   useEffect(() => {
-    // Check localStorage for the selected card ID on initial load
     const storedSelectedCard = localStorage.getItem('selectedCard');
-    if (storedSelectedCard) {
-      setSelectedCard(Number(storedSelectedCard)); // Parse and set selected card ID
-    }
+    const storedSelectedSidebar = localStorage.getItem('selectedSidebar');
+
+    setSelectedCard(storedSelectedCard ? Number(storedSelectedCard) : null);
+    setSelectedSidebar(storedSelectedSidebar ? Number(storedSelectedSidebar) : null);
   }, []);
 
-  // Handle state changes with mutation
+  // Check and reset selectedCard if necessary
+  useEffect(() => {
+    if (selectedSidebar !== null && selectedSidebar !== selectedCard) {
+      setSelectedCard(null);
+      localStorage.removeItem('selectedCard');
+    }
+  }, [selectedSidebar, selectedCard]);
+
   const mutation = useMutation({
     mutationFn: updateSelectedCard,
     onMutate: async (newSelectedId) => {
-      // Store the selected card in localStorage
       localStorage.setItem('selectedCard', newSelectedId);
-      
-      // Update the state of selected card
       setSelectedCard(newSelectedId);
+
+      // Update selectedSidebar
+      localStorage.setItem('selectedSidebar', newSelectedId);
+      queryClient.setQueryData(['selectedSidebar'], newSelectedId);
+      setSelectedSidebar(newSelectedId);
     },
-    onError: (error, newSelectedId, context) => {
+    onError: (error, newSelectedId) => {
       console.error('Error updating card:', error);
-      // Handle potential errors
     },
   });
 
@@ -71,10 +79,7 @@ const MetricsCard = () => {
   ];
 
   const handleCardClick = (cardId, route) => {
-    // Trigger the mutation to update the selected card
     mutation.mutate(cardId);
-
-    // Navigate to the appropriate route
     router.push(route);
   };
 

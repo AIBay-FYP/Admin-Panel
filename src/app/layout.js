@@ -2,12 +2,9 @@ import { Montserrat } from 'next/font/google';
 import "./globals.css";
 import Sidebar from '../components/Sidebar';
 import Sidebaroo from '../components/Sidebar2'; // Optional, if you're using a second sidebar
-import ClientSearchSection from '../components/ClientSearchSection';
-import AdminActionModal from '../components/genericModal';
 import ReactQueryProvider from './services/react-query/queryClient';
-import ModeratorsRegistration from './moderatorsRegistration/page';
-import EditProfile from './editProfile/page';
-import documentVerification from './documentVerification/page';
+import { ClerkProvider, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import Login from './sign-in/[[...sign-in]]/page';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -22,24 +19,28 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={montserrat.className}>
-        <ReactQueryProvider>
-          <div className="flex min-h-screen">
-            <Sidebar />
-            <main className="flex-1 ml-[20%]"> {/* Adjust 'ml-[20%]' to sidebar width */}
-              <div className="w-[75%]">
-                {/* <div className="w-full max-w-2xl bg-light py-2 px-1">
-                  <ClientSearchSection />
-                </div> */}
-                {children}
+    <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+      <html lang="en">
+        <body className={montserrat.className}>
+          <ReactQueryProvider>
+            <SignedIn>
+              {/* Show the admin panel for authenticated users */}
+              <div className="flex min-h-screen">
+                <Sidebar />
+                <main className="flex-1 ml-[20%]"> {/* Adjust 'ml-[20%]' to sidebar width */}
+                  <div className="w-[75%]">
+                    {children}
+                  </div>
+                </main>
+                <Sidebaroo />
               </div>
-            </main>
-            <Sidebaroo />
-          </div>
-          <AdminActionModal />
-        </ReactQueryProvider>
-      </body>
-    </html>
+            </SignedIn>
+            <SignedOut>
+              <Login />
+            </SignedOut>
+          </ReactQueryProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

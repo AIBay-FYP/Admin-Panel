@@ -22,6 +22,7 @@ const Flashcard = () => {
   };
 
   return (
+    <div className='flex justify-center items-center'>
     <div className="relative w-48 h-64 perspective-1000">
       {/* Container for the flip effect */}
       <div
@@ -80,6 +81,7 @@ const Flashcard = () => {
 
 
 
+      </div>
       </div>
 
       {/* Generic Modal */}
