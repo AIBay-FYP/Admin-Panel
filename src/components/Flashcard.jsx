@@ -1,8 +1,9 @@
 'use client';
 import { useState } from 'react';
 import GenericModal from './genericModal';
+import { formatDate } from '@/utiks/formatDate';
 
-const Flashcard = () => {
+const Flashcard = ({id, title, date, givenBy,description}) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState('');
@@ -34,18 +35,18 @@ const Flashcard = () => {
           style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
           onClick={handleFlip}
         >
-          <h2 className="text-xl font-bold">001</h2>
-          <p className="text-sm mt-2">Title</p>
-          <p className="text-xs mt-1">Sept 20, 2023</p>
+          <h2 className="text-xl font-bold">{id}</h2>
+          <p className="text-sm mt-2">{title}</p>
+          <p className="text-xs mt-1">{formatDate(date)}</p>
           <div className="mt-4 flex items-center">
             <img
               src="/assets/no-pfp.jpg"
               alt="Provider"
               className="rounded-full mr-2 w-[20px]"
             />
-            <span>Provider</span>
+            <span>{givenBy}</span>
           </div>
-          <p className="mt-2 text-xs italic">Hover to see the description</p>
+          <p className="mt-2 text-xs italic">Click to see the description</p>
 
           {/* Actions Dropdown */}
           <div
@@ -56,7 +57,6 @@ const Flashcard = () => {
               className="w-full bg-white text-black p-2 rounded cursor-pointer focus:outline-none"
               onChange={(e) => handleDropdownChange(e.target.value)}
             >
-              <option value="">Actions</option>
               <option value="Review">Review</option>
               <option value="Implement">Implement</option>
               <option value="Acknowledge">Acknowledge</option>
@@ -72,10 +72,7 @@ const Flashcard = () => {
         >
           <h2 className="text-lg font-semibold mb-2">Description</h2>
           <p className="text-xs overflow-y-auto leading-relaxed max-h-40 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-200 scrollbar-rounded">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+           {description}
           </p>
         </div>
 

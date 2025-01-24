@@ -7,6 +7,22 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        'gradient': 'gradient 5s ease infinite', // Define the gradient animation
+      },
+      keyframes: {
+        gradient: {
+          '0%': {
+            backgroundPosition: '0% 50%',
+          },
+          '50%': {
+            backgroundPosition: '100% 50%',
+          },
+          '100%': {
+            backgroundPosition: '0% 50%',
+          },
+        },
+      },
       rotate: {
         'y-180': 'rotateY(180deg)',
       },

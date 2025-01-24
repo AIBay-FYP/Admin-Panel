@@ -181,7 +181,7 @@ const serviceDetails = {
 const complianceLogs = [
   { id: 1, date: "2024-06-01 10:30 AM", type: "Late Return", action: "Warning Issued" },
   { id: 2, date: "2024-06-05 02:45 PM", type: "Damaged Product", action: "Fine Charged" },
-  { id: 3, date: "2024-06-10 09:15 AM", type: "Non-Payment", action: "Account Suspended" }
+  { id: 3, date: "2024-06-10 09:15 AM", type: "Non-Payment", action: "Account Suspended" },
 ];
 
 const ServiceDetails = () => {
@@ -207,8 +207,10 @@ const ServiceDetails = () => {
     setMainImage(serviceDetails.images[newIndex]);
   };
 
-  return (
-    <div className="min-h-screen bg-custom text-white p-4 md:p-6 lg:p-8">
+  return ( 
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 mx-20 my-10 overflow-y-auto">
+
+    <div className=" min-h-screen bg-custom text-white p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:gap-8">
         {/* Left Section */}
         <div>
@@ -374,6 +376,7 @@ const ServiceDetails = () => {
             <p>{serviceDetails.keywords.join(", ")}</p>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

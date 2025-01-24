@@ -18,7 +18,7 @@ const ListedServiceCard = ({ mainImage, serviceName, serviceType, priceType, loc
       <div className="flex-1 p-4">
         <h3 className="text-lg font-semibold text-gray-800">{serviceName}</h3>
         <p className="text-sm text-gray-600">{serviceType}</p>
-        <p className="text-sm text-gray-600">{priceType}</p>
+        <p className="text-sm text-gray-600">{priceType?'Negotiable':'Fixed Price'}</p>
         <p className="text-sm text-gray-600">{location}</p>
       </div>
     </div>

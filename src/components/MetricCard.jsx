@@ -1,9 +1,19 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine, faUsers, faClipboardCheck } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
+import CountUp from 'react-countup';
+
+// API to fetch the counts
+const fetchCounts = async () => {
+  const response = await fetch('/api/metricCards'); // Update with your API endpoint
+  if (!response.ok) {
+    throw new Error('Failed to fetch counts');
+  }
+  return response.json();
+};
 
 const updateSelectedCard = async (selectedCardId) => {
   return new Promise((resolve) => {
@@ -51,11 +61,16 @@ const MetricsCard = () => {
     },
   });
 
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['metricsCounts'], 
+    queryFn: fetchCounts
+  });
+
   const cards = [
     {
       id: 1,
       title: 'Total Registered Users',
-      count: 133,
+      count: data ? data.usersCount : 0,
       color: 'bg-metric-1',
       icon: faUsers,
       route: '/totalUsers',
@@ -63,7 +78,7 @@ const MetricsCard = () => {
     {
       id: 2,
       title: 'Number of Services Listed',
-      count: 78,
+      count: data ? data.listingsCount : 0,
       color: 'bg-metric-2',
       icon: faClipboardCheck,
       route: '/listedServices',
@@ -71,7 +86,7 @@ const MetricsCard = () => {
     {
       id: 3,
       title: 'Successful Transactions',
-      count: 25,
+      count: data ? data.transactionsCount : 0,
       color: 'bg-metric-3',
       icon: faChartLine,
       route: '/transactions',
@@ -93,17 +108,19 @@ const MetricsCard = () => {
             ${selectedCard === card.id ? 'h-[150px]' : 'h-[110px]'}
             w-[180px] ${card.color} rounded-lg flex flex-col items-center justify-between shadow-lg p-3`}
         >
-          {mutation.isLoading && selectedCard === card.id ? (
-            <p className="text-white text-lg">Loading...</p>
-          ) : (
-            <>
-              <div className="flex items-center justify-between w-full">
-                <h1 className="text-3xl font-bold text-white">{card.count}</h1>
-                <FontAwesomeIcon icon={card.icon} className="text-white text-2xl" />
-              </div>
-              <p className="text-sm text-white">{card.title}</p>
-            </>
-          )}
+          <div className="flex items-center justify-between w-full">
+            <h1 className="text-3xl font-bold text-white">
+              <CountUp
+                start={0}
+                end={data ? card.count : 0}
+                duration={isLoading ? 3 : 2.5} // Animate for longer while loading
+                separator=","
+                delay={0}
+              />
+            </h1>
+            <FontAwesomeIcon icon={card.icon} className="text-white text-2xl" />
+          </div>
+          <p className="text-sm text-white">{card.title}</p>
         </div>
       ))}
     </div>

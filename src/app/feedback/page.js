@@ -1,40 +1,30 @@
 "use client";
 import React from "react";
+import { useQuery } from "@tanstack/react-query"; // Import React Query hook
 import FlashCard from "@/components/Flashcard";
 import SearchBarWithFilters from "@/components/SearchBarWithFilters";
 
-const dummyData = [
-  {
-    id: "001",
-    title: "Title One",
-    date: "Sept 20, 2023",
-    givenBy: "John Doe",
-    description: "This is the description for Title One.",
-  },
-  {
-    id: "002",
-    title: "Title Two",
-    date: "Oct 10, 2023",
-    givenBy: "Jane Smith",
-    description: "This is the description for Title Two.",
-  },
-  {
-    id: "003",
-    title: "Title Three",
-    date: "Nov 15, 2023",
-    givenBy: "Alice Brown",
-    description: "This is the description for Title Three.",
-  },
-  {
-    id: "004",
-    title: "Title Four",
-    date: "Dec 01, 2023",
-    givenBy: "Bob Johnson",
-    description: "This is the description for Title Four.",
-  },
-];
+// Function to fetch feedbacks data
+const fetchFeedbacks = async () => {
+  const response = await fetch("/api/feedbacks", {
+    method: "GET", // Explicitly specify GET method (optional since it's the default)
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+    if (!response.ok) {
+    throw new Error("Failed to fetch feedbacks");
+  }
+  console.log(response)
+  return response.json();
+};
 
 const FeedbackPage = () => {
+  const { data: feedbacks, error, isLoading } = useQuery({ 
+   queryKey: ["feedbacks"], // Query key for caching
+    queryFn: fetchFeedbacks // Fetch function
+  });
+
   const filterOptions = [
     { label: "Restricted Keywords", value: "restricted" },
     { label: "Excessive Search Frequency", value: "frequency" },
@@ -48,6 +38,21 @@ const FeedbackPage = () => {
     console.log("Selected filter:", filter);
   };
 
+  if (isLoading) {
+    return (
+      <div className="p-6 min-h-screen">
+        <h1 className="text-heading align-left text-3xl font-bold mb-8">Loading Feedbacks...</h1>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 min-h-screen">
+        <h1 className="text-heading align-left text-3xl font-bold mb-8">Error: {error.message}</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 min-h-screen">
@@ -61,14 +66,14 @@ const FeedbackPage = () => {
 
       {/* Responsive Grid Layout */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {dummyData.map((item) => (
-          <div key={item.id} className="flex justify-center">
+        {feedbacks.map((item) => (
+          <div key={item.FeedbackID} className="flex justify-center">
             <FlashCard
-              id={item.id}
-              title={item.title}
-              date={item.date}
-              givenBy={item.givenBy}
-              description={item.description}
+              id={item.FeedbackID}
+              title={item.Title}
+              date={item.Date}
+              givenBy={item.RoleType}
+              description={item.Description}
             />
           </div>
         ))}

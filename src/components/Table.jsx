@@ -1,9 +1,11 @@
-import { useState } from "react";
+'use client'
+import { useEffect, useRef, useState } from "react";
 import GenericModal from "./genericModal";
-import ServiceResolution from "./ServiceResolution"; // Import the ServiceResolution component
 
-const Table = ({ columns, data, dropdownOptions, openPopup, contract = false }) => {
+const Table = ({ columns, data, dropdownOptions, openPopup, details = false, detailsPopup }) => {
   const [isDetailsModalOpen, setDetailsModalOpen] = useState(false); // State to manage the Details popup
+  const PopUp = detailsPopup
+  const modalRef = useRef(null)
 
   const openDetailsModal = () => {
     setDetailsModalOpen(true); // Open the details popup when the button is clicked
@@ -12,6 +14,40 @@ const Table = ({ columns, data, dropdownOptions, openPopup, contract = false }) 
   const closeDetailsModal = () => {
     setDetailsModalOpen(false); // Close the details popup
   };
+
+
+
+    // Effect to toggle the body's scrolling
+    useEffect(() => {
+      if (isDetailsModalOpen) {
+        // Disable scrolling
+        document.body.classList.add("overflow-hidden");
+      } else {
+        // Enable scrolling
+        document.body.classList.remove("overflow-hidden");
+      }
+  
+      // Cleanup on component unmount
+      return () => {
+        document.body.classList.remove("overflow-hidden");
+      };
+    }, [isDetailsModalOpen]);
+
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (modalRef.current && !modalRef.current.contains(event.target)) {
+          setDetailsModalOpen(false);
+        }
+      };
+  
+      // Add event listener to detect clicks outside of the modal
+      document.addEventListener("mousedown", handleClickOutside);
+  
+      // Cleanup the event listener on component unmount
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
 
   return (
     <div className="flex justify-center items-start w-full">
@@ -37,7 +73,7 @@ const Table = ({ columns, data, dropdownOptions, openPopup, contract = false }) 
               <th className="px-4 py-2 text-left text-gray-600 font-medium rounded-tr-lg">
                 Status
               </th>
-              {contract && (
+              {details && (
                 <th className="px-4 py-2 text-left text-gray-600 font-medium rounded-tr-lg">
                   More
                 </th>
@@ -78,7 +114,7 @@ const Table = ({ columns, data, dropdownOptions, openPopup, contract = false }) 
                     row={row}
                   />
                 </td>
-                {contract && (
+                {details && (
                   <td className="p-2">
                     <button
                       className="bg-gray-200 text-black border rounded-lg p-2 text-xs hover:bg-black hover:text-white"
@@ -96,7 +132,9 @@ const Table = ({ columns, data, dropdownOptions, openPopup, contract = false }) 
 
       {/* ServiceResolution Popup */}
       {isDetailsModalOpen && (
-        <ServiceResolution onClose={closeDetailsModal} />
+        <div ref={modalRef}>
+        <PopUp onClose={closeDetailsModal} />
+        </div>
       )}
     </div>
   );
@@ -106,10 +144,12 @@ const Dropdown = ({ options, openPopup, row }) => {
   const [selected, setSelected] = useState(options[0]?.label || "Status");
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const handleSelectChange = (event) => {
-    setSelected(event.target.value);
 
-    // Trigger modal if openPopup is true
+  const handleSelectChange =(event) => {
+    const newSelectedValue = event.target.value;
+    setSelected(newSelectedValue);
+    console.log(selected)
+
     if (openPopup) {
       setModalOpen(true);
     }
@@ -119,9 +159,37 @@ const Dropdown = ({ options, openPopup, row }) => {
     setModalOpen(false);
   };
 
-  const handlePrimaryAction = () => {
-    // Handle confirm action
+  const handlePrimaryAction =async (userID, message, type, readStatus) => {
+    const notification = {
+      UserID: userID,
+      Message: message,
+      Type: type,
+      ReadStatus: readStatus
+    }    
     console.log(`Confirmed for ${row.name || "this row"}`);
+    
+    try {
+      const response = await fetch('/api/notificationPost',{
+        method: 'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify(notification)
+      })
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        console.log('Notification created:', result);
+      } else {
+        console.error('Failed to create notification:', result.error);
+      }
+    
+    } catch (error) {
+      console.error('Error posting notification:', error);
+    }
+
+
     setModalOpen(false);
   };
 
@@ -148,11 +216,11 @@ const Dropdown = ({ options, openPopup, row }) => {
         isOpen={isModalOpen}
         onClose={closeModal}
         title="Confirm Your Action"
-        message={`Are you sure you want to set status to "${selected}" for ${row.name || "this row"}?`}
+        type = {selected}
         primaryAction={handlePrimaryAction}
         primaryButtonText="Yes, Confirm"
         secondaryButtonText="Cancel"
-      />
+        />
     </div>
   );
 };

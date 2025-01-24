@@ -73,11 +73,8 @@ const Sidebar = () => {
       // If it's a number, set selectedCard to null
       localStorage.setItem('selectedCard', null);
   
-      // Update selectedSidebar to the new selection
       const newSelection = item.label; // Update with the current item's label
       localStorage.setItem('selectedSidebar', JSON.stringify(newSelection));
-  
-      // Update state with mutation
       mutation.mutate(newSelection);
     } else {
       // Handle regular updates for non-number sidebar states

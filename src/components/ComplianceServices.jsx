@@ -332,6 +332,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Chart, CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController } from 'chart.js';
 import Table from './Table'; // Import the Table component
+import ServiceDetails from '@/app/serviceDetails/ServiceDetails';
 
 // Register required components for Chart.js
 Chart.register(CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController);
@@ -456,6 +457,8 @@ export default function ComplianceServices() {
         data={dummyTableData}
         dropdownOptions={dropdownOptions}
         openPopup={true}
+        details={true}
+        detailsPopup={ServiceDetails}
       />
     </>
   );

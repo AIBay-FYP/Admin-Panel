@@ -6,7 +6,8 @@ import Login from './sign-in/[[...sign-in]]/page';
 
 
 
-export default function Home() {
+export default async function Home() {
+
   return (
     <>
     <div className="flex justify-center w-full py-2 px-2">

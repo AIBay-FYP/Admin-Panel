@@ -3,8 +3,11 @@ import React, { useRef, useEffect, useState } from 'react';
 import SearchBarWithFilters from '@/components/SearchBarWithFilters';
 import { Chart, PieController, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import Table from '@/components/Table'; // Import the Table component
+import ServiceResolution from '@/components/ServiceResolution';
 
 Chart.register(PieController, Title, Tooltip, Legend, ArcElement);
+
+
 
 export default function ContractMonitoring() {
   const chartRef = useRef(null);
@@ -123,10 +126,11 @@ export default function ContractMonitoring() {
       {/* Table Section */}
       <Table
         columns={columns}
-        contract={true}
+        details={true}
         data={data}
         dropdownOptions={dropdownOptions}
         openPopup={openPopup} 
+        detailsPopup = {ServiceResolution}
       />
     </div>
   );
