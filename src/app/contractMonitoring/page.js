@@ -1,36 +1,47 @@
 'use client';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import SearchBarWithFilters from '@/components/SearchBarWithFilters';
 import { Chart, PieController, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import Table from '@/components/Table'; // Import the Table component
+import Table from '@/components/Table';
 import ServiceResolution from '@/components/ServiceResolution';
 
 Chart.register(PieController, Title, Tooltip, Legend, ArcElement);
 
-
+const fetchContracts = async () => {
+  const response = await fetch('/api/contracts');
+  if (!response.ok) {
+    throw new Error('Failed to fetch contracts');
+  }
+  return response.json();
+};
 
 export default function ContractMonitoring() {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
+  const { data = [], isLoading, isError } = useQuery({
+    queryKey: ['fetchContracts'],
+    queryFn: fetchContracts,
+  });
+
   const filterOptions = [
-    { label: "Restricted Keywords", value: "restricted" },
-    { label: "Excessive Search Frequency", value: "frequency" },
+    { label: 'Restricted Keywords', value: 'restricted' },
+    { label: 'Excessive Search Frequency', value: 'frequency' },
   ];
 
-  const handleSearch = (query) => {
-    console.log("Search query:", query);
-  };
-
-  const handleFilter = (filter) => {
-    console.log("Selected filter:", filter);
-  };
+  const handleSearch = (query) => console.log('Search query:', query);
+  const handleFilter = (filter) => console.log('Selected filter:', filter);
 
   const chartData = {
     labels: ['On-going', 'Disputed', 'Completed'],
     datasets: [
       {
-        data: [722, 748, 947],
+        data: [
+          data.filter((item) => item.Status === 'On-going').length || 0,
+          data.filter((item) => item.Status === 'Disputed').length || 0,
+          data.filter((item) => item.Status === 'Completed').length || 0,
+        ],
         backgroundColor: ['#F8D568', '#D9534F', '#5BC0DE'],
         borderColor: ['#F8D568', '#D9534F', '#5BC0DE'],
         hoverOffset: 4,
@@ -61,39 +72,27 @@ export default function ContractMonitoring() {
   };
 
   useEffect(() => {
+    if (!data || !chartRef.current) return;
+
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
 
-    if (chartRef.current) {
-      chartInstance.current = new Chart(chartRef.current, {
-        type: 'pie',
-        data: chartData,
-        options: chartOptions,
-      });
-    }
+    chartInstance.current = new Chart(chartRef.current, {
+      type: 'pie',
+      data: chartData,
+      options: chartOptions,
+    });
 
-    return () => {
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
-      }
-    };
-  }, []);
+    return () => chartInstance.current?.destroy();
+  }, [data]);
 
-  // Table data
   const columns = [
-    { header: 'Contract ID', accessor: 'contractId' },
-    { header: 'Consumer Name', accessor: 'consumerName' },
-    { header: 'Provider Name', accessor: 'providerName' },
-    { header: 'Service Name', accessor: 'serviceName' },
-    { header: 'Date Created', accessor: 'dateCreated' },
-  ];
-
-  const data = [
-    { contractId: '#001', consumerName: 'John Doe', providerName: 'Provider 1', serviceName: 'Service 1', dateCreated: '2024-06-14', status: 'On-going' },
-    { contractId: '#002', consumerName: 'Jane Smith', providerName: 'Provider 2', serviceName: 'Service 2', dateCreated: '2024-06-15', status: 'Disputed' },
-    { contractId: '#003', consumerName: 'Jim Beam', providerName: 'Provider 3', serviceName: 'Service 3', dateCreated: '2024-06-16', status: 'Completed' },
-    { contractId: '#004', consumerName: 'Jake White', providerName: 'Provider 4', serviceName: 'Service 4', dateCreated: '2024-06-17', status: 'On-going' },
+    { header: 'Contract ID', accessor: 'ContractID' },
+    { header: 'Consumer Name', accessor: (row) => row.consumerDetails?.Name },
+    { header: 'Provider Name', accessor: (row) => row.providerDetails?.Name },
+    { header: 'Service Name', accessor: (row) => row.listingDetails?.Title },
+    { header: 'Date Created', accessor: 'Timestamp' },
   ];
 
   const dropdownOptions = [
@@ -102,7 +101,19 @@ export default function ContractMonitoring() {
     { label: 'Completed', color: 'text-blue-500' },
   ];
 
-  const openPopup = true; // This could be based on a condition
+  const openPopup = true;
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error fetching contracts data</div>;
+  }
+
+  if (data.length === 0) {
+    return <div>No contracts available</div>;
+  }
 
   return (
     <div className="py-6 rounded-lg">
@@ -116,21 +127,19 @@ export default function ContractMonitoring() {
         Contract Monitoring
       </h2>
 
-      {/* Chart Section */}
       <div className="flex justify-center mb-6">
         <div className="w-64 h-64">
           <canvas ref={chartRef}></canvas>
         </div>
       </div>
 
-      {/* Table Section */}
       <Table
         columns={columns}
         details={true}
         data={data}
         dropdownOptions={dropdownOptions}
-        openPopup={openPopup} 
-        detailsPopup = {ServiceResolution}
+        openPopup={openPopup}
+        detailsPopup={ServiceResolution}
       />
     </div>
   );
