@@ -2,83 +2,53 @@
 import { useEffect, useRef, useState } from "react";
 import GenericModal from "./genericModal";
 
-const Table = ({ columns, data, dropdownOptions, details = false, detailsPopup }) => {
-  const [isDetailsModalOpen, setDetailsModalOpen] = useState(false);
-  const [selectedContract, setSelectedContract] = useState(null); // State to hold the selected contract details
-  const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
-  const [notificationType, setNotificationType] = useState(null);
+const Table = ({ 
+  columns, 
+  data, 
+  dropdownOptions, 
+  openPopup, 
+  details = false, 
+  detailsPopup: PopUp, 
+  handleDropdown 
+}) => {
+  const [isDetailsModalOpen, setDetailsModalOpen] = useState(false); // Manage modal visibility
+  const [modalData, setModalData] = useState(null); // Store data for the selected row
   const modalRef = useRef(null);
-  const PopUp = detailsPopup;
 
-  const openDetailsModal = async (contractId) => {
-    try {
-      const response = await fetch(`/api/contracts?ContractID=${contractId}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch contract details");
-      }
-      const contractData = await response.json();
-      setSelectedContract(contractData); // Set the fetched contract data
-      setDetailsModalOpen(true); // Open the modal
-    } catch (error) {
-      console.error("Error fetching contract details:", error);
-    }
+  const openDetailsModal = (rowData) => {
+    console.log(rowData)
+    console.log("rfgbjh")
+    setModalData(rowData); // Set the specific row data for the modal
+    setDetailsModalOpen(true); // Open the modal
   };
 
   const closeDetailsModal = () => {
+    setModalData(null); // Clear the modal data
     setDetailsModalOpen(false); // Close the modal
-    setSelectedContract(null); // Clear selected contract data
   };
 
-  const openNotificationModal = (type) => {
-    setNotificationType(type);
-    setNotificationModalOpen(true);
-  };
-
-  const closeNotificationModal = () => {
-    setNotificationModalOpen(false);
-    setNotificationType(null);
-  };
-
-  const handleNotificationAction = async (userID, message, type, readStatus) => {
-    const notification = {
-      UserID: userID,
-      Message: message,
-      Type: type,
-      ReadStatus: readStatus,
-    };
-
-    try {
-      const response = await fetch('/api/notificationPost', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(notification),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        console.log('Notification created:', result);
-      } else {
-        console.error('Failed to create notification:', result.error);
-      }
-    } catch (error) {
-      console.error('Error posting notification:', error);
+  // Effect to manage body scrolling
+  useEffect(() => {
+    if (isDetailsModalOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
     }
 
-    closeNotificationModal();
-  };
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [isDetailsModalOpen]);
 
+  // Handle clicks outside the modal
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setDetailsModalOpen(false);
+        closeDetailsModal();
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -115,6 +85,7 @@ const Table = ({ columns, data, dropdownOptions, details = false, detailsPopup }
             </tr>
           </thead>
 
+          {/* Table Body */}
           <tbody>
             {data.map((row, rowIndex) => (
               <tr
@@ -139,18 +110,22 @@ const Table = ({ columns, data, dropdownOptions, details = false, detailsPopup }
                       : row[col.accessor] || "-"}
                   </td>
                 ))}
-                <td className={`px-4 py-2 text-gray-700`}>
+                <td 
+                  className={`px-4 py-2 text-gray-700 ${
+                    rowIndex === data.length - 1 ? "rounded-br-lg" : ""
+                  }`}
+                >
                   <Dropdown
                     options={dropdownOptions}
                     row={row}
-                    openNotificationModal={openNotificationModal}
+                    handleDropdown={handleDropdown}
                   />
                 </td>
                 {details && (
                   <td className="p-2">
                     <button
                       className="bg-gray-200 text-black border rounded-lg p-2 text-xs hover:bg-black hover:text-white"
-                      onClick={() => openDetailsModal(row.ContractID)}
+                      onClick={() => openDetailsModal(row)} // Pass specific row data
                     >
                       Details
                     </button>
@@ -162,11 +137,12 @@ const Table = ({ columns, data, dropdownOptions, details = false, detailsPopup }
         </table>
       </div>
 
-      {isDetailsModalOpen && selectedContract && (
+      {/* Details Modal */}
+      {isDetailsModalOpen && details && (
         <div ref={modalRef}>
-          <PopUp
+          <PopUp 
+            data={modalData} // Pass the specific row data to the modal
             onClose={closeDetailsModal}
-            contractDetails={selectedContract}
           />
         </div>
       )}
@@ -186,15 +162,62 @@ const Table = ({ columns, data, dropdownOptions, details = false, detailsPopup }
   );
 };
 
-const Dropdown = ({ options, row, openNotificationModal }) => {
-  const [selected, setSelected] = useState(row.Status || options[0]?.label || "Status");
 
-  const handleSelectChange = (event) => {
+const Dropdown = ({ options, openPopup, row, handleDropdown}) => {
+  const [selected, setSelected] = useState(row.status || options[0]?.label);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+
+const handleSelectChange =(event) => {
+    console.log("handleDropdown prop:", handleDropdown);
     const newSelectedValue = event.target.value;
     setSelected(newSelectedValue);
-    if (newSelectedValue !== row.Status) {
-      openNotificationModal(newSelectedValue);
+    console.log(selected)
+
+    if (openPopup) {
+      setModalOpen(true);
     }
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const handlePrimaryAction =async (userID, message, type, readStatus) => {
+    const notification = {
+      UserID: userID,
+      Message: message,
+      Type: type,
+      ReadStatus: readStatus
+    }    
+    console.log(`Confirmed for ${row.name || "this row"}`);
+    
+    try {
+      const response = await fetch('/api/notificationPost',{
+        method: 'POST', 
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify(notification)
+      })
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        console.log('Notification created:', result);
+        console.log("handleDropdown prop:", handleDropdown);
+        console.log("handleDropdown prop:", row._id);
+        handleDropdown(row._id,selected)
+      } else {
+        console.error('Failed to create notification:', result.error);
+      }
+    
+    } catch (error) {
+      console.error('Error posting notification:', error);
+    }
+    
+
+    setModalOpen(false);
   };
 
   return (
@@ -214,6 +237,17 @@ const Dropdown = ({ options, row, openNotificationModal }) => {
           </option>
         ))}
       </select>
+
+      {/* Modal */}
+      <GenericModal 
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title="Confirm Your Action"
+        type = {selected}
+        primaryAction={handlePrimaryAction}
+        primaryButtonText="Yes, Confirm"
+        secondaryButtonText="Cancel"
+        />
     </div>
   );
 };

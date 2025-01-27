@@ -56,11 +56,7 @@ const ListedServices = () => {
         data.map((service) => (
           <ListedServiceCard
             key={service.ListingID}
-            mainImage={service.Photos[1]}
-            serviceName={service.Title}
-            serviceType={service.ServiceType}
-            priceType={service.isNegotiable}
-            location={service.Location}
+            data={service}
           />
         ))
       ) : (

@@ -4,7 +4,6 @@ import { Chart, CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, 
 import Table from './Table';
 import { useQuery } from '@tanstack/react-query';
 import LoadingBar from 'react-top-loading-bar'; // Import the loading bar
-import ServiceDetails from '@/app/serviceDetails/ServiceDetails';
 
 Chart.register(CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController);
 
@@ -32,6 +31,33 @@ const fetchComplianceData = async () => {
   return response.json();
 };
 
+
+const handleDropdown = async (id, status) => {
+  try {
+    console.log("In dropdown: " + id + " " + status);
+
+    const response = await fetch("/api/complianceSearches", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id,
+        status,
+      }),
+    });
+
+    if (response.ok) {
+      console.log("Status updated");
+    } else {
+      console.error("Failed to update feedback status");
+    }
+  } catch (error) {
+    console.error("Error posting notification:", error);
+  }
+};
+
+
 export default function ComplianceSearches() {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
@@ -40,6 +66,9 @@ export default function ComplianceSearches() {
   const { data, error, isLoading } = useQuery({
     queryKey: ['complianceSearches'], 
     queryFn: fetchComplianceData,
+    staleTime: 5 * 60 * 1000, // Data stays fresh for 5 minutes
+    refetchOnMount: false, // Do not refetch if data is cached
+    refetchOnWindowFocus: false, // Disable refetch on tab focus
     onSuccess: () => {
       if (loadingBarRef.current) {
         loadingBarRef.current.complete(); 
@@ -144,6 +173,7 @@ export default function ComplianceSearches() {
         data={data} 
         dropdownOptions={dropdownOptions}
         openPopup={true}
+        handleDropdown={handleDropdown}
       />
     </>
   );
