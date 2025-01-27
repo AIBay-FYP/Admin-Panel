@@ -459,6 +459,9 @@ export default function ComplianceServices() {
         openPopup={true}
         details={true}
         detailsPopup={ServiceDetails}
+        isComplianceMonitoring={true}
+        // primaryAction={details}
+        isActionEnabled = {true}
       />
     </>
   );

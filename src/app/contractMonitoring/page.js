@@ -5,6 +5,7 @@ import SearchBarWithFilters from '@/components/SearchBarWithFilters';
 import { Chart, PieController, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import Table from '@/components/Table';
 import ServiceResolution from '@/components/ServiceResolution';
+import { formatDate } from '@/utiks/formatDate';
 
 Chart.register(PieController, Title, Tooltip, Legend, ArcElement);
 
@@ -92,7 +93,7 @@ export default function ContractMonitoring() {
     { header: 'Consumer Name', accessor: (row) => row.consumerDetails?.Name },
     { header: 'Provider Name', accessor: (row) => row.providerDetails?.Name },
     { header: 'Service Name', accessor: (row) => row.listingDetails?.Title },
-    { header: 'Date Created', accessor: 'Timestamp' },
+    { header: 'Date Created', accessor: (row) => formatDate(row.Timestamp) },
   ];
 
   const dropdownOptions = [
@@ -144,3 +145,4 @@ export default function ContractMonitoring() {
     </div>
   );
 }
+

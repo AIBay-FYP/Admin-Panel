@@ -219,3 +219,4 @@ const Dropdown = ({ options, row, openNotificationModal }) => {
 };
 
 export default Table;
+
