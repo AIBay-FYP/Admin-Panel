@@ -8,7 +8,7 @@ export async function GET(req) {
   const usersCollection = db.collection("User");
 
   try {
-    const feedbacks = await feedbacksCollection.find().toArray();
+    const feedbacks = await feedbacksCollection.find({ Status: { $ne: 'Implement' } }).toArray();
 
     const feedbacksWithRole = await Promise.all(feedbacks.map(async (feedback) => {
       const user = await usersCollection.findOne({ _id: new ObjectId(feedback.User.$oid) });
@@ -25,7 +25,7 @@ export async function GET(req) {
 }
 
 // POST method handler
-export async function POST(req) {
+export async function PUT(req) {
   const db = await connectToDatabase();
   const feedbacksCollection = db.collection("Feedbacks");
 

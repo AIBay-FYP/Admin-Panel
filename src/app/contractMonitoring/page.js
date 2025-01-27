@@ -80,6 +80,7 @@ export default function ContractMonitoring() {
     };
   }, []);
 
+  
   // Table data
   const columns = [
     { header: 'Contract ID', accessor: 'contractId' },

@@ -1,28 +1,50 @@
 "use client";
-import React from "react";
-import { useQuery } from "@tanstack/react-query"; // Import React Query hook
+import React, { useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import FlashCard from "@/components/Flashcard";
 import SearchBarWithFilters from "@/components/SearchBarWithFilters";
+import LoadingBar from "react-top-loading-bar"; // Import the LoadingBar component
 
 // Function to fetch feedbacks data
 const fetchFeedbacks = async () => {
   const response = await fetch("/api/feedbacks", {
-    method: "GET", // Explicitly specify GET method (optional since it's the default)
+    method: "GET", 
     headers: {
       "Content-Type": "application/json",
     },
   });
-    if (!response.ok) {
+  if (!response.ok) {
     throw new Error("Failed to fetch feedbacks");
   }
-  console.log(response)
   return response.json();
 };
 
 const FeedbackPage = () => {
-  const { data: feedbacks, error, isLoading } = useQuery({ 
-   queryKey: ["feedbacks"], // Query key for caching
-    queryFn: fetchFeedbacks // Fetch function
+  const loadingBarRef = useRef(null); // Create a reference for the loading bar
+  const { data: feedbacks, error, isLoading } = useQuery({
+    queryKey: ["feedbacks"], // Query key for caching
+    queryFn: fetchFeedbacks, // Fetch function
+    staleTime: 5 * 60 * 1000, // Data stays fresh for 5 minutes
+    refetchOnMount: false, // Do not refetch if data is cached
+    refetchOnWindowFocus: false, // Disable refetch on tab focus
+    onSuccess: () => {
+      // On success, finish the loading bar
+      if (loadingBarRef.current) {
+        loadingBarRef.current.complete();
+      }
+    },
+    onError: () => {
+      // On error, finish the loading bar
+      if (loadingBarRef.current) {
+        loadingBarRef.current.complete();
+      }
+    },
+    onSettled: () => {
+      // Ensure that the loading bar is completed when fetching settles
+      if (loadingBarRef.current) {
+        loadingBarRef.current.complete();
+      }
+    },
   });
 
   const filterOptions = [
@@ -39,8 +61,14 @@ const FeedbackPage = () => {
   };
 
   if (isLoading) {
+    // Start the loading bar when fetching starts
+    if (loadingBarRef.current) {
+      loadingBarRef.current.continuousStart();
+    }
+
     return (
       <div className="p-6 min-h-screen">
+        <LoadingBar color="#f11946" ref={loadingBarRef} /> {/* Show loading bar */}
         <h1 className="text-heading align-left text-3xl font-bold mb-8">Loading Feedbacks...</h1>
       </div>
     );
@@ -49,6 +77,7 @@ const FeedbackPage = () => {
   if (error) {
     return (
       <div className="p-6 min-h-screen">
+        <LoadingBar color="#f11946" ref={loadingBarRef} /> {/* Show loading bar */}
         <h1 className="text-heading align-left text-3xl font-bold mb-8">Error: {error.message}</h1>
       </div>
     );
@@ -56,6 +85,7 @@ const FeedbackPage = () => {
 
   return (
     <div className="p-6 min-h-screen">
+      <LoadingBar color="#f11946" ref={loadingBarRef} /> {/* Show loading bar */}
       <SearchBarWithFilters
         placeholder="Search Feedbacks by id or name"
         filterOptions={filterOptions}
@@ -74,6 +104,7 @@ const FeedbackPage = () => {
               date={item.Date}
               givenBy={item.RoleType}
               description={item.Description}
+              status={item.Status}
             />
           </div>
         ))}
