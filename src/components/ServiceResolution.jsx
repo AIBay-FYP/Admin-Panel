@@ -1,29 +1,29 @@
-import { useState } from "react";
-import "@fortawesome/fontawesome-free/css/all.min.css"; // Import FontAwesome CSS
+import { useState, useEffect } from "react";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
-const ServiceResolution = ({ onClose }) => {
-  // State management for image swapping, service resolution, and popup visibility
-  const [mainImage, setMainImage] = useState("Roba.jpeg"); // Default main image
-  const [images] = useState([
-    "shoes1.jpeg", // Thumbnail images
-    "shoes2.jpeg",
-    "shoes3.jpeg",
-  ]);
-  const [serviceResolution, setServiceResolution] = useState("refund"); // Default resolution option
+const ServiceResolution = ({ onClose, contractDetails }) => {
+  const [mainImage, setMainImage] = useState(""); // Default main image
+  const [images, setImages] = useState([]); // Images for thumbnails
+  const [serviceResolution, setServiceResolution] = useState("refund"); // Default resolution
 
-  // Handle Cancel button click
+  // Populate state with contract details
+  useEffect(() => {
+    if (contractDetails && contractDetails.listingDetails) {
+      const imagesArray = contractDetails.listingDetails.Photos || []; // Change to Photos
+      setImages(imagesArray);
+      // Safely set main image or fallback
+      setMainImage(imagesArray.length > 0 ? imagesArray[0] : "");
+    }
+  }, [contractDetails]);
+
   const handleCancel = () => {
-    // Just close the popup without resetting any values
-    onClose(); // Trigger parent close function
+    onClose();
   };
 
-  // Handle Save Changes button click
   const handleSaveChanges = () => {
-    // Save logic can go here, for now, it's logging the state
     console.log("Service Resolution:", serviceResolution);
     console.log("Selected Image:", mainImage);
-    // Close the popup after saving
-    onClose(); // Trigger parent close function
+    onClose();
   };
 
   return (
@@ -33,30 +33,50 @@ const ServiceResolution = ({ onClose }) => {
         <div className="flex mb-4 gap-6">
           {/* Image Section */}
           <div className="flex flex-col items-start">
-            <img
-              src={mainImage}
-              alt="Service"
-              className="w-72 h-40 object-cover rounded-lg mb-2"
-            />
+            {mainImage ? (
+              <img
+                src={mainImage}
+                alt="Service"
+                className="w-72 h-40 object-cover rounded-lg mb-2"
+              />
+            ) : (
+              <div className="w-72 h-40 bg-gray-300 rounded-lg flex items-center justify-center">
+                <span className="text-gray-500">No Image</span>
+              </div>
+            )}
           </div>
 
-          {/* Thumbnails Section */}
+          {/* Thumbnails */}
           <div className="flex flex-col space-y-2">
-            {images.map((image, index) => (
-              <img
-                key={index}
-                src={image}
-                alt={`Thumbnail ${index}`}
-                className="w-14 h-12 rounded-lg cursor-pointer hover:opacity-80"
-                onClick={() => setMainImage(image)}
-              />
-            ))}
+            {images.length > 0 ? (
+              images.map((image, index) =>
+                image ? (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Thumbnail ${index}`}
+                    className="w-14 h-12 rounded-lg cursor-pointer hover:opacity-80"
+                    onClick={() => setMainImage(image)}
+                  />
+                ) : (
+                  <div
+                    key={index}
+                    className="w-14 h-12 bg-gray-300 rounded-lg flex items-center justify-center"
+                  >
+                    <span className="text-gray-500">No Image</span>
+                  </div>
+                )
+              )
+            ) : (
+              <div className="text-gray-500">No thumbnails available</div>
+            )}
           </div>
 
           {/* Service Controls */}
           <div className="flex flex-col items-start justify-between ml-4">
-            <h2 className="text-2xl font-semibold">Service Name</h2>
-            {/* Dropdown */}
+            <h2 className="text-2xl font-semibold">
+              {contractDetails.listingDetails?.Title || "Service Name"}
+            </h2>
             <div>
               <label className="block text-sm mb-1">Service Resolution</label>
               <select
@@ -69,10 +89,9 @@ const ServiceResolution = ({ onClose }) => {
                 <option value="cancel">Cancel Service</option>
               </select>
             </div>
-            {/* Contract Icon */}
             <div className="flex items-center cursor-pointer">
               <a
-                href="https://www.example.com/contract.pdf" // Replace with the actual URL of the PDF
+                href={contractDetails.DocumentURL || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -91,26 +110,29 @@ const ServiceResolution = ({ onClose }) => {
 
         {/* Bottom Section */}
         <div className="mb-4 space-y-2">
-          {/* Service Details */}
           <p className="text-sm">
-            <span className="font-semibold">Price:</span> 10,000 PKR
+            <span className="font-semibold">Price:</span>{" "}
+            {contractDetails.listingDetails?.Price || "N/A"} PKR
           </p>
           <p className="text-sm">
-            <span className="font-semibold">Consumer’s Name:</span> John Doe
+            <span className="font-semibold">Consumer’s Name:</span>{" "}
+            {contractDetails.consumerDetails?.Name || "N/A"}
           </p>
           <p className="text-sm">
-            <span className="font-semibold">Provider’s Name:</span> John Poe
+            <span className="font-semibold">Provider’s Name:</span>{" "}
+            {contractDetails.providerDetails?.Name || "N/A"}
           </p>
           <p className="text-sm">
-            <span className="font-semibold">Nature of Dispute:</span> Service not delivered
+            <span className="font-semibold">Nature of Dispute:</span>{" "}
+            {contractDetails.NatureOfDispute || "N/A"}
           </p>
         </div>
 
-        {/* Description */}
         <div className="mb-4">
           <h3 className="font-semibold mb-1">Description</h3>
           <p className="text-sm leading-relaxed">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.
+            {contractDetails.listingDetails?.Description ||
+              "No description available."}
           </p>
         </div>
 

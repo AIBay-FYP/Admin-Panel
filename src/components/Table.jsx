@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useEffect, useRef, useState } from "react";
 import GenericModal from "./genericModal";
 
@@ -58,7 +58,6 @@ const Table = ({
     <div className="flex justify-center items-start w-full">
       <div className="overflow-x-auto w-full">
         <table className="w-full bg-white shadow-md rounded-lg text-sm">
-          {/* Table Header */}
           <thead className="bg-gray-200">
             <tr>
               {columns.map((col, index) => (
@@ -106,7 +105,9 @@ const Table = ({
                         : ""
                     }`}
                   >
-                    {row[col.accessor] || "-"}
+                    {typeof col.accessor === "function"
+                      ? col.accessor(row)
+                      : row[col.accessor] || "-"}
                   </td>
                 ))}
                 <td 
@@ -116,7 +117,6 @@ const Table = ({
                 >
                   <Dropdown
                     options={dropdownOptions}
-                    openPopup={openPopup}
                     row={row}
                     handleDropdown={handleDropdown}
                   />
@@ -145,6 +145,18 @@ const Table = ({
             onClose={closeDetailsModal}
           />
         </div>
+      )}
+
+      {isNotificationModalOpen && (
+        <GenericModal
+          isOpen={isNotificationModalOpen}
+          onClose={closeNotificationModal}
+          title="Confirm Your Action"
+          type={notificationType}
+          primaryAction={handleNotificationAction}
+          primaryButtonText="Yes, Confirm"
+          secondaryButtonText="Cancel"
+        />
       )}
     </div>
   );
@@ -219,7 +231,7 @@ const handleSelectChange =(event) => {
           <option
             key={index}
             value={option.label}
-            className={`${option.color} rounded-lg` || "text-gray-700"}
+            className={option.color || "text-gray-700"}
           >
             {option.label}
           </option>
@@ -241,3 +253,4 @@ const handleSelectChange =(event) => {
 };
 
 export default Table;
+
