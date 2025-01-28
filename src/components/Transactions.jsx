@@ -7,7 +7,7 @@ import Table from './Table';
 // Register Chart.js components
 Chart.register(CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController);
 
-export default function TransactionsComponent({ chartData, tableData, tableColumns, dropdownOptions }) {
+export default function TransactionsComponent({ chartData, tableData, tableColumns }) {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
 
@@ -76,7 +76,7 @@ export default function TransactionsComponent({ chartData, tableData, tableColum
 
             {/* Table Section */}
             <div className="mt-8 w-full">
-                <Table columns={tableColumns} data={tableData} dropdownOptions={dropdownOptions} />
+                <Table columns={tableColumns} data={tableData} />
             </div>
         </div>
     );

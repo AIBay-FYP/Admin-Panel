@@ -62,8 +62,7 @@ export default function Transactions() {
     { header: 'Date', accessor: (row) => formatDate(row.Timestamp) },
     { header: 'Amount', accessor: 'Amount' },
     { header: 'Service Name', accessor: (row) => row.listingDetails?.Title },
-    { header: 'Status', accessor: 'Status' },
-  ];
+    ];
 
   const dropdownOptions = [
     { label: 'Funds Withheld', color: 'text-red-500' },
