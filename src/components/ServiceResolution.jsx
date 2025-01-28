@@ -13,7 +13,7 @@ const fetchContractDetails = async (id) => {
 const ServiceResolution = ({ onClose, contractId }) => {
   const [mainImage, setMainImage] = useState("");
   const [images, setImages] = useState([]);
-  const [serviceResolution, setServiceResolution] = useState("refund");
+  const [serviceResolution, setServiceResolution] = useState(""); // holds the selected resolution option
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ["contractDetails", contractId],
@@ -32,11 +32,36 @@ const ServiceResolution = ({ onClose, contractId }) => {
     onClose();
   };
 
-  const handleSaveChanges = () => {
-    console.log("Service Resolution:", serviceResolution);
-    console.log("Selected Image:", mainImage);
-    onClose();
+  const handleSaveChanges = async () => {
+    // Map the selected value to the text
+    const resolutionTextMap = {
+      refund: "Refund Payment",
+      replacement: "Replacement",
+      cancel: "Cancel Service",
+    };
+  
+    const resolutionText = resolutionTextMap[serviceResolution] || "Unknown Resolution";
+    console.log("Sending resolution:", resolutionText); // Log the selected resolution text
+    console.log("Contract ID:", contractId);
+  
+    // Send the PATCH request to update the resolution
+    await fetch(`/api/contracts/${contractId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ResolutionAction: resolutionText }), // Sending the selected resolution
+    });
+  
+    console.log("Resolution saved successfully");
+  
+    // Close the modal after saving, no need to handle error
+    if (onClose && typeof onClose === 'function') {
+      onClose();
+    }
   };
+  
+  
 
   if (isLoading) {
     return (
@@ -163,10 +188,11 @@ const ServiceResolution = ({ onClose, contractId }) => {
           </button>
           <button
             className="bg-[#E6F4EA] px-5 py-2 text-sm rounded-md text-[#004B23] border border-transparent hover:bg-transparent hover:border-white hover:text-white transition duration-300"
-            onClick={handleSaveChanges}
+            onClick={handleSaveChanges} // Directly call handleSaveChanges without passing serviceResolution
           >
             Save Changes
           </button>
+
         </div>
       </div>
     </div>
