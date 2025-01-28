@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { Chart, CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController } from 'chart.js';
-import Table from '@/components/Table';
+import Table from './Table';
 
 // Register Chart.js components
 Chart.register(CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController);

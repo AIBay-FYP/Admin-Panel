@@ -1,5 +1,6 @@
-'use client';
+'use client'
 import { useEffect, useRef, useState } from "react";
+import PropTypes from 'prop-types';  // Added PropTypes for prop validation
 import GenericModal from "./genericModal";
 
 const Table = ({ 
@@ -9,25 +10,23 @@ const Table = ({
   openPopup, 
   details = false, 
   detailsPopup: PopUp, 
-  handleDropdown 
+  handleDropdown,
+  onRowClick  
 }) => {
-  const [isDetailsModalOpen, setDetailsModalOpen] = useState(false); // Manage modal visibility
-  const [modalData, setModalData] = useState(null); // Store data for the selected row
+  const [isDetailsModalOpen, setDetailsModalOpen] = useState(false); 
+  const [modalData, setModalData] = useState(null); 
   const modalRef = useRef(null);
 
   const openDetailsModal = (rowData) => {
-    console.log(rowData)
-    console.log("rfgbjh")
-    setModalData(rowData); // Set the specific row data for the modal
-    setDetailsModalOpen(true); // Open the modal
+    setModalData(rowData); 
+    setDetailsModalOpen(true); 
   };
 
   const closeDetailsModal = () => {
-    setModalData(null); // Clear the modal data
-    setDetailsModalOpen(false); // Close the modal
+    setModalData(null); 
+    setDetailsModalOpen(false); 
   };
 
-  // Effect to manage body scrolling
   useEffect(() => {
     if (isDetailsModalOpen) {
       document.body.classList.add("overflow-hidden");
@@ -40,7 +39,6 @@ const Table = ({
     };
   }, [isDetailsModalOpen]);
 
-  // Handle clicks outside the modal
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -63,16 +61,11 @@ const Table = ({
               {columns.map((col, index) => (
                 <th
                   key={index}
-                  className={`px-4 py-2 text-left text-gray-600 font-medium ${
-                    index === 0
-                      ? "rounded-tl-lg"
-                      : index === columns.length - 1
-                      ? "rounded-tr-lg"
-                      : ""
-                  }`}
+                  className={`px-4 py-2 text-left text-gray-600 font-medium ${index === 0 ? "rounded-tl-lg" : index === columns.length - 1 ? "rounded-tr-lg" : ""}`}
                 >
                   {col.header}
                 </th>
+            
               ))}
               <th className="px-4 py-2 text-left text-gray-600 font-medium rounded-tr-lg">
                 Status
@@ -85,47 +78,41 @@ const Table = ({
             </tr>
           </thead>
 
-          {/* Table Body */}
           <tbody>
+            
             {data.map((row, rowIndex) => (
               <tr
-                key={rowIndex}
-                className={`border-b hover:bg-gray-50 ${
-                  rowIndex === data.length - 1 ? "rounded-b-lg" : ""
-                }`}
+              key={rowIndex}
+              className={`border-b hover:bg-gray-50 ${rowIndex === data.length - 1 ? "rounded-b-lg" : ""}`}
               >
                 {columns.map((col, colIndex) => (
                   <td
-                    key={colIndex}
-                    className={`px-4 py-2 text-gray-700 ${
-                      colIndex === 0
-                        ? "rounded-l-lg"
-                        : colIndex === columns.length - 1
-                        ? "rounded-r-lg"
-                        : ""
-                    }`}
+                  key={colIndex}
+                  className={`px-4 py-2 text-gray-700 ${colIndex === 0 ? "rounded-l-lg" : colIndex === columns.length - 1 ? "rounded-r-lg" : ""}`}
                   >
-                    {typeof col.accessor === "function"
-                      ? col.accessor(row)
-                      : row[col.accessor] || "-"}
+                    {/* If accessor is a function, call it, else just access the property */}
+                    {typeof col.accessor === 'function' ? col.accessor(row) : row[col.accessor] || "-"}
                   </td>
                 ))}
-                <td 
-                  className={`px-4 py-2 text-gray-700 ${
-                    rowIndex === data.length - 1 ? "rounded-br-lg" : ""
-                  }`}
-                >
-                  <Dropdown
-                    options={dropdownOptions}
-                    row={row}
-                    handleDropdown={handleDropdown}
-                  />
+                <td className={`px-4 py-2 text-gray-700 ${rowIndex === data.length - 1 ? "rounded-br-lg" : ""}`}>
+                  {/* Conditionally render dropdown or status */}
+                  {dropdownOptions && dropdownOptions.length > 0 ? (
+                      <Dropdown
+                        options={dropdownOptions}
+                        openPopup={openPopup}
+                        row={row}
+                        handleDropdown={handleDropdown}
+                      />
+                    ) : (
+                      <span>{row.Status}</span>  
+                  )}
                 </td>
                 {details && (
                   <td className="p-2">
                     <button
                       className="bg-gray-200 text-black border rounded-lg p-2 text-xs hover:bg-black hover:text-white"
-                      onClick={() => openDetailsModal(row)} // Pass specific row data
+                      onClick={() => openDetailsModal(row) || onRowClick(row)}
+                      
                     >
                       Details
                     </button>
@@ -141,38 +128,32 @@ const Table = ({
       {isDetailsModalOpen && details && (
         <div ref={modalRef}>
           <PopUp 
-            data={modalData} // Pass the specific row data to the modal
+            data={modalData} 
             onClose={closeDetailsModal}
           />
         </div>
-      )}
-
-      {isNotificationModalOpen && (
-        <GenericModal
-          isOpen={isNotificationModalOpen}
-          onClose={closeNotificationModal}
-          title="Confirm Your Action"
-          type={notificationType}
-          primaryAction={handleNotificationAction}
-          primaryButtonText="Yes, Confirm"
-          secondaryButtonText="Cancel"
-        />
       )}
     </div>
   );
 };
 
+Table.propTypes = {
+  columns: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired,
+  dropdownOptions: PropTypes.array,  // It can be undefined if no dropdown is needed
+  openPopup: PropTypes.bool,
+  details: PropTypes.bool,
+  detailsPopup: PropTypes.func,
+  handleDropdown: PropTypes.func.isRequired
+};
 
-const Dropdown = ({ options, openPopup, row, handleDropdown}) => {
+const Dropdown = ({ options, openPopup, row, handleDropdown }) => {
   const [selected, setSelected] = useState(row.status || options[0]?.label);
   const [isModalOpen, setModalOpen] = useState(false);
 
-
-const handleSelectChange =(event) => {
-    console.log("handleDropdown prop:", handleDropdown);
+  const handleSelectChange = (event) => {
     const newSelectedValue = event.target.value;
     setSelected(newSelectedValue);
-    console.log(selected)
 
     if (openPopup) {
       setModalOpen(true);
@@ -183,39 +164,31 @@ const handleSelectChange =(event) => {
     setModalOpen(false);
   };
 
-  const handlePrimaryAction =async (userID, message, type, readStatus) => {
+  const handlePrimaryAction = async (userID, message, type, readStatus) => {
     const notification = {
       UserID: userID,
       Message: message,
       Type: type,
       ReadStatus: readStatus
-    }    
-    console.log(`Confirmed for ${row.name || "this row"}`);
-    
+    };
+
     try {
-      const response = await fetch('/api/notificationPost',{
+      const response = await fetch('/api/notificationPost', {
         method: 'POST', 
-        headers:{
-          'Content-Type':'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(notification)
-      })
-      
+      });
+
       const result = await response.json();
-      
+
       if (response.ok) {
-        console.log('Notification created:', result);
-        console.log("handleDropdown prop:", handleDropdown);
-        console.log("handleDropdown prop:", row._id);
-        handleDropdown(row._id,selected)
+        handleDropdown(row._id, selected);
       } else {
         console.error('Failed to create notification:', result.error);
       }
-    
     } catch (error) {
       console.error('Error posting notification:', error);
     }
-    
 
     setModalOpen(false);
   };
@@ -228,29 +201,30 @@ const handleSelectChange =(event) => {
         className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md focus:outline-none text-xs w-full"
       >
         {options.map((option, index) => (
-          <option
-            key={index}
-            value={option.label}
-            className={option.color || "text-gray-700"}
-          >
+          <option key={index} value={option.label} className="text-gray-700">
             {option.label}
           </option>
         ))}
       </select>
 
-      {/* Modal */}
       <GenericModal 
         isOpen={isModalOpen}
         onClose={closeModal}
         title="Confirm Your Action"
-        type = {selected}
+        type={selected}
         primaryAction={handlePrimaryAction}
         primaryButtonText="Yes, Confirm"
         secondaryButtonText="Cancel"
-        />
+      />
     </div>
   );
 };
 
-export default Table;
+Dropdown.propTypes = {
+  options: PropTypes.array.isRequired,
+  openPopup: PropTypes.bool,
+  row: PropTypes.object.isRequired,
+  handleDropdown: PropTypes.func.isRequired
+};
 
+export default Table;
