@@ -1,85 +1,101 @@
 'use client';
 
 import React from 'react';
-import Table from "../../components/Table";
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import Table from '../../components/Table';
+import SearchBarWithFilters from '@/components/SearchBarWithFilters';
+
+// Function to fetch documents data
+const fetchDocuments = async () => {
+  const response = await fetch("/api/documentVerification", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch documents");
+  }
+
+  return response.json();
+};
 
 const DocumentVerification = () => {
   const router = useRouter();
 
-  // Columns configuration (8 columns)
-  const columns = [
-    { header: 'Document Name', accessor: 'documentName' },
-    { header: 'Service ID', accessor: 'serviceId' },
-    { header: 'Date', accessor: 'date' },
-    { header: 'Time', accessor: 'time' },
-    { header: 'Verified By', accessor: 'verifiedBy' },
-    { header: 'Submitted By', accessor: 'submittedBy' },
-    { header: 'Status', accessor: 'status' },
-    { header: 'Document', accessor: 'document' },
-  ];
+  // Fetch documents data
+  const { data: documents, error, isLoading } = useQuery({
+    queryKey: ['documents'],
+    queryFn: fetchDocuments,
+  });
 
-  // Mock data (example)
-  const data = [
-    {
-      documentName: 'Report 001',
-      serviceId: 'SVC12345',
-      date: '2024-06-10',
-      time: '10:30 AM',
-      verifiedBy: 'John Doe',
-      submittedBy: 'Jane Smith',
-      status: 'Pending',
-      document: 'View Document',
-    },
-    {
-      documentName: 'Report 002',
-      serviceId: 'SVC67890',
-      date: '2024-06-11',
-      time: '02:00 PM',
-      verifiedBy: 'Alice Johnson',
-      submittedBy: 'Bob Brown',
-      status: 'Approved',
-      document: 'View Document',
-    },
-  ];
-
-  // Dropdown options for the Status column
-  const dropdownOptions = [
+   // Dropdown options for the Status column
+   const dropdownOptions = [
     { label: 'Reject', color: 'text-red-600' },
     { label: 'Revision', color: 'text-yellow-600' },
     { label: 'Approve', color: 'text-green-600' },
   ];
 
+  // Columns configuration
+  const columns = [
+    { header: 'Document Name', accessor: 'DocumentID' },
+    { header: 'Service ID', accessor: 'ListingID' },
+    {
+      header: 'Date',
+      accessor: 'LastReviewed',
+    },
+    {
+      header: 'Time',
+      accessor: 'Time',
+    },
+    { header: 'Verified By', accessor: 'VerifiedBy' },
+    { header: 'Submitted By', accessor: 'UserID' }, 
+  ];
 
-  const renderCustomDocument = (documentText, rowId) => {
-  return (
-    <button
-      className="bg-customGray hover:bg-dark-green text-white font-medium py-1 px-3 rounded text-xs"
-      onClick={() => router.push(`/documents/${rowId}`)} // Navigate to a new screen for the document
-    >
-      {documentText}
-    </button>
-  );
-};
+  // Error and loading states
+  if (isLoading) {
+    return (
+      <div className="p-6 min-h-screen">
+        <h1 className="text-heading align-left text-3xl font-bold mb-8">Loading Documents...</h1>
+      </div>
+    );
+  }
 
-
-const finalData = data.map((row, index) => ({
-  ...row,
-  document: renderCustomDocument("View Document", index + 1), // Adding unique row ID for navigation
-}));
+  if (error) {
+    return (
+      <div className="p-6 min-h-screen">
+        <h1 className="text-heading align-left text-3xl font-bold mb-8">Error: {error.message}</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col py-10">
+      {/* Search Bar */}
+      <SearchBarWithFilters
+        placeholder="Search documents..."
+        onSearch={(query) => console.log('Search query:', query)}
+        onFilter={(filter) => console.log('Selected filter:', filter)}
+        filterOptions={[
+          { label: 'Verified', value: 'Verified' },
+          { label: 'Pending', value: 'Pending' },
+          { label: 'Rejected', value: 'Rejected' },
+        ]}
+      />
+
       {/* Page Header */}
       <h1 className="text-heading text-2xl font-semibold mb-6">Document Verification</h1>
 
       {/* Table Component */}
-      <Table
-        className="text-sm"
-        columns={columns}
-        data={finalData}
-        dropdownOptions={dropdownOptions}
-        openPopup={true}
+      <Table className="text-sm" 
+      columns={columns} 
+      data={documents}
+      dropdownOptions={dropdownOptions}
+      openPopup={true}
+      details={true}
+      document = {true}
       />
     </div>
   );

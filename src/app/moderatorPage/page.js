@@ -1,24 +1,31 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import ProfileCard from "@/components/profileCard";
 import SearchBarWithFilters from "@/components/SearchBarWithFilters";
 import { useRouter } from "next/navigation";
 
-// Mock data for ProfileCard
-const moderators = Array(8).fill({
-  name: "John Doe",
-  role: "Moderator",
-  email: "john.doe@example.com",
-});
-
 const ModeratorRegistration = () => {
   const router = useRouter();
+  const [moderators, setModerators] = useState([]);
   const [isMounted, setIsMounted] = useState(false);
-  
-  useEffect(() => {
-      setIsMounted(true);
-    }, []);
 
+  useEffect(() => {
+    setIsMounted(true);
+
+    // Fetch data from the API
+    const fetchModerators = async () => {
+      try {
+        const response = await fetch("/api/moderatorPage");
+        const data = await response.json();
+        setModerators(data);
+      } catch (error) {
+        console.error("Failed to fetch moderators:", error);
+      }
+    };
+
+    fetchModerators();
+  }, []);
 
   const handleSearch = (query) => {
     console.log("Search query:", query);
@@ -29,7 +36,6 @@ const ModeratorRegistration = () => {
   };
 
   const handleNewRegistration = () => {
-    // Navigate to the moderator registration screen
     router.push("/moderatorsRegistration");
   };
 
@@ -63,7 +69,7 @@ const ModeratorRegistration = () => {
       {/* Metrics Card */}
       <div className="mb-6">
         <div className="w-[250px] h-[110px] border border-darkgreen text-heading rounded-lg p-4 flex flex-col justify-between hover:shadow-lg">
-          <h1 className="text-4xl font-bold">21</h1>
+          <h1 className="text-4xl font-bold">{moderators.length}</h1>
           <p className="text-sm font-semibold">Total Registered</p>
         </div>
       </div>
@@ -72,11 +78,17 @@ const ModeratorRegistration = () => {
       <div className="rounded-lg bg-customGray p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {moderators.map((moderator, index) => (
           <ProfileCard
-            key={index}
-            name={moderator.name}
-            role={moderator.role}
-            rating={4} // Example rating
-          />
+          key={moderator._id}
+          name={moderator.Name}
+          role={moderator.RoleType}
+          email={moderator.Email}
+          location={moderator.Location}
+          contactNumber={moderator.ContactNumber}
+          profilePicture={moderator.ProfilePicture}
+          rating={moderator.Rating || 0} 
+          approvedBy={moderator.ApprovedBy}
+          userID={moderator.UserID}
+        />
         ))}
       </div>
     </div>
