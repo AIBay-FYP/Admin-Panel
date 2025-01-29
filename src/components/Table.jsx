@@ -2,10 +2,10 @@
 import { useEffect, useRef, useState } from "react";
 import GenericModal from "./genericModal";
 
-const Table = ({ columns, data, dropdownOptions, openPopup, details = false, detailsPopup }) => {
+const Table = ({ columns, data, dropdownOptions, openPopup, details = false, detailsPopup, Document = false }) => {
   const [isDetailsModalOpen, setDetailsModalOpen] = useState(false); // State to manage the Details popup
-  const PopUp = detailsPopup
-  const modalRef = useRef(null)
+  const PopUp = detailsPopup;
+  const modalRef = useRef(null);
 
   const openDetailsModal = () => {
     setDetailsModalOpen(true); // Open the details popup when the button is clicked
@@ -15,39 +15,45 @@ const Table = ({ columns, data, dropdownOptions, openPopup, details = false, det
     setDetailsModalOpen(false); // Close the details popup
   };
 
+  // Effect to toggle the body's scrolling
+  useEffect(() => {
+    if (isDetailsModalOpen) {
+      // Disable scrolling
+      document.body.classList.add("overflow-hidden");
+    } else {
+      // Enable scrolling
+      document.body.classList.remove("overflow-hidden");
+    }
 
+    // Cleanup on component unmount
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [isDetailsModalOpen]);
 
-    // Effect to toggle the body's scrolling
-    useEffect(() => {
-      if (isDetailsModalOpen) {
-        // Disable scrolling
-        document.body.classList.add("overflow-hidden");
-      } else {
-        // Enable scrolling
-        document.body.classList.remove("overflow-hidden");
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setDetailsModalOpen(false);
       }
-  
-      // Cleanup on component unmount
-      return () => {
-        document.body.classList.remove("overflow-hidden");
-      };
-    }, [isDetailsModalOpen]);
+    };
 
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (modalRef.current && !modalRef.current.contains(event.target)) {
-          setDetailsModalOpen(false);
-        }
-      };
-  
-      // Add event listener to detect clicks outside of the modal
-      document.addEventListener("mousedown", handleClickOutside);
-  
-      // Cleanup the event listener on component unmount
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, []);
+    // Add event listener to detect clicks outside of the modal
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleDocumentClick = (fileUrl) => {
+    if (fileUrl) {
+      window.open(fileUrl, "_blank"); // Open file URL in a new tab
+    } else {
+      console.error("No file URL provided.");
+    }
+  };
 
   return (
     <div className="flex justify-center items-start w-full">
@@ -75,7 +81,7 @@ const Table = ({ columns, data, dropdownOptions, openPopup, details = false, det
               </th>
               {details && (
                 <th className="px-4 py-2 text-left text-gray-600 font-medium rounded-tr-lg">
-                  More
+                  {Document ? "Document" : "More"}
                 </th>
               )}
             </tr>
@@ -116,12 +122,21 @@ const Table = ({ columns, data, dropdownOptions, openPopup, details = false, det
                 </td>
                 {details && (
                   <td className="p-2">
-                    <button
-                      className="bg-gray-200 text-black border rounded-lg p-2 text-xs hover:bg-black hover:text-white"
-                      onClick={openDetailsModal} // Open the details popup
-                    >
-                      Details
-                    </button>
+                    {Document ? (
+                      <button
+                        className="bg-gray-200 text-black border rounded-lg p-2 text-xs hover:bg-black hover:text-white"
+                        onClick={() => handleDocumentClick(row.File)} // Open document in a new tab
+                      >
+                        View Document
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-gray-200 text-black border rounded-lg p-2 text-xs hover:bg-black hover:text-white"
+                        onClick={openDetailsModal} // Open the details popup
+                      >
+                        Details
+                      </button>
+                    )}
                   </td>
                 )}
               </tr>
@@ -133,62 +148,57 @@ const Table = ({ columns, data, dropdownOptions, openPopup, details = false, det
       {/* ServiceResolution Popup */}
       {isDetailsModalOpen && (
         <div ref={modalRef}>
-        <PopUp onClose={closeDetailsModal} />
+          <PopUp onClose={closeDetailsModal} />
         </div>
       )}
     </div>
   );
 };
 
-const Dropdown = ({ options, openPopup, row }) => {
-  const [selected, setSelected] = useState(options[0]?.label || "Status");
+const Dropdown = ({ options = [], openPopup, row = {} }) => {
+  const [selected, setSelected] = useState(options.length > 0 ? options[0].label : "Status");
   const [isModalOpen, setModalOpen] = useState(false);
 
-
-  const handleSelectChange =(event) => {
+  const handleSelectChange = (event) => {
     const newSelectedValue = event.target.value;
     setSelected(newSelectedValue);
-    console.log(selected)
 
     if (openPopup) {
       setModalOpen(true);
     }
   };
-
   const closeModal = () => {
     setModalOpen(false);
   };
 
-  const handlePrimaryAction =async (userID, message, type, readStatus) => {
+  const handlePrimaryAction = async (userID, message, type, readStatus) => {
     const notification = {
       UserID: userID,
       Message: message,
       Type: type,
-      ReadStatus: readStatus
-    }    
+      ReadStatus: readStatus,
+    };
     console.log(`Confirmed for ${row.name || "this row"}`);
-    
-    try {
-      const response = await fetch('/api/notificationPost',{
-        method: 'POST',
-        headers:{
-          'Content-Type':'application/json'
-        },
-        body: JSON.stringify(notification)
-      })
-      
-      const result = await response.json();
-      
-      if (response.ok) {
-        console.log('Notification created:', result);
-      } else {
-        console.error('Failed to create notification:', result.error);
-      }
-    
-    } catch (error) {
-      console.error('Error posting notification:', error);
-    }
 
+    try {
+      const response = await fetch("/api/notificationPost", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(notification),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Notification created:", result);
+      } else {
+        console.error("Failed to create notification:", result.error);
+      }
+    } catch (error) {
+      console.error("Error posting notification:", error);
+    }
 
     setModalOpen(false);
   };
@@ -216,11 +226,11 @@ const Dropdown = ({ options, openPopup, row }) => {
         isOpen={isModalOpen}
         onClose={closeModal}
         title="Confirm Your Action"
-        type = {selected}
+        type={selected}
         primaryAction={handlePrimaryAction}
         primaryButtonText="Yes, Confirm"
         secondaryButtonText="Cancel"
-        />
+      />
     </div>
   );
 };

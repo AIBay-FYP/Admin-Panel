@@ -1,11 +1,13 @@
+'use client';
+
 import { useState, useEffect } from "react";
 import StarDisplay from "./StarDisplay";
 import Image from "next/image";
-import ConsumerProfile from "./ConsumerProfile"; // Import the ConsumerProfile component
-import ProviderProfile from "./ProviderProfile"; // Import the ProviderProfile component
+import ConsumerProfile from "./ConsumerProfile";
+import ProviderProfile from "./ProviderProfile";
 import ModeratorProfile from "./ModeratorProfile";
 
-const ProfileCard = ({ name, role, rating }) => {
+const ProfileCard = ({ name, role, rating, email, location, contactNumber, profilePicture, approvedBy, userID }) => {
   const [isOverlayVisible, setOverlayVisible] = useState(false);
 
   // Function to toggle the visibility of the overlay
@@ -23,26 +25,28 @@ const ProfileCard = ({ name, role, rating }) => {
   // Effect to toggle the body's scrolling
   useEffect(() => {
     if (isOverlayVisible) {
-      // Disable scrolling
       document.body.classList.add("overflow-hidden");
     } else {
-      // Enable scrolling
       document.body.classList.remove("overflow-hidden");
     }
 
-    // Cleanup on component unmount
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
   }, [isOverlayVisible]);
 
   // Conditionally render the profile based on the role
-  const ProfileComponent = role === "Provider" ? ProviderProfile : role == 'Moderator' ? ModeratorProfile : ConsumerProfile;
+  const ProfileComponent =
+    role === "Provider"
+      ? ProviderProfile
+      : role === "Consumer"
+      ? ConsumerProfile
+      : ModeratorProfile; // Default to ModeratorProfile for all other roles
 
   return (
     <div className="bg-white flex flex-col justify-center items-center p-7 rounded-lg gap-2 hover:bg-gray-100">
       <Image
-        src="/assets/no-pfp.jpg"
+        src={profilePicture || "/assets/no-pfp.jpg"}
         alt="Profile Picture"
         width={64}
         height={64}
@@ -67,11 +71,21 @@ const ProfileCard = ({ name, role, rating }) => {
           onClick={handleOutsideClick} // Close the overlay if clicked outside
         >
           <div
-            className="w-[90%] max-w-6xl  rounded-lg shadow-lg overflow-auto"
+            className="w-[90%] max-w-6xl rounded-lg shadow-lg overflow-auto p-6"
             onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the content
           >
             {/* Render the appropriate profile based on role */}
-            <ProfileComponent />
+            <ProfileComponent
+              name={name}
+              email={email}
+              location={location}
+              contactNumber={contactNumber}
+              profilePicture={profilePicture}
+              approvedBy={approvedBy}
+              rating={rating}
+              role={role}
+              UserID={userID}
+            />
           </div>
         </div>
       )}

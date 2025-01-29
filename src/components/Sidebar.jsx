@@ -23,7 +23,7 @@ const Sidebar = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const {user} = useUser();
-  var username = user?.username;
+  var username = user?.firstName;
 
   const queryClient = useQueryClient();
   const router = useRouter();

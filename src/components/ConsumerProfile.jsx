@@ -1,63 +1,22 @@
+'use client';
 import { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import StarDisplay from "./StarDisplay";
 import ListedServiceCard from "./ListedServiceCard";
-import ProgressCircle from "./progresscircle";
+import ProgressCircle from "./ProgressCircle";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const ConsumerProfile = () => {
+const ConsumerProfile = ({ name, email, role, contactNumber, profilePicture, services, reviews, servicesAvailed, requestApprovalRate }) => {
   const [progress, setProgress] = useState(0);
-  const [services, setServices] = useState([
-    {
-      id: 1,
-      mainImage: "/shoes1.jpeg",
-      serviceName: "Shoe Rental",
-      serviceType: "Rental",
-      priceType: "Per Day",
-      location: "Downtown",
-    },
-    {
-      id: 2,
-      mainImage: "/shoes1.jpeg",
-      serviceName: "Shoe Cleaning",
-      serviceType: "Service",
-      priceType: "Flat Rate",
-      location: "Uptown",
-    },
-    {
-      id: 3,
-      mainImage: "/shoes1.jpeg",
-      serviceName: "Boot Repair",
-      serviceType: "Service",
-      priceType: "Flat Rate",
-      location: "Midtown",
-    },
-    {
-      id: 4,
-      mainImage: "/shoes1.jpeg",
-      serviceName: "Sneaker Maintenance",
-      serviceType: "Service",
-      priceType: "Flat Rate",
-      location: "Suburb",
-    },
-    {
-      id: 5,
-      mainImage: "/shoes1.jpeg",
-      serviceName: "Heels Rental",
-      serviceType: "Rental",
-      priceType: "Per Day",
-      location: "City Center",
-    },
-  ]);
 
+  // Calculate progress based on services available and services availed
   useEffect(() => {
-    const servicesAvailable = 10; 
-    const servicesAvailed = 5; 
+    const servicesAvailable = 10; // Example value, adjust based on your data
     const progressPercentage = (servicesAvailed / servicesAvailable) * 100;
     setProgress(progressPercentage);
-  }, []);
+  }, [servicesAvailed]);
 
   const pieData = {
     labels: ["Electronics", "Clothing", "Gadgets", "Furniture"],
@@ -79,6 +38,13 @@ const ConsumerProfile = () => {
     },
   };
 
+  // Get the current date and format it (e.g., "DD MMM, YYYY")
+  const currentDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
   return (
     <div className="min-h-[80vh] flex justify-center items-center">
       <div className="w-[90%] max-w-6xl max-h-screen flex flex-col lg:flex-row justify-between p-6 rounded-lg shadow-lg overflow-hidden">
@@ -86,17 +52,17 @@ const ConsumerProfile = () => {
         {/* Left Section */}
         <div className="flex flex-col justify-center items-center bg-darkgreen p-6 rounded-lg shadow-md w-full lg:w-1/3">
           <img
-            src="/assets/no-pfp.jpg"
+            src={profilePicture || "/assets/no-pfp.jpg"}
             alt="Consumer"
             className="w-24 h-24 rounded-full mb-4"
           />
-          <h4 className="text-lg font-bold text-white">Consumer's Name</h4>
+          <h4 className="text-lg font-bold text-white">{name || "N/A"}</h4>
           <h6 className="text-gray-300">ID: 001</h6>
-          <StarDisplay rating={4} />
-          <h5 className="text-gray-200 mt-2">sajjadabdullah345@gmail.com</h5>
+          <StarDisplay rating={4} /> {/* Assuming the rating is passed as a prop */}
+          <h5 className="text-gray-200 mt-2">{email || "N/A"}</h5>
           <hr className="my-4 w-full border-gray-400" />
-          <h5 className="text-gray-200">No. of Reviews: {15}</h5>
-          <h5 className="text-gray-200">Services Availed: {5}</h5>
+          <h5 className="text-gray-200">No. of Reviews: {reviews || 0}</h5>
+          <h5 className="text-gray-200">Services Availed: {servicesAvailed || 0}</h5>
 
           {/* Progress Circle */}
           <div className="mt-4">
@@ -127,19 +93,21 @@ const ConsumerProfile = () => {
           </div>
 
           {/* Service Listing */}
-          <div
-            className="flex flex-col space-y-4 overflow-y-auto"
-          >
-            {services.map((service) => (
-              <ListedServiceCard
-                key={service.id}
-                mainImage={service.mainImage}
-                serviceName={service.serviceName}
-                serviceType={service.serviceType}
-                priceType={service.priceType}
-                location={service.location}
-              />
-            ))}
+          <div className="flex flex-col space-y-4 overflow-y-auto">
+            {services && services.length > 0 ? (
+              services.map((service) => (
+                <ListedServiceCard
+                  key={service.id}
+                  mainImage={service.mainImage}
+                  serviceName={service.serviceName}
+                  serviceType={service.serviceType}
+                  priceType={service.priceType}
+                  location={service.location}
+                />
+              ))
+            ) : (
+              <p>No services available.</p>
+            )}
           </div>
         </div>
       </div>

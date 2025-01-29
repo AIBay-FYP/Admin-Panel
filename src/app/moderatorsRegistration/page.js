@@ -1,16 +1,58 @@
 'use client'
 
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const ModeratorsRegistration = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
+  const [Location, setLocation] = useState('');
+  const [Name, setName] = useState('');
+  const [Email, setEmail] = useState('');
+  const [ContactNumber, setContact] = useState('');
+  const [RoleType, setRole] = useState('Moderator');
   
-  useEffect(() => {
-      setIsMounted(true);
-    }, []);
+  const { user } = useUser();
+  const UserID = user?.publicMetadata?.UserID;
 
+  const handleRegister = async () => {
+    if (!Name || !Email || !ContactNumber || !Location) {
+      alert('Please fill out all fields.');
+      return;
+    }
+
+    const userData = {
+      Name,
+      Email,
+      ContactNumber,
+      RoleType,
+      Location,
+      ApprovedBy: UserID, // Using the logged-in user's _id
+    };
+
+    try {
+      console.log(UserID);
+      const response = await fetch('/api/moderatorPage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(`Moderator registered successfully! The generated password is: ${result.password}`);
+        router.back();
+      } else {
+        alert('Failed to register moderator.');
+      }
+    } catch (error) {
+      console.error('Error registering moderator:', error);
+      alert('An error occurred. Please try again.');
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col p-8">
@@ -39,6 +81,8 @@ const ModeratorsRegistration = () => {
               type="text"
               placeholder="Enter full name"
               className="w-full border-gray-300 rounded-md p-2 text-gray-700 focus:ring focus:ring-green-200"
+              value={Name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
 
@@ -51,6 +95,8 @@ const ModeratorsRegistration = () => {
               type="email"
               placeholder="Enter the email"
               className="w-full border-gray-300 rounded-md p-2 text-gray-700 focus:ring focus:ring-green-200"
+              value={Email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -63,6 +109,8 @@ const ModeratorsRegistration = () => {
               type="text"
               placeholder="XXX-XXX-XXX"
               className="w-full border-gray-300 rounded-md p-2 text-gray-700 focus:ring focus:ring-green-200"
+              value={ContactNumber}
+              onChange={(e) => setContact(e.target.value)}
             />
           </div>
 
@@ -74,6 +122,8 @@ const ModeratorsRegistration = () => {
             <select
               id="role"
               className="w-full border-gray-300 rounded-md p-2 text-gray-700 focus:ring focus:ring-green-200"
+              value={RoleType}
+              onChange={(e) => setRole(e.target.value)}
             >
               <option value="Compliance Manager">Compliance Manager</option>
               <option value="Moderator">Moderator</option>
@@ -81,29 +131,31 @@ const ModeratorsRegistration = () => {
             </select>
           </div>
 
-          {/* Approved By Dropdown */}
+          {/* Location Field */}
           <div className="mb-6">
-            <label htmlFor="approvedBy" className="block text-gray-600 font-medium mb-1 text-sm">
-              Approved by
+            <label htmlFor="location" className="block text-gray-600 font-medium mb-1 text-sm">
+              Location
             </label>
-            <select
-              id="approvedBy"
+            <input
+              id="location"
+              type="text"
+              placeholder="Enter the location"
               className="w-full border-gray-300 rounded-md p-2 text-gray-700 focus:ring focus:ring-green-200"
-            >
-              <option value="Name">Name</option>
-              <option value="Manager 1">Manager 1</option>
-              <option value="Manager 2">Manager 2</option>
-            </select>
+              value={Location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
           </div>
 
           {/* Buttons */}
           <div className="flex justify-between">
             <button
+              onClick={() => router.back()}
               className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 text-sm"
             >
               Cancel
             </button>
             <button
+              onClick={handleRegister}
               className="bg-dark-green text-white px-4 py-2 rounded-md hover:bg-light-green text-sm"
             >
               Register
