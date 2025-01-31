@@ -48,21 +48,21 @@ export async function GET(request, { params }) {
         },
       },
       { $unwind: { path: "$providerDetails", preserveNullAndEmptyArrays: true } },
-      {
-        $project: {
-           ContractID: 1,
-          "listingDetails.Photos": 1, // Service images
-           Price: 1, // Price
-          "listingDetails.Title": 1, // Title
-          "listingDetails.Description": 1, // Service description
-          "consumerDetails.Name": 1, // Consumer name
-          "providerDetails.Name": 1, // Provider name
-           DisputeNature: 1, // Nature of dispute, if stored
-           DocumentURL: 1, // Contract file URL, if available
-           Status: 1,     
-           ResolutionAction:1
-        },
-      },
+      // {
+      //   $project: {
+      //      ContractID: 1,
+      //     "listingDetails.Photos": 1, // Service images
+      //      Price: 1, // Price
+      //     "listingDetails.Title": 1, // Title
+      //     "listingDetails.Description": 1, // Service description
+      //     "consumerDetails.Name": 1, // Consumer name
+      //     "providerDetails.Name": 1, // Provider name
+      //      DisputeNature: 1, // Nature of dispute, if stored
+      //      DocumentURL: 1, // Contract file URL, if available
+      //      Status: 1,     
+      //      ResolutionAction:1
+      //   },
+      // },
     ]).toArray();
 
     // If no contract is found, return 404

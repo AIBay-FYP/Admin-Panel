@@ -25,7 +25,8 @@ const ServiceResolution = ({ onClose, contractId }) => {
       const imagesArray = data.listingDetails.Photos || [];
       setImages(imagesArray);
       setMainImage(imagesArray.length > 0 ? imagesArray[0] : "");
-    }
+      setServiceResolution(data.ResolutionAction);
+      }
   }, [data]);
 
   const handleCancel = () => {
@@ -33,24 +34,14 @@ const ServiceResolution = ({ onClose, contractId }) => {
   };
 
   const handleSaveChanges = async () => {
-    // Map the selected value to the text
-    const resolutionTextMap = {
-      refund: "Refund Payment",
-      replacement: "Replacement",
-      cancel: "Cancel Service",
-    };
-  
-    const resolutionText = resolutionTextMap[serviceResolution] || "Unknown Resolution";
-    console.log("Sending resolution:", resolutionText); // Log the selected resolution text
-    console.log("Contract ID:", contractId);
-  
+
     // Send the PATCH request to update the resolution
     await fetch(`/api/contracts/${contractId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ ResolutionAction: resolutionText }), // Sending the selected resolution
+      body: JSON.stringify({ ResolutionAction: serviceResolution }), // Sending the selected resolution
     });
   
     console.log("Resolution saved successfully");
@@ -138,9 +129,9 @@ const ServiceResolution = ({ onClose, contractId }) => {
                   value={serviceResolution}
                   onChange={(e) => setServiceResolution(e.target.value)}
                 >
-                  <option value="refund">Refund Payment</option>
-                  <option value="replacement">Replacement</option>
-                  <option value="cancel">Cancel Service</option>
+                  <option value="Refund Payment">Refund Payment</option>
+                  <option value="Replacement">Replacement</option>
+                  <option value="Cancel Service">Cancel Service</option>
                 </select>
               </div>
             )}

@@ -248,6 +248,7 @@ export default function ContractMonitoring() {
     
   ];
 
+
   const handleRowClick = (contractId) => {
     setSelectedContractId(contractId);
     setOpenPopup(true); // Open the popup

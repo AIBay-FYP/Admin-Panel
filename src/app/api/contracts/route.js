@@ -42,16 +42,16 @@ export async function GET() {
           },
         },
         { $unwind: { path: "$providerDetails", preserveNullAndEmptyArrays: true } },
-        {
-          $project: {
-            ContractID: 1,
-            "consumerDetails.Name": 1,
-            "providerDetails.Name": 1,
-            "listingDetails.Title": 1,
-            Timestamp: 1,
-            Status: 1,
-          },
-        },
+        // {
+        //   $project: {
+        //     ContractID: 1,
+        //     "consumerDetails.Name": 1,
+        //     "providerDetails.Name": 1,
+        //     "listingDetails.Title": 1,
+        //     Timestamp: 1,
+        //     Status: 1,
+        //   },
+        // },
       ]).toArray();
 
       return new Response(JSON.stringify(contracts), { status: 200 });
@@ -61,5 +61,3 @@ export async function GET() {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }
-
-

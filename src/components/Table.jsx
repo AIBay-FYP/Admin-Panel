@@ -17,6 +17,8 @@ const Table = ({
   const [modalData, setModalData] = useState(null); 
   const modalRef = useRef(null);
 
+  console.log("data:", data)
+
   const openDetailsModal = (rowData) => {
     setModalData(rowData); 
     setDetailsModalOpen(true); 
