@@ -1,22 +1,21 @@
 // lib/mongodb.js
 import { MongoClient } from 'mongodb';
 
-const uri = process.env.MONGODB_URI; // MongoDB connection string
+const uri = process.env.MONGODB_URI;
 let client;
-let clientPromise;
 
 // Ensure the MongoClient instance is created only once
-if (!global._mongoClientPromise) {
+if (!global._mongoClient) {
   client = new MongoClient(uri);
-  global._mongoClientPromise = client.connect();
+  global._mongoClient = client;
 }
-clientPromise = global._mongoClientPromise;
 
 export async function connectToDatabase() {
-  if (!client || !client.isConnected) {
+  if (!global._mongoClient.isConnected) {
     console.log('Connecting to MongoDB...');
-    client = await clientPromise;
+    await global._mongoClient.connect();
     console.log('Connected to MongoDB');
   }
-  return client.db(process.env.MONGODB_DB); 
+
+  return global._mongoClient.db(process.env.MONGODB_DB);
 }

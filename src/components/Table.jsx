@@ -8,12 +8,13 @@ const Table = ({
   dropdownOptions, 
   openPopup, 
   details = false, 
-  detailsPopup: PopUp, 
+  detailsPopup : PopUp, 
+  Document = false,
   handleDropdown 
 }) => {
   const [isDetailsModalOpen, setDetailsModalOpen] = useState(false); // Manage modal visibility
-  const [modalData, setModalData] = useState(null); // Store data for the selected row
-  const modalRef = useRef(null);
+  const [modalData, setModalData] = useState(null); // Store data for the selected row;
+  const modalRef = useRef(null);;
 
   const openDetailsModal = (rowData) => {
     console.log(rowData)
@@ -27,14 +28,17 @@ const Table = ({
     setDetailsModalOpen(false); // Close the modal
   };
 
-  // Effect to manage body scrolling
+  // Effect to toggle the body's scrolling
   useEffect(() => {
     if (isDetailsModalOpen) {
+      // Disable scrolling
       document.body.classList.add("overflow-hidden");
     } else {
+      // Enable scrolling
       document.body.classList.remove("overflow-hidden");
     }
 
+    // Cleanup on component unmount
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
@@ -53,6 +57,14 @@ const Table = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleDocumentClick = (fileUrl) => {
+    if (fileUrl) {
+      window.open(fileUrl, "_blank"); // Open file URL in a new tab
+    } else {
+      console.error("No file URL provided.");
+    }
+  };
 
   return (
     <div className="flex justify-center items-start w-full">
@@ -79,7 +91,7 @@ const Table = ({
               </th>
               {details && (
                 <th className="px-4 py-2 text-left text-gray-600 font-medium rounded-tr-lg">
-                  More
+                  {Document ? "Document" : "More"}
                 </th>
               )}
             </tr>
@@ -123,12 +135,21 @@ const Table = ({
                 </td>
                 {details && (
                   <td className="p-2">
-                    <button
-                      className="bg-gray-200 text-black border rounded-lg p-2 text-xs hover:bg-black hover:text-white"
-                      onClick={() => openDetailsModal(row)} // Pass specific row data
-                    >
-                      Details
-                    </button>
+                    {Document ? (
+                      <button
+                        className="bg-gray-200 text-black border rounded-lg p-2 text-xs hover:bg-black hover:text-white"
+                        onClick={() => handleDocumentClick(row.File)} // Open document in a new tab
+                      >
+                        View Document
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-gray-200 text-black border rounded-lg p-2 text-xs hover:bg-black hover:text-white"
+                        onClick={() => openDetailsModal(row)} // Pass specific row data
+                      >
+                        Details
+                      </button>
+                    )}
                   </td>
                 )}
               </tr>
@@ -140,7 +161,7 @@ const Table = ({
       {/* Details Modal */}
       {isDetailsModalOpen && details && (
         <div ref={modalRef}>
-          <PopUp 
+            <PopUp 
             data={modalData} // Pass the specific row data to the modal
             onClose={closeDetailsModal}
           />
@@ -162,60 +183,51 @@ const Table = ({
   );
 };
 
-
-const Dropdown = ({ options, openPopup, row, handleDropdown}) => {
-  const [selected, setSelected] = useState(row.status || options[0]?.label);
+const Dropdown = ({ options, openPopup, row }) => {
+  const [selected, setSelected] = useState(options[0]?.label || "Status");
   const [isModalOpen, setModalOpen] = useState(false);
 
-
-const handleSelectChange =(event) => {
-    console.log("handleDropdown prop:", handleDropdown);
+  const handleSelectChange = (event) => {
     const newSelectedValue = event.target.value;
     setSelected(newSelectedValue);
-    console.log(selected)
 
     if (openPopup) {
       setModalOpen(true);
     }
   };
-
   const closeModal = () => {
     setModalOpen(false);
   };
 
-  const handlePrimaryAction =async (userID, message, type, readStatus) => {
+  const handlePrimaryAction = async (userID, message, type, readStatus) => {
     const notification = {
       UserID: userID,
       Message: message,
       Type: type,
-      ReadStatus: readStatus
-    }    
+      ReadStatus: readStatus,
+    };
     console.log(`Confirmed for ${row.name || "this row"}`);
-    
+
     try {
-      const response = await fetch('/api/notificationPost',{
-        method: 'POST', 
-        headers:{
-          'Content-Type':'application/json'
+      const response = await fetch("/api/notificationPost", {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(notification)
-      })
-      
+        body: JSON.stringify(notification),
+      });
+
       const result = await response.json();
-      
+
       if (response.ok) {
-        console.log('Notification created:', result);
-        console.log("handleDropdown prop:", handleDropdown);
-        console.log("handleDropdown prop:", row._id);
-        handleDropdown(row._id,selected)
+        console.log("Notification created:", result);
       } else {
-        console.error('Failed to create notification:', result.error);
+        console.error("Failed to create notification:", result.error);
       }
-    
     } catch (error) {
-      console.error('Error posting notification:', error);
+      console.error("Error posting notification:", error);
     }
-    
+
 
     setModalOpen(false);
   };
@@ -243,14 +255,13 @@ const handleSelectChange =(event) => {
         isOpen={isModalOpen}
         onClose={closeModal}
         title="Confirm Your Action"
-        type = {selected}
+        type={selected}
         primaryAction={handlePrimaryAction}
         primaryButtonText="Yes, Confirm"
         secondaryButtonText="Cancel"
-        />
+      />
     </div>
   );
 };
 
 export default Table;
-
