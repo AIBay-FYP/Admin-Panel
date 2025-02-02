@@ -4,7 +4,7 @@ import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import StarDisplay from "./StarDisplay";
 import ListedServiceCard from "./ListedServiceCard";
-import ProgressCircle from "./ProgressCircle";
+import ProgressCircle from "./progresscircle";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
