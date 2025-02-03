@@ -171,18 +171,25 @@ const Table = ({
   );
 };
 
-const Dropdown = ({ options, openPopup, row }) => {
-  const [selected, setSelected] = useState(options[0]?.label || "Status");
+const Dropdown = ({ options, openPopup, row, handleDropdown}) => {
+  const [selected, setSelected] = useState(row.status || options[0]?.label);
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const handleSelectChange = (event) => {
+
+const handleSelectChange =(event) => {
+    console.log("handleDropdown prop:", handleDropdown);
     const newSelectedValue = event.target.value;
     setSelected(newSelectedValue);
-
+    console.log(selected)
+    if (handleDropdown) {
+      // Call handleDropdown with the row's ID and the new status
+      handleDropdown(row._id, newSelectedValue);
+    }  
     if (openPopup) {
       setModalOpen(true);
     }
   };
+
   const closeModal = () => {
     setModalOpen(false);
   };

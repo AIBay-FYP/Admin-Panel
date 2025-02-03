@@ -7,7 +7,7 @@ import Table from '../../components/Table';
 import SearchBarWithFilters from '@/components/SearchBarWithFilters';
 
 // Function to fetch documents data
-const fetchDocuments = async () => {
+const fetchDocuments = async () => {  
   const response = await fetch("/api/documentVerification", {
     method: "GET",
     headers: {
@@ -19,7 +19,8 @@ const fetchDocuments = async () => {
     throw new Error("Failed to fetch documents");
   }
 
-  return response.json();
+  const data = await response.json();
+  return data;
 };
 
 const DocumentVerification = () => {
@@ -31,8 +32,8 @@ const DocumentVerification = () => {
     queryFn: fetchDocuments,
   });
 
-   // Dropdown options for the Status column
-   const dropdownOptions = [
+  // Dropdown options for the Status column
+  const dropdownOptions = [
     { label: 'Reject', color: 'text-red-600' },
     { label: 'Revision', color: 'text-yellow-600' },
     { label: 'Approve', color: 'text-green-600' },
@@ -42,18 +43,37 @@ const DocumentVerification = () => {
   const columns = [
     { header: 'Document Name', accessor: 'DocumentID' },
     { header: 'Service ID', accessor: 'ListingID' },
-    {
-      header: 'Date',
-      accessor: 'LastReviewed',
-    },
-    {
-      header: 'Time',
-      accessor: 'Time',
-    },
+    { header: 'Date', accessor: 'LastReviewed' },
+    { header: 'Time', accessor: 'Time' },
     { header: 'Verified By', accessor: 'VerifiedBy' },
     { header: 'Submitted By', accessor: 'UserID' }, 
   ];
 
+  
+  const handleDropdown = async (id, status) => {
+    try {
+      const response = await fetch("/api/documentVerification", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+          status: status,
+        }),
+      });
+  
+      if (response.ok) {
+        console.log("Status updated");
+      } else {
+        const errorMessage = await response.text();  // Log error message if available
+        console.error("Failed to update feedback status:", errorMessage);
+      }
+    } catch (error) {
+      console.error("Error posting notification:", error);
+    }
+  };
+  
   // Error and loading states
   if (isLoading) {
     return (
@@ -89,13 +109,15 @@ const DocumentVerification = () => {
       <h1 className="text-heading text-2xl font-semibold mb-6">Document Verification</h1>
 
       {/* Table Component */}
-      <Table className="text-sm" 
-      columns={columns} 
-      data={documents}
-      dropdownOptions={dropdownOptions}
-      openPopup={true}
-      details={true}
-      document = {true}
+      <Table 
+        className="text-sm"
+        columns={columns} 
+        data={documents} 
+        dropdownOptions={dropdownOptions}
+        openPopup={true}
+        handleDropdown={handleDropdown}
+        details={true}
+        Document={true} 
       />
     </div>
   );
