@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine, faUsers, faClipboardCheck } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
 import CountUp from 'react-countup';
+import { useUser } from '@clerk/nextjs'; // Import to get the logged-in user
 
 // API to fetch the counts
 const fetchCounts = async () => {
@@ -27,7 +28,10 @@ const MetricsCard = () => {
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [selectedSidebar, setSelectedSidebar] = useState(null);
-
+  
+  const { user } = useUser(); // Get user data (assuming user object contains role)
+  const userRole = user?.publicMetadata.role; // Assuming role is stored in publicMetadata
+  
   // Sync with localStorage on mount
   useEffect(() => {
     const storedSelectedCard = localStorage.getItem('selectedCard');
@@ -93,6 +97,9 @@ const MetricsCard = () => {
     },
   ];
 
+  // If the user is a Compliance Manager, only render the Successful Transactions card
+  const filteredCards = userRole === 'Compliance Manager' ? [cards[2]] : cards;
+
   const handleCardClick = (cardId, route) => {
     mutation.mutate(cardId);
     router.push(route);
@@ -100,7 +107,7 @@ const MetricsCard = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {cards.map((card) => (
+      {filteredCards.map((card) => (
         <div
           key={card.id}
           onClick={() => handleCardClick(card.id, card.route)}

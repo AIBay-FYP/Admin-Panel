@@ -27,6 +27,8 @@ const DisputePopup = ({ dispute, onClose, onSave }) => {
 
   const handleSubmit = () => {
     console.log('Save button clicked');
+    console.log(dispute.DisputeID)
+    console.log(resolutionAction)
     onSave(dispute.DisputeID,resolutionAction, resolutionAction);  // Call the onSave function passed from parent
   };
   // const handleSubmit = () => {
@@ -61,7 +63,7 @@ const DisputePopup = ({ dispute, onClose, onSave }) => {
                 ))}
               </div>
             </div>
-
+ 
             {/* Slider Navigation */}
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', padding: '10px 0', marginTop: '10px' }}>
               <button onClick={handlePrevImage} style={{ fontSize: '12px', padding: '5px 10px', borderRadius: '5px', backgroundColor: '#004A4E', color: '#FFFFFF', cursor: 'pointer', marginRight: '10px' }}>◀</button>
@@ -72,7 +74,7 @@ const DisputePopup = ({ dispute, onClose, onSave }) => {
 
           {/* Right Section */}
           <div style={{ flex: 1 }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 'bold' }}>Dispute</h1>
+            <h1 style={{ fontSize: '24px', fontWeight: 'bold' }}>{dispute.Title}</h1>
             <div style={{ marginBottom: '20px' }}>
               <label>Resolution Action</label>
               <select

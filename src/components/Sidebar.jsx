@@ -18,20 +18,19 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { UserButton, useUser } from '@clerk/nextjs';
 
-
 const Sidebar = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
-  const {user} = useUser();
+  const { user } = useUser();
   var username = user?.firstName;
 
   const queryClient = useQueryClient();
   const router = useRouter();
 
-
   if (!username) {
-      username = 'Admin Name'
-  } 
+    username = 'Admin Name';
+  }
+
   // Ensure the component is mounted on the client
   useEffect(() => {
     setIsMounted(true);
@@ -57,7 +56,15 @@ const Sidebar = () => {
     },
   });
 
-  const menuItems = [
+  // Menu items for Compliance Manager
+  const complianceManagerMenuItems = [
+    { label: 'Compliance Monitoring', icon: faClipboardList, route: '/complianceMonitoring' },
+    { label: 'Contract Monitoring', icon: faFileContract, route: '/contractMonitoring' },
+    { label: 'Document Verification', icon: faFileSignature, route: '/documentVerification' },
+  ];
+
+  // Menu items for Moderator
+  const moderatorMenuItems = [
     { label: 'Compliance Monitoring', icon: faClipboardList, route: '/complianceMonitoring' },
     { label: 'Contract Monitoring', icon: faFileContract, route: '/contractMonitoring' },
     { label: 'Feedback', icon: faCommentDots, route: '/feedback' },
@@ -65,14 +72,20 @@ const Sidebar = () => {
     { label: 'Document Verification', icon: faFileSignature, route: '/documentVerification' },
   ];
 
+  // Determine which menu items to render based on the user's role
+  const menuItems =
+    user?.publicMetadata.role === 'Compliance Manager'
+      ? complianceManagerMenuItems
+      : moderatorMenuItems;
+
   const handleNavigation = (item) => {
     // Check if selectedSidebar is a number
     const storedSidebar = JSON.parse(localStorage.getItem('selectedSidebar'));
-  
+
     if (typeof storedSidebar === 'number') {
       // If it's a number, set selectedCard to null
       localStorage.setItem('selectedCard', null);
-  
+
       const newSelection = item.label; // Update with the current item's label
       localStorage.setItem('selectedSidebar', JSON.stringify(newSelection));
       mutation.mutate(newSelection);
@@ -80,11 +93,10 @@ const Sidebar = () => {
       // Handle regular updates for non-number sidebar states
       mutation.mutate(item.label);
     }
-  
+
     // Navigate to the route
     router.push(item.route);
   };
-  
 
   // Prevent rendering on the server
   if (!isMounted) {
@@ -106,31 +118,22 @@ const Sidebar = () => {
       </button>
 
       <div className="flex flex-col items-center">
-        {/* <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-300 mb-1">
-          <Image
-            src="/assets/no-pfp.jpg"
-            alt="Profile Picture"
-            width={64}
-            height={64}
-            className="object-cover"
-          />
-        </div> */}
         <UserButton
-            appearance={{
-              elements: {
-                userButtonPopoverActionButton__manageAccount:{
-                  display:'none'
-                },
-                avatarBox:{
-                  width: '50px',
-                  height: '50px',
-                  marginBottom: '1em'
-                },
-                userButtonPopoverFooter:{
-                  display:'none'
-                },
+          appearance={{
+            elements: {
+              userButtonPopoverActionButton__manageAccount: {
+                display: 'none',
               },
-            }}
+              avatarBox: {
+                width: '50px',
+                height: '50px',
+                marginBottom: '1em',
+              },
+              userButtonPopoverFooter: {
+                display: 'none',
+              },
+            },
+          }}
         />
 
         <h3 className="text-md font-semibold text-white">{username}</h3>
