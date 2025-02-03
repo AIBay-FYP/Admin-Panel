@@ -1,120 +1,175 @@
-import { useState } from "react";
-import "@fortawesome/fontawesome-free/css/all.min.css"; // Import FontAwesome CSS
+import { useState, useEffect } from "react";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import { useQuery } from "@tanstack/react-query";
 
-const ServiceResolution = ({ onClose }) => {
-  // State management for image swapping, service resolution, and popup visibility
-  const [mainImage, setMainImage] = useState("Roba.jpeg"); // Default main image
-  const [images] = useState([
-    "shoes1.jpeg", // Thumbnail images
-    "shoes2.jpeg",
-    "shoes3.jpeg",
-  ]);
-  const [serviceResolution, setServiceResolution] = useState("refund"); // Default resolution option
+const fetchContractDetails = async (id) => {
+  const response = await fetch(`/api/contracts/${id}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return response.json();
+};
 
-  // Handle Cancel button click
+const ServiceResolution = ({ onClose, contractId }) => {
+  const [mainImage, setMainImage] = useState("");
+  const [images, setImages] = useState([]);
+  const [serviceResolution, setServiceResolution] = useState(""); // holds the selected resolution option
+
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["contractDetails", contractId],
+    queryFn: () => fetchContractDetails(contractId),
+  });
+
+  useEffect(() => {
+    if (data && data.listingDetails) {
+      const imagesArray = data.listingDetails.Photos || [];
+      setImages(imagesArray);
+      setMainImage(imagesArray.length > 0 ? imagesArray[0] : "");
+      setServiceResolution(data.ResolutionAction);
+      }
+  }, [data]);
+
   const handleCancel = () => {
-    // Just close the popup without resetting any values
-    onClose(); // Trigger parent close function
+    onClose();
   };
 
-  // Handle Save Changes button click
-  const handleSaveChanges = () => {
-    // Save logic can go here, for now, it's logging the state
-    console.log("Service Resolution:", serviceResolution);
-    console.log("Selected Image:", mainImage);
-    // Close the popup after saving
-    onClose(); // Trigger parent close function
+  const handleSaveChanges = async () => {
+
+    // Send the PATCH request to update the resolution
+    await fetch(`/api/contracts/${contractId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ResolutionAction: serviceResolution }), // Sending the selected resolution
+    });
+  
+    console.log("Resolution saved successfully");
+  
+    // Close the modal after saving, no need to handle error
+    if (onClose && typeof onClose === 'function') {
+      onClose();
+    }
   };
+  
+  
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div>Loading contract details...</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return <div>Failed to load contract details</div>;
+  }
+
+  if (!data) {
+    return <div>No contract details found.</div>;
+  }
+
+  console.log(data)
+  const isDisputed = data?.Status === "Disputed";
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="w-[700px] bg-[#00262A] text-white rounded-lg p-4">
-        {/* Top Section */}
         <div className="flex mb-4 gap-6">
-          {/* Image Section */}
           <div className="flex flex-col items-start">
-            <img
-              src={mainImage}
-              alt="Service"
-              className="w-72 h-40 object-cover rounded-lg mb-2"
-            />
-          </div>
-
-          {/* Thumbnails Section */}
-          <div className="flex flex-col space-y-2">
-            {images.map((image, index) => (
+            {mainImage ? (
               <img
-                key={index}
-                src={image}
-                alt={`Thumbnail ${index}`}
-                className="w-14 h-12 rounded-lg cursor-pointer hover:opacity-80"
-                onClick={() => setMainImage(image)}
+                src={mainImage}
+                alt="Service"
+                className="w-72 h-40 object-cover rounded-lg mb-2"
               />
-            ))}
+            ) : (
+              <div className="w-72 h-40 bg-gray-300 rounded-lg flex items-center justify-center">
+                <span className="text-gray-500">No Image</span>
+              </div>
+            )}
           </div>
 
-          {/* Service Controls */}
+          <div className="flex flex-col space-y-2">
+            {images.length > 0 ? (
+              images.map((image, index) => (
+                image ? (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Thumbnail ${index}`}
+                    className="w-14 h-12 rounded-lg cursor-pointer hover:opacity-80"
+                    onClick={() => setMainImage(image)}
+                  />
+                ) : (
+                  <div
+                    key={index}
+                    className="w-14 h-12 bg-gray-300 rounded-lg flex items-center justify-center"
+                  >
+                    <span className="text-gray-500">No Image</span>
+                  </div>
+                )
+              ))
+            ) : (
+              <div className="text-gray-500">No thumbnails available</div>
+            )}
+          </div>
+
           <div className="flex flex-col items-start justify-between ml-4">
-            <h2 className="text-2xl font-semibold">Service Name</h2>
-            {/* Dropdown */}
-            <div>
-              <label className="block text-sm mb-1">Service Resolution</label>
-              <select
-                className="w-40 p-2 rounded-md bg-white text-black"
-                value={serviceResolution}
-                onChange={(e) => setServiceResolution(e.target.value)}
-              >
-                <option value="refund">Refund Payment</option>
-                <option value="replacement">Replacement</option>
-                <option value="cancel">Cancel Service</option>
-              </select>
-            </div>
-            {/* Contract Icon */}
+            <h2 className="text-2xl font-semibold">
+              {data.listingDetails?.Title || "Service Name"}
+            </h2>
+            {isDisputed && (
+              <div>
+                <label className="block text-sm mb-1">Service Resolution</label>
+                <select
+                  className="w-40 p-2 rounded-md bg-white text-black"
+                  value={serviceResolution}
+                  onChange={(e) => setServiceResolution(e.target.value)}
+                >
+                  <option value="Refund Payment">Refund Payment</option>
+                  <option value="Replacement">Replacement</option>
+                  <option value="Cancel Service">Cancel Service</option>
+                </select>
+              </div>
+            )}
             <div className="flex items-center cursor-pointer">
-              <a
-                href="https://www.example.com/contract.pdf" // Replace with the actual URL of the PDF
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i
-                  className="fas fa-file-contract text-gray-300"
-                  style={{ fontSize: "12px" }}
-                />
+              <a href={data.DocumentURL || "#"} target="_blank" rel="noopener noreferrer">
+                <i className="fas fa-file-contract text-gray-300" style={{ fontSize: "12px" }} />
                 <span className="text-sm ml-1">Contract</span>
               </a>
             </div>
           </div>
         </div>
 
-        {/* Horizontal Divider */}
         <hr className="border-t border-gray-500 mb-4" />
 
-        {/* Bottom Section */}
         <div className="mb-4 space-y-2">
-          {/* Service Details */}
           <p className="text-sm">
-            <span className="font-semibold">Price:</span> 10,000 PKR
+            <span className="font-semibold">Price:</span> {data.Price || "N/A"} PKR
           </p>
           <p className="text-sm">
-            <span className="font-semibold">Consumer’s Name:</span> John Doe
+            <span className="font-semibold">Consumer’s Name:</span> {data.consumerDetails?.Name || "N/A"}
           </p>
           <p className="text-sm">
-            <span className="font-semibold">Provider’s Name:</span> John Poe
+            <span className="font-semibold">Provider’s Name:</span> {data.providerDetails?.Name || "N/A"}
           </p>
-          <p className="text-sm">
-            <span className="font-semibold">Nature of Dispute:</span> Service not delivered
-          </p>
+          {isDisputed && (
+            <p className="text-sm">
+              <span className="font-semibold">Nature of Dispute:</span> {data.DisputeNature || "N/A"}
+            </p>
+          )}
         </div>
 
-        {/* Description */}
         <div className="mb-4">
           <h3 className="font-semibold mb-1">Description</h3>
           <p className="text-sm leading-relaxed">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.
+            {data.listingDetails?.Description || "No description available."}
           </p>
         </div>
 
-        {/* Buttons */}
         <div className="flex justify-end space-x-4">
           <button
             className="bg-[#1E1E1E] px-5 py-2 text-sm rounded-md text-white border border-transparent hover:bg-transparent hover:border-white hover:text-white transition duration-300"
@@ -124,10 +179,11 @@ const ServiceResolution = ({ onClose }) => {
           </button>
           <button
             className="bg-[#E6F4EA] px-5 py-2 text-sm rounded-md text-[#004B23] border border-transparent hover:bg-transparent hover:border-white hover:text-white transition duration-300"
-            onClick={handleSaveChanges}
+            onClick={handleSaveChanges} // Directly call handleSaveChanges without passing serviceResolution
           >
             Save Changes
           </button>
+
         </div>
       </div>
     </div>
