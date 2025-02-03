@@ -395,13 +395,60 @@ const Table = ({
   );
 };
 
-const Dropdown = ({ options, row, handleDropdown }) => {
-  const [selected, setSelected] = useState(row.Status || options[0]?.label);
+const Dropdown = ({ options, openPopup, row, handleDropdown}) => {
+  const [selected, setSelected] = useState(row.status || options[0]?.label);
+  const [isModalOpen, setModalOpen] = useState(false);
 
-  const handleSelectChange = (event) => {
+
+const handleSelectChange =(event) => {
+    console.log("handleDropdown prop:", handleDropdown);
     const newSelectedValue = event.target.value;
     setSelected(newSelectedValue);
-    handleDropdown(row._id, newSelectedValue);
+    console.log(selected)
+    if (handleDropdown) {
+      // Call handleDropdown with the row's ID and the new status
+      handleDropdown(row._id, newSelectedValue);
+    }  
+    if (openPopup) {
+      setModalOpen(true);
+    }
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const handlePrimaryAction = async (userID, message, type, readStatus) => {
+    const notification = {
+      UserID: userID,
+      Message: message,
+      Type: type,
+      ReadStatus: readStatus,
+    };
+    console.log(`Confirmed for ${row.name || "this row"}`);
+
+    try {
+      const response = await fetch("/api/notificationPost", {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(notification),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Notification created:", result);
+      } else {
+        console.error("Failed to create notification:", result.error);
+      }
+    } catch (error) {
+      console.error("Error posting notification:", error);
+    }
+
+
+    setModalOpen(false);
   };
 
   return (
