@@ -4,22 +4,34 @@ import ProfileCard from "@/components/profileCard";
 import SearchBarWithFilters from "@/components/SearchBarWithFilters";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { useQuery } from "@tanstack/react-query";
 
 // Register chart components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+const fetchUsers = async () => {
+  const response = await fetch("/api/users/");
+  if (!response.ok) throw new Error("Failed to fetch users");
+  return response.json();
+};
+
 const TotalUsers = () => {
-  const users = [
-    { name: "John Doe", role: "Provider", rating: 4 },
-    { name: "John Poe", role: "Consumer", rating: 5 },
-    { name: "John Doe", role: "Provider", rating: 4 },
-    { name: "John Poe", role: "Consumer", rating: 5 },
-    { name: "John Doe", role: "Provider", rating: 4 },
-    { name: "John Poe", role: "Consumer", rating: 5 },
-    { name: "John Poe", role: "Consumer", rating: 5 },
-    { name: "John Doe", role: "Provider", rating: 4 },
-    { name: "John Poe", role: "Consumer", rating: 5 },
-  ];
+  const { data: users = [], error, isLoading } = useQuery({ queryKey: ["users"], queryFn: fetchUsers });
+
+  const providerCount = users.filter(user => user.RoleType === "Provider").length;
+  const consumerCount = users.filter(user => user.RoleType === "Consumer").length;
+  const total = providerCount + consumerCount;
+
+  const chartData = {
+    labels: ["Providers", "Consumers"],
+    datasets: [{
+      data: total > 0 ? [(providerCount / total) * 100, (consumerCount / total) * 100] : [0, 0],
+      backgroundColor: ["#EF4444", "#3B82F6"],
+      hoverBackgroundColor: ["#DC2626", "#2563EB"],
+      borderColor: "transparent",
+      borderWidth: 0,
+    }],
+  };
 
   const filterOptions = [
     { label: "Restricted Keywords", value: "restricted" },
@@ -34,19 +46,6 @@ const TotalUsers = () => {
     console.log("Selected filter:", filter);
   };
 
-  const chartData = {
-    labels: ["Providers", "Consumers"],
-    datasets: [
-      {
-        data: [80, 20],
-        backgroundColor: ["#EF4444", "#3B82F6"], // Red and Blue
-        hoverBackgroundColor: ["#DC2626", "#2563EB"],
-        borderColor: "transparent",
-        borderWidth: 0,
-      },
-    ],
-  };
-
   const chartOptions = {
     plugins: {
       legend: {
@@ -54,6 +53,9 @@ const TotalUsers = () => {
       },
     },
   };
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching users</p>;
 
   return (
     <div className="min-h-screen p-6">
@@ -89,9 +91,14 @@ const TotalUsers = () => {
         {users.map((user, index) => (
           <ProfileCard
             key={index}
-            name={user.name}
-            role={user.role}
-            rating={user.rating}
+            name={user.Name}
+            role={user.RoleType}
+            rating={user.Rating}
+            email={user.Email}
+            location={user.Location}
+            contactNumber={user.ContactNumber}
+            profilePicture={user.ProfilePicture}
+            userID={user._id}
           />
         ))}
       </div>

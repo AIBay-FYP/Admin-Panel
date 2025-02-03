@@ -1,71 +1,54 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
 import StarDisplay from "./StarDisplay";
 import ListedServiceCard from "./ListedServiceCard";
-import ProgressCircle from "./ProgressCircle";
+import ProgressCircle from "./progresscircle";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const ProviderProfile = () => {
+// Function to fetch provider data
+const fetchProviderData = async (id) => {
+  const response = await fetch(`/api/users/provider/${id}`); // Replace with your actual API endpoint
+  if (!response.ok) throw new Error("Failed to fetch provider data");
+  return response.json();
+};
+
+const ProviderProfile = ({ name, email, role, reviews, contactNumber, services, profilePicture, userId }) => {
+  const { data, error, isLoading } = useQuery(
+    {
+      queryKey: ["providerData", userId],
+      queryFn: () => fetchProviderData(userId),
+    }
+  );
+
   const [progress, setProgress] = useState(0);
-  const [services, setServices] = useState([
-    {
-      id: 1,
-      mainImage: "/shoes1.jpeg",
-      serviceName: "Shoe Rental",
-      serviceType: "Rental",
-      priceType: "Per Day",
-      location: "Downtown",
-    },
-    {
-      id: 2,
-      mainImage: "/shoes1.jpeg",
-      serviceName: "Shoe Cleaning",
-      serviceType: "Service",
-      priceType: "Flat Rate",
-      location: "Uptown",
-    },
-    {
-      id: 3,
-      mainImage: "/shoes1.jpeg",
-      serviceName: "Boot Repair",
-      serviceType: "Service",
-      priceType: "Flat Rate",
-      location: "Midtown",
-    },
-    {
-      id: 4,
-      mainImage: "/shoes1.jpeg",
-      serviceName: "Sneaker Maintenance",
-      serviceType: "Service",
-      priceType: "Flat Rate",
-      location: "Suburb",
-    },
-    {
-      id: 5,
-      mainImage: "/shoes1.jpeg",
-      serviceName: "Heels Rental",
-      serviceType: "Rental",
-      priceType: "Per Day",
-      location: "City Center",
-    },
-  ]);
+  const [monthlyEarnings, setMonthlyEarnings] = useState([0, 0, 0, 0, 0, 0, 0]); // Default monthly earnings for each month
 
   useEffect(() => {
-    const servicesAvailable = 10; // Example total services
-    const servicesAvailed = 5; // Example services availed
-    const progressPercentage = (servicesAvailed / servicesAvailable) * 100;
-    setProgress(progressPercentage);
-  }, []);
+    if (data && data.bookings) {
+      // Create an array of earnings for each month
+      const earningsPerMonth = [0, 0, 0, 0, 0, 0, 0]; // Initialize earnings for each month
 
-  // Data for the Line Chart (Total earnings per month)
+      data.bookings.forEach((booking) => {
+        const startDate = new Date(booking.StartDate); // Ensure booking.startDate is in a valid format
+        const month = startDate.getMonth(); // Get month index (0 = January, 1 = February, etc.)
+        earningsPerMonth[month] += booking.Price; // Add booking price to the corresponding month
+      });
+
+      setMonthlyEarnings(earningsPerMonth);
+    }
+
+    setProgress(data?.serviceApprovalRate || 0);
+  }, [data]);
+
   const lineChartData = {
     labels: ["January", "February", "March", "April", "May", "June", "July"], // Months
     datasets: [
       {
         label: "Total Earnings ($)",
-        data: [1200, 1500, 2000, 1800, 2200, 2500, 2800], // Example earnings data
+        data: monthlyEarnings, // Use dynamic monthly earnings data
         fill: false,
         borderColor: "#36A2EB",
         tension: 0.1,
@@ -101,24 +84,28 @@ const ProviderProfile = () => {
     },
   };
 
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading data: {error.message}</div>;
+
+  const { reviewCount, listings, bookings, serviceApprovalRate } = data;
+
   return (
     <div className="min-h-[80vh] flex justify-center items-center">
       <div className="w-[90%] max-w-6xl max-h-screen flex flex-col lg:flex-row justify-between p-6 rounded-lg shadow-lg overflow-hidden">
-        
         {/* Left Section */}
         <div className="flex flex-col justify-center items-center bg-darkgreen p-6 rounded-lg shadow-md w-full lg:w-1/3">
           <img
-            src="/assets/no-pfp.jpg"
+            src={profilePicture || "/assets/no-pfp.jpg"} // Use profile picture from the API or fallback
             alt="Provider"
             className="w-24 h-24 rounded-full mb-4"
           />
-          <h4 className="text-lg font-bold text-white">Provider's Name</h4>
-          <h6 className="text-gray-300">ID: 001</h6>
-          <StarDisplay rating={4} />
-          <h5 className="text-gray-200 mt-2">provideremail@example.com</h5>
+          <h4 className="text-lg font-bold text-white">{name}</h4>
+          <h6 className="text-gray-300">Role: {role}</h6>
+          <StarDisplay rating={reviews || 4} /> {/* Default rating is 4 if not provided */}
+          <h5 className="text-gray-200 mt-2">{email}</h5>
           <hr className="my-4 w-full border-gray-400" />
-          <h5 className="text-gray-200">No. of Reviews: {15}</h5>
-          <h5 className="text-gray-200">No. of Refunds: {5}</h5>
+          <h5 className="text-gray-200">No. of Reviews: {reviewCount || 0}</h5>
+          <h5 className="text-gray-200">No. of Refunds: {data.refundsCount || 0}</h5>
 
           {/* Progress Circle */}
           <div className="mt-4">
@@ -153,15 +140,8 @@ const ProviderProfile = () => {
             className="flex flex-col space-y-4 overflow-y-auto"
             style={{ maxHeight: "calc(100vh - 300px)" }} // Adjust height to prevent shrinking
           >
-            {services.map((service) => (
-              <ListedServiceCard
-                key={service.id}
-                mainImage={service.mainImage}
-                serviceName={service.serviceName}
-                serviceType={service.serviceType}
-                priceType={service.priceType}
-                location={service.location}
-              />
+            {listings.map((service) => (
+              <ListedServiceCard key={service.id} data={service} />
             ))}
           </div>
         </div>

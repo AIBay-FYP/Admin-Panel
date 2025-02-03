@@ -52,8 +52,8 @@ const ProfileCard = ({ name, role, rating, email, location, contactNumber, profi
         height={64}
         className="object-cover rounded-full"
       />
-      <h1 className="text-black text-md font-semibold">{name}</h1>
-      <h4 className="text-black text-sm">{role}</h4>
+      <h1 className="text-black text-center text-sm font-semibold">{name}</h1>
+      <h4 className="text-black text-center text-sm">{role}</h4>
       <StarDisplay rating={rating} />
 
       <button
@@ -77,14 +77,14 @@ const ProfileCard = ({ name, role, rating, email, location, contactNumber, profi
             {/* Render the appropriate profile based on role */}
             <ProfileComponent
               name={name}
-              email={email}
+              email={email} 
               location={location}
               contactNumber={contactNumber}
               profilePicture={profilePicture}
               approvedBy={approvedBy}
               rating={rating}
               role={role}
-              UserID={userID}
+              userId={userID}
             />
           </div>
         </div>

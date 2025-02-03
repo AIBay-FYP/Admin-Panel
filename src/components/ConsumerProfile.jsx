@@ -1,28 +1,62 @@
-'use client';
 import { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import StarDisplay from "./StarDisplay";
 import ListedServiceCard from "./ListedServiceCard";
-import ProgressCircle from "./ProgressCircle";
+import ProgressCircle from "./progresscircle";
+import { useQuery } from "@tanstack/react-query";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const ConsumerProfile = ({ name, email, role, contactNumber, profilePicture, services, reviews, servicesAvailed, requestApprovalRate }) => {
-  const [progress, setProgress] = useState(0);
+const fetchConsumer = async (id) => {
+  console.log(id);
+  const response = await fetch(`/api/users/consumer/${id}`);
+  if (!response.ok) throw new Error("Failed to fetch users");
+  return response.json();
+};
 
-  // Calculate progress based on services available and services availed
+const ConsumerProfile = ({ name, email, role,reviews, contactNumber, services, profilePicture, userId }) => {
+  const [progress, setProgress] = useState(0);
+  
+  // Using react-query to fetch consumer data
+  const { data, error, isLoading } = useQuery(
+    { queryKey: ["consumerProfile", userId], queryFn: () => fetchConsumer(userId) }
+  );
+  
+  const { reviewCount, listings, servicesAvailable, servicesAvailed } = data || {};
+
   useEffect(() => {
-    const servicesAvailable = 10; // Example value, adjust based on your data
     const progressPercentage = (servicesAvailed / servicesAvailable) * 100;
     setProgress(progressPercentage);
   }, [servicesAvailed]);
 
-  const pieData = {
-    labels: ["Electronics", "Clothing", "Gadgets", "Furniture"],
+  // Count the occurrences of each category for the pie chart
+  const getCategoryData = (listings) => {
+    const categoryCount = {};
+
+    listings.forEach((listing) => {
+      const category = listing.Category; // Assuming 'Category' is the field name
+      if (category) {
+        categoryCount[category] = (categoryCount[category] || 0) + 1;
+      }
+    });
+
+    // Prepare the chart data (labels and values)
+    const labels = Object.keys(categoryCount);
+    const data = Object.values(categoryCount);
+
+    return { labels, data };
+  };
+
+  // Get the pie chart data
+  const { labels, data: pieDataValues } = listings ? getCategoryData(listings) : { labels: [], data: [] };
+
+  // Pie chart data
+  const pieChartData = {
+    labels: labels.length > 0 ? labels : ["No categories available"],
     datasets: [
       {
-        data: [30, 20, 25, 25],
+        data: pieDataValues.length > 0 ? pieDataValues : [1], // Default data if no categories
         backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
         hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
       },
@@ -38,17 +72,28 @@ const ConsumerProfile = ({ name, email, role, contactNumber, profilePicture, ser
     },
   };
 
-  // Get the current date and format it (e.g., "DD MMM, YYYY")
+  // Get current date
   const currentDate = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
   });
 
+  // Check if data is loaded, if not, show loading state
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // Check for errors
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  // Destructuring the fetched data (reviewCount, bookings, listings)
+
   return (
     <div className="min-h-[80vh] flex justify-center items-center">
       <div className="w-[90%] max-w-6xl max-h-screen flex flex-col lg:flex-row justify-between p-6 rounded-lg shadow-lg overflow-hidden">
-        
         {/* Left Section */}
         <div className="flex flex-col justify-center items-center bg-darkgreen p-6 rounded-lg shadow-md w-full lg:w-1/3">
           <img
@@ -57,11 +102,11 @@ const ConsumerProfile = ({ name, email, role, contactNumber, profilePicture, ser
             className="w-24 h-24 rounded-full mb-4"
           />
           <h4 className="text-lg font-bold text-white">{name || "N/A"}</h4>
-          <h6 className="text-gray-300">ID: 001</h6>
-          <StarDisplay rating={4} /> {/* Assuming the rating is passed as a prop */}
+          <h6 className="text-gray-300">Role: {role || "N/A"}</h6>
+          <StarDisplay rating={reviews} /> {/* Assuming the rating is passed as a prop */}
           <h5 className="text-gray-200 mt-2">{email || "N/A"}</h5>
           <hr className="my-4 w-full border-gray-400" />
-          <h5 className="text-gray-200">No. of Reviews: {reviews || 0}</h5>
+          <h5 className="text-gray-200">No. of Reviews: {reviewCount || 0}</h5>
           <h5 className="text-gray-200">Services Availed: {servicesAvailed || 0}</h5>
 
           {/* Progress Circle */}
@@ -78,7 +123,7 @@ const ConsumerProfile = ({ name, email, role, contactNumber, profilePicture, ser
           </h3>
           <div className="flex justify-center items-center mb-6">
             <div className="w-64 h-64">
-              <Pie data={pieData} options={pieOptions} />
+              <Pie data={pieChartData} options={pieOptions} />
             </div>
           </div>
           <div className="flex items-center w-full mb-4">
@@ -94,15 +139,11 @@ const ConsumerProfile = ({ name, email, role, contactNumber, profilePicture, ser
 
           {/* Service Listing */}
           <div className="flex flex-col space-y-4 overflow-y-auto">
-            {services && services.length > 0 ? (
-              services.map((service) => (
+            {listings && listings.length > 0 ? (
+              listings.map((service) => (
                 <ListedServiceCard
-                  key={service.id}
-                  mainImage={service.mainImage}
-                  serviceName={service.serviceName}
-                  serviceType={service.serviceType}
-                  priceType={service.priceType}
-                  location={service.location}
+                  key={service._id}
+                  data={service}
                 />
               ))
             ) : (

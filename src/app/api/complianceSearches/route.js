@@ -1,4 +1,3 @@
-// app/api/listings/route.js
 import { connectToDatabase } from '@/lib/mongodb';
 import { ObjectId } from "mongodb";
 
