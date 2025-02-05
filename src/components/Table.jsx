@@ -257,12 +257,9 @@
 //   row: PropTypes.object.isRequired,
 //   handleDropdown: PropTypes.func.isRequired
 // };
-
-// export default Table;
-
 'use client'
 import { useEffect, useRef, useState } from "react";
-import PropTypes from 'prop-types';  // Added PropTypes for prop validation
+import PropTypes from 'prop-types';
 import GenericModal from "./genericModal";
 
 const Table = ({ 
@@ -278,9 +275,8 @@ const Table = ({
 }) => {
   const [isDetailsModalOpen, setDetailsModalOpen] = useState(false); 
   const [modalData, setModalData] = useState(null); 
+  const [searchQuery, setSearchQuery] = useState("");
   const modalRef = useRef(null);
-
-  console.log("data:", data);
 
   const openDetailsModal = (rowData) => {
     setModalData(rowData); 
@@ -309,46 +305,49 @@ const Table = ({
         closeDetailsModal();
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  const handleDocumentClick = (fileUrl) => {
-    if (fileUrl) {
-      window.open(fileUrl, "_blank");
-    } else {
-      console.error("No file URL provided.");
-    }
-  };
+  const filteredData = data.filter(row => 
+    columns.some(col => 
+      (typeof col.accessor === 'function' ? col.accessor(row) : row[col.accessor])?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
 
   return (
-    <div className="flex justify-center items-start w-full">
+    <div className="flex flex-col items-center w-full">
+      <div className="w-full mb-4 flex items-center border border-black focus:outline rounded-lg bg-white shadow-md p-2">
+        <i className="p-3 fa fa-search text-gray-500 mr-2"></i>
+        <input
+          type="text"
+          placeholder="Search here..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full p-2 focus:outline-none text-black"
+        />
+      </div>
       <div className="overflow-x-auto w-full">
         <table className="w-full bg-white shadow-md rounded-lg text-sm">
           <thead className="bg-gray-200">
             <tr>
               {columns.map((col, index) => (
-                <th
-                  key={index}
-                  className={`px-4 py-2 text-left text-gray-600 font-medium ${index === 0 ? "rounded-tl-lg" : index === columns.length - 1 ? "rounded-tr-lg" : ""}`}
-                >
+                <th key={index} className="px-4 py-2 text-left text-gray-600 font-medium">
                   {col.header}
                 </th>
               ))}
-              <th className="px-4 py-2 text-left text-gray-600 font-medium rounded-tr-lg">Status</th>
+              <th className="px-4 py-2 text-left text-gray-600 font-medium">Status</th>
               {details && (
-                <th className="px-4 py-2 text-left text-gray-600 font-medium rounded-tr-lg">
+                <th className="px-4 py-2 text-left text-gray-600 font-medium">
                   {Document ? "Document" : "More"}
                 </th>
               )}
             </tr>
           </thead>
-
           <tbody>
-            {data.map((row, rowIndex) => (
+            {filteredData.map((row, rowIndex) => (
               <tr key={rowIndex} className="border-b hover:bg-gray-50">
                 {columns.map((col, colIndex) => (
                   <td key={colIndex} className="px-4 py-2 text-gray-700">
@@ -356,10 +355,10 @@ const Table = ({
                   </td>
                 ))}
                 <td className="px-4 py-2 text-gray-700">
-                  {dropdownOptions && dropdownOptions.length > 0 ? (
+                  {dropdownOptions?.length > 0 ? (
                     <Dropdown options={dropdownOptions} row={row} handleDropdown={handleDropdown} />
                   ) : (
-                    <span>{row.Status}</span>  
+                    <span>{row.Status}</span>
                   )}
                 </td>
                 {details && (
@@ -370,14 +369,6 @@ const Table = ({
                     >
                       Details
                     </button>
-                    {Document && row.File && (
-                      <button
-                        className="bg-gray-200 text-black border rounded-lg p-2 text-xs hover:bg-black hover:text-white ml-2"
-                        onClick={() => handleDocumentClick(row.File)}
-                      >
-                        View Document
-                      </button>
-                    )}
                   </td>
                 )}
               </tr>
@@ -385,7 +376,6 @@ const Table = ({
           </tbody>
         </table>
       </div>
-
       {isDetailsModalOpen && details && (
         <div ref={modalRef}>
           <PopUp data={modalData} onClose={closeDetailsModal} />
@@ -399,14 +389,10 @@ const Dropdown = ({ options, openPopup, row, handleDropdown}) => {
   const [selected, setSelected] = useState(row.status || options[0]?.label);
   const [isModalOpen, setModalOpen] = useState(false);
 
-
-const handleSelectChange =(event) => {
-    console.log("handleDropdown prop:", handleDropdown);
+  const handleSelectChange = (event) => {
     const newSelectedValue = event.target.value;
     setSelected(newSelectedValue);
-    console.log(selected)
     if (handleDropdown) {
-      // Call handleDropdown with the row's ID and the new status
       handleDropdown(row._id, newSelectedValue);
     }  
     if (openPopup) {
@@ -415,39 +401,6 @@ const handleSelectChange =(event) => {
   };
 
   const closeModal = () => {
-    setModalOpen(false);
-  };
-
-  const handlePrimaryAction = async (userID, message, type, readStatus) => {
-    const notification = {
-      UserID: userID,
-      Message: message,
-      Type: type,
-      ReadStatus: readStatus,
-    };
-    console.log(`Confirmed for ${row.name || "this row"}`);
-
-    try {
-      const response = await fetch("/api/notificationPost", {
-        method: "POST", 
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(notification),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        console.log("Notification created:", result);
-      } else {
-        console.error("Failed to create notification:", result.error);
-      }
-    } catch (error) {
-      console.error("Error posting notification:", error);
-    }
-
-
     setModalOpen(false);
   };
 

@@ -43,7 +43,7 @@ const ModeratorRegistration = () => {
     <div className="min-h-screen">
       {/* Search Bar */}
       <div className="mb-6">
-        <SearchBarWithFilters
+        {/* <SearchBarWithFilters
           placeholder="Search Moderators"
           filterOptions={[
             { label: "By Name", value: "name" },
@@ -51,7 +51,7 @@ const ModeratorRegistration = () => {
           ]}
           onSearch={handleSearch}
           onFilter={handleFilter}
-        />
+        /> */}
       </div>
 
       {/* Page Heading and Button */}

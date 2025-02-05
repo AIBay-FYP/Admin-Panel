@@ -14,7 +14,7 @@ export default function ToggleSwitch({ onSwitch, title, buttonLabels, components
   return (
     <div>
       {/* Title */}
-      <h2 className="text-heading text-xl font-bold mb-4">{title}</h2>
+      <h2 className="text-heading text-2xl font-bold mb-4">{title}</h2>
 
       {/* Toggle Switch */}
       <div className="flex space-x-4 mb-4">

@@ -99,12 +99,12 @@ export default function Transactions() {
     <div className="min-h-screen">
       {/* Search Bar */}
       <div className="my-4">
-        <SearchBarWithFilters
+        {/* <SearchBarWithFilters
           placeholder="Search by Id or Service name"
           filterOptions={filterOptions}
           onSearch={handleSearch}
           onFilter={handleFilter}
-        />
+        /> */}
       </div>
 
       {/* ToggleSwitch with Transactions Display */}

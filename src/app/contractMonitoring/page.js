@@ -273,12 +273,12 @@ export default function ContractMonitoring() {
 
   return (
     <div className="py-6 rounded-lg">
-      <SearchBarWithFilters
+      {/* <SearchBarWithFilters
         placeholder="Search by Contract Id, Service Name or Provider Name"
         filterOptions={filterOptions}
         onSearch={handleSearch}
         onFilter={handleFilter}
-      />
+      /> */}
       <h2 className="text-heading text-2xl font-bold my-10 text-left">
         Contract Monitoring
       </h2>

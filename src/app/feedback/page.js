@@ -86,12 +86,12 @@ const FeedbackPage = () => {
   return (
     <div className="p-6 min-h-screen">
       <LoadingBar color="#f11946" ref={loadingBarRef} /> {/* Show loading bar */}
-      <SearchBarWithFilters
+      {/* <SearchBarWithFilters
         placeholder="Search Feedbacks by id or name"
         filterOptions={filterOptions}
         onSearch={handleSearch}
         onFilter={handleFilter}
-      />
+      /> */}
       <h1 className="text-heading align-left text-3xl font-bold mb-8">Feedback</h1>
 
       {/* Responsive Grid Layout */}

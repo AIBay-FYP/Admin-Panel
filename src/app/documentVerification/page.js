@@ -94,7 +94,7 @@ const DocumentVerification = () => {
   return (
     <div className="flex flex-col py-10">
       {/* Search Bar */}
-      <SearchBarWithFilters
+      {/* <SearchBarWithFilters
         placeholder="Search documents..."
         onSearch={(query) => console.log('Search query:', query)}
         onFilter={(filter) => console.log('Selected filter:', filter)}
@@ -103,7 +103,7 @@ const DocumentVerification = () => {
           { label: 'Pending', value: 'Pending' },
           { label: 'Rejected', value: 'Rejected' },
         ]}
-      />
+      /> */}
 
       {/* Page Header */}
       <h1 className="text-heading text-2xl font-semibold mb-6">Document Verification</h1>

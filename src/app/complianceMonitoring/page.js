@@ -13,7 +13,7 @@ const ComplianceMonitoring = ()=>{
       };
     return (
         <div className="bg-dark mt-10 rounded">
-        <ClientSearchSection/>
+        {/* <ClientSearchSection/> */}
         <ToggleSwitch
         title="Compliance Monitoring"
         buttonLabels={['Searches', 'Services']}
