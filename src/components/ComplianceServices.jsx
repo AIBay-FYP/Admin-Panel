@@ -4,6 +4,7 @@ import { Chart, CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, 
 import Table from './Table'; // Import the Table component
 import ServiceDetails from '@/app/serviceDetails/ServiceDetails';
 import { useQuery } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import LoadingBar from 'react-top-loading-bar'; // Import the loading bar
 
 // Register required components for Chart.js
@@ -18,30 +19,7 @@ const fetchComplianceData = async () => {
   return response.json();
 };
 
-const handleDropdown = async (id, status) => {
-  try {
-    console.log("In dropdown: " + id + " " + status);
 
-    const response = await fetch("/api/complianceServices", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id,
-        status,
-      }),
-    });
-
-    if (response.ok) {
-      console.log("Status updated");
-    } else {
-      console.error("Failed to update service status");
-    }
-  } catch (error) {
-    console.error("Error posting service:", error);
-  }
-};
 
 
 const columns = [
@@ -59,10 +37,11 @@ const dropdownOptions = [
 ];
 
 export default function ComplianceServices() {
+  const queryClient = useQueryClient();
   const chartRef = useRef(null);
   const chartInstanceRef = useRef(null);
   const loadingBarRef = useRef(null); 
-
+  
   const { data, error, isLoading } = useQuery({
     queryKey: ['complianceServices'],
     queryFn: fetchComplianceData,
@@ -116,7 +95,7 @@ export default function ComplianceServices() {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-
+          
           scales: {
             x: {
               title: { display: true, text: 'Status' },
@@ -135,7 +114,7 @@ export default function ComplianceServices() {
         },
       });
     }
-
+    
     return () => {
       if (chartInstanceRef.current) {
         chartInstanceRef.current.destroy();
@@ -150,13 +129,40 @@ export default function ComplianceServices() {
   }
 
   if (error) return <div>Error: {error.message}</div>;
-
+  
   if (!data || data.length === 0) {
     return <div>No data available</div>;
   }
-
-
-
+  
+  
+  const handleDropdown = async (id, status) => {
+    try {
+      console.log("In dropdown: " + id + " " + status);
+  
+      const response = await fetch("/api/complianceServices", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          status,
+        }),
+      });
+  
+      if (response.ok) {
+        console.log("Status updated");
+  
+        // 👉 Tell React Query to refetch fresh data
+        await queryClient.invalidateQueries(['complianceServices'], { refetchActive: true });
+      } else {
+        console.error("Failed to update service status");
+      }
+    } catch (error) {
+      console.error("Error posting service:", error);
+    }
+  };
+  
 
   return (
     <>

@@ -77,25 +77,25 @@ export async function PUT(req) {
     const result = await complianceSearch.updateOne(
       { _id: objectId },
       {
-        $set: { status: status },
+        $set: { Status: status },
       }
     );
 
     if (result.modifiedCount === 0) {
       return new Response(
-        JSON.stringify({ message: "Feedback not found or not updated" }),
+        JSON.stringify({ message: "Status not found or not updated" }),
         { status: 404 }
       );
     }
 
     return new Response(
-      JSON.stringify({ message: "Feedback updated successfully" }),
+      JSON.stringify({ message: "Status updated successfully" }),
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error updating feedback:", error);
+    console.error("Error updating Status:", error);
     return new Response(
-      JSON.stringify({ message: "Error updating feedback" }),
+      JSON.stringify({ message: "Error updating status" }),
       { status: 500 }
     );
   }

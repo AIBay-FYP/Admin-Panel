@@ -6,7 +6,7 @@ export async function GET() {
         const db = await connectToDatabase();
         const usercollection = db.collection('User');
         const paycollection = db.collection('Payment');
-        const listcollection = db.collection('Listings');
+        const listcollection = db.collection('listings');
 
         // Fetch the counts
         const users = await usercollection.countDocuments();

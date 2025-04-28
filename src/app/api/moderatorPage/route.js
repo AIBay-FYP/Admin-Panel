@@ -29,7 +29,7 @@ export async function POST(req) {
   try {
     // Parse the request body
     const body = await req.json();
-    const { Name, Email, ContactNumber, RoleType, Location, ApprovedBy } = body;
+    const { Name, Email, ContactNumber, RoleType, Location, CNIC, ApprovedBy } = body;
 
     // Validate required fields
     if (!Name || !Email || !ContactNumber || !RoleType || !Location) {
@@ -107,6 +107,7 @@ export async function POST(req) {
       Location,
       ProfilePicture: "https://www.w3schools.com/w3images/avatar2.png",
       ApprovedBy,
+      CNIC,
       CreatedAt: new Date(),
     };
 

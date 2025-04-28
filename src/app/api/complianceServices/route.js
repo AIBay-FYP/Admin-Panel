@@ -8,7 +8,7 @@ export async function GET() {
         const db = await connectToDatabase();
         const logcollection = db.collection('ComplianceLog');
         const providercollection = db.collection('User');
-        const listingcollection = db.collection('Listings');
+        const listingcollection = db.collection('listings');
         const logs = await logcollection
         .aggregate([
           {

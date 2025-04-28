@@ -8,6 +8,7 @@ const ModeratorsRegistration = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [Location, setLocation] = useState('');
+  const [CNIC, setCNIC] = useState('');
   const [Name, setName] = useState('');
   const [Email, setEmail] = useState('');
   const [ContactNumber, setContact] = useState('');
@@ -17,7 +18,7 @@ const ModeratorsRegistration = () => {
   const UserID = user?.publicMetadata?.UserID;
 
   const handleRegister = async () => {
-    if (!Name || !Email || !ContactNumber || !Location) {
+    if (!Name || !Email || !ContactNumber || !Location || !CNIC) {
       alert('Please fill out all fields.');
       return;
     }
@@ -28,6 +29,7 @@ const ModeratorsRegistration = () => {
       ContactNumber,
       RoleType,
       Location,
+      CNIC,
       ApprovedBy: UserID, // Using the logged-in user's _id
     };
 
@@ -129,6 +131,20 @@ const ModeratorsRegistration = () => {
               <option value="Moderator">Moderator</option>
               <option value="Supervisor">Supervisor</option>
             </select>
+          </div>
+          {/* CNIC Field */}
+          <div className="mb-6">
+            <label htmlFor="cnic" className="block text-gray-600 font-medium mb-1 text-sm">
+              CNIC
+            </label>
+            <input
+              id="cnic"
+              type="text"
+              placeholder="XXXXX-XXXXXX-X"
+              className="w-full border-gray-300 rounded-md p-2 text-gray-700 focus:ring focus:ring-green-200"
+              value={CNIC}
+              onChange={(e) => setCNIC(e.target.value)}
+            />
           </div>
 
           {/* Location Field */}

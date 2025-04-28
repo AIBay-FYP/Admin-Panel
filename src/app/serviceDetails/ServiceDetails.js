@@ -41,6 +41,8 @@ const ServiceDetails = ({ data: initialData, isFetch = true }) => {
     Description = "Description not available.",
     Keywords = [],
     Location = "Location not specified",
+    IsFixedPrice = false,
+    FixedPrice = 0,
     MinPrice = 0,
     MaxPrice = 0,
     SecurityFee = 0,
@@ -192,10 +194,15 @@ const ServiceDetails = ({ data: initialData, isFetch = true }) => {
               </span>
             </div>
 
-            <p className="text-gray-400 text-sm mt-2">Price Range</p>
-            <h1 className="text-2xl font-bold">
-            {MinPrice === 0 ? `${Currency}  ${MaxPrice}` : `${MinPrice} - ${MaxPrice}`}
-            </h1>
+            <p className="text-gray-400 text-sm mt-2">Price</p>
+              <h1 className="text-2xl font-bold">
+                {IsFixedPrice
+                  ? `${Currency} ${FixedPrice}`
+                  : MinPrice === 0
+                  ? `${Currency} ${MaxPrice}`
+                  : `${Currency} ${MinPrice} - ${MaxPrice}`}
+              </h1>
+
             <h3 className="text-lg font-semibold mt-2">{Title}</h3>
 
             <div className="flex gap-2 my-2">

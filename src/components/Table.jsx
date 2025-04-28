@@ -356,7 +356,12 @@ const Table = ({
                 ))}
                 <td className="px-4 py-2 text-gray-700">
                   {dropdownOptions?.length > 0 ? (
-                    <Dropdown options={dropdownOptions} row={row} handleDropdown={handleDropdown} />
+                    <Dropdown 
+                    options={dropdownOptions} 
+                    row={row} 
+                    handleDropdown={handleDropdown} 
+                    openPopup={openPopup}
+                  />
                   ) : (
                     <span>{row.Status}</span>
                   )}
@@ -385,16 +390,18 @@ const Table = ({
   );
 };
 
-const Dropdown = ({ options, openPopup, row, handleDropdown}) => {
-  const [selected, setSelected] = useState(row.status || options[0]?.label);
+const Dropdown = ({ options, openPopup, row, handleDropdown }) => {
+  const [selected, setSelected] = useState(row.Status || options[0]?.label);
   const [isModalOpen, setModalOpen] = useState(false);
 
   const handleSelectChange = (event) => {
     const newSelectedValue = event.target.value;
     setSelected(newSelectedValue);
+
     if (handleDropdown) {
       handleDropdown(row._id, newSelectedValue);
-    }  
+    }
+
     if (openPopup) {
       setModalOpen(true);
     }
@@ -403,6 +410,40 @@ const Dropdown = ({ options, openPopup, row, handleDropdown}) => {
   const closeModal = () => {
     setModalOpen(false);
   };
+
+  const handlePrimaryAction = async (userID, message, type, readStatus) => {
+    const notification = {
+      UserID: userID,
+      Message: message,
+      Type: type,
+      ReadStatus: readStatus,
+    };
+  
+    console.log(`Confirmed for row ID: ${row._id}`);
+  
+    try {
+      const response = await fetch('/api/notificationPost', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(notification),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        console.log('Notification created:', result);
+      } else {
+        console.error('Failed to create notification:', result.error);
+      }
+    } catch (error) {
+      console.error('Error posting notification:', error);
+    }
+  
+    closeModal();
+  };
+  
 
   return (
     <div className="relative inline-block text-left">
@@ -417,9 +458,20 @@ const Dropdown = ({ options, openPopup, row, handleDropdown}) => {
           </option>
         ))}
       </select>
+
+      <GenericModal 
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title="Confirm Your Action"
+        type={selected}
+        primaryAction={handlePrimaryAction}
+        primaryButtonText="Yes, Confirm"
+        secondaryButtonText="Cancel"
+      />
     </div>
   );
 };
+
 
 Dropdown.propTypes = {
   options: PropTypes.array.isRequired,

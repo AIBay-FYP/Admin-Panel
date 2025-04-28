@@ -23,7 +23,7 @@ export async function GET(request, { params }) {
       { $unwind: { path: "$bookingDetails", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
-          from: "Listings",
+          from: "listings",
           localField: "bookingDetails.ListingID",
           foreignField: "_id",
           as: "listingDetails",

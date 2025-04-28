@@ -2,8 +2,11 @@
 import { useState } from 'react';
 import GenericModal from './genericModal';
 import { formatDate } from '@/utiks/formatDate';
+import { useQueryClient } from '@tanstack/react-query';
+
 
 const Flashcard = ({ id, title, date, givenBy, description, status }) => {
+  const queryClient = useQueryClient();
   const [isFlipped, setIsFlipped] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState(status);
@@ -53,14 +56,15 @@ const Flashcard = ({ id, title, date, givenBy, description, status }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id,
-            status: selectedAction,
-            timestamp: new Date().toISOString(),
+          feedbackID: id,    
+          status: selectedAction,
+          date: new Date().toISOString(),  
           }),
         });
 
         if (updateResponse.ok) {
           console.log('Feedback status updated');
+          await queryClient.invalidateQueries(['feedbacks'], { refetchActive: true });
         } else {
           console.error('Failed to update feedback status');
         }

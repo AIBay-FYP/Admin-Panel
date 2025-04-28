@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
 
   try {
     const db = await connectToDatabase();
-    const listedServicesCollection = db.collection("Listings");
+    const listedServicesCollection = db.collection("listings");
 
     const service = await listedServicesCollection.findOne({ _id: new ObjectId(id) });
 

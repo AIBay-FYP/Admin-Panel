@@ -6,7 +6,7 @@ export async function GET() {
     // Connect to the database
     const db = await connectToDatabase();
 
-    const collection = db.collection('Listings');
+    const collection = db.collection('listings');
     const listings = await collection.find({}).toArray();
 
     return new Response(JSON.stringify(listings), {
