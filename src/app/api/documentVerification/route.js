@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const db = await connectToDatabase();
     const documentsCollection = db.collection("Documents");
-    const listingsCollection = db.collection("Listings");
+    const listingsCollection = db.collection("listings");
     const usersCollection = db.collection("User");
 
     // Fetch all documents

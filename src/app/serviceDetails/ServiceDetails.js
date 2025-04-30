@@ -226,11 +226,11 @@ const ServiceDetails = ({ data: initialData, isFetch = true }) => {
             <div className="mt-6 space-y-2 text-xs text-light">
               <div className="flex justify-between">
                 <span>Security Fee</span>
-                <span>${SecurityFee}</span>
+                <span>PKR {SecurityFee}</span>
               </div>
               <div className="flex justify-between">
                 <span>Cancellation Fee</span>
-                <span>${CancellationFee}</span>
+                <span>PKR {CancellationFee}</span>
               </div>
             </div>
           </div>

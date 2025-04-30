@@ -370,7 +370,13 @@ const Table = ({
                   <td className="p-2">
                     <button
                       className="bg-gray-200 text-black border rounded-lg p-2 text-xs hover:bg-black hover:text-white"
-                      onClick={() => openDetailsModal(row) || onRowClick(row)}
+                      onClick={() => {
+                        if (row.File) {
+                          window.open(row.File, "_blank"); // Open the document in a new tab
+                        } else {
+                          openDetailsModal(row) || onRowClick(row); // Fallback to opening the details modal
+                        }
+                      }}
                     >
                       Details
                     </button>
