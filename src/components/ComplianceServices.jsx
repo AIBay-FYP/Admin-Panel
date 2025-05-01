@@ -31,6 +31,7 @@ const columns = [
 ];
 
 const dropdownOptions = [
+  { label: 'Approved', color: 'text-red-500' },
   { label: 'Rejected', color: 'text-red-500' },
   { label: 'Flagged', color: 'text-yellow-500' },
   { label: 'Under Review', color: 'text-blue-500' },
@@ -60,13 +61,13 @@ export default function ComplianceServices() {
   });
 
   const chartData = {
-    labels: ['Rejected', 'Flagged', 'Under Review'],
+    labels: ['Approved','Rejected', 'Flagged', 'Under Review'],
     datasets: [
       {
         label: 'Status',
-        data: [0, 0, 0], // Start with 0 for all categories
-        backgroundColor: ['#B24545', '#EDCC48', '#3DA3EB'],
-        borderColor: ['#B24545', '#EDCC48', '#3DA3EB'],
+        data: [0, 0, 0, 0], // Start with 0 for all categories
+        backgroundColor: ['#008000','#B24545', '#EDCC48', '#3DA3EB'],
+        borderColor: ['#008000','#B24545', '#EDCC48', '#3DA3EB'],
         borderWidth: 1,
       },
     ],
