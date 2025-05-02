@@ -1,9 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
+    reactStrictMode: false,
     images: {
-      domains: ["res.cloudinary.com", "www.w3schools.com"], // Allow images from Cloudinary
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: '**',
+        },
+      ],
     },
   };
   
-export default nextConfig;
+  export default nextConfig;
+  
