@@ -208,12 +208,20 @@ const ModeratorsRegistration = () => {
 
   const validateFields = () => {
     const newErrors = {};
-    if (!Name.trim()) newErrors.Name = "Name is required.";
-    if (!Email.trim() || !/\S+@\S+\.\S+/.test(Email)) newErrors.Email = "Valid email is required.";
+    if (!Name.trim()) {
+      newErrors.Name = "Name is required.";
+    } else if (/^\d+$/.test(Name.trim())) {
+      newErrors.Name = "Name cannot consist of only numbers.";
+    }
+    if (!Email.trim() || !/\S+@\S+\.\S+/.test(Email)) {
+      newErrors.Email = "Valid email is required.";
+    }
     if (!ContactNumber.trim() || ContactNumber.length < 11 || !/^\d+$/.test(ContactNumber)) {
       newErrors.ContactNumber = "Contact must be at least 11 digits long and contain only numbers.";
     }
-    if (!Location.trim()) newErrors.Location = "Location is required.";
+    if (!Location.trim()) {
+      newErrors.Location = "Location is required.";
+    }
     if (!CNIC.trim() || CNIC.length !== 13 || !/^\d+$/.test(CNIC)) {
       newErrors.CNIC = "CNIC must be exactly 13 digits long and contain only numbers.";
     }
