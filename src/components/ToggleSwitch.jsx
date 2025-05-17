@@ -10,11 +10,10 @@ export default function ToggleSwitch({ onSwitch, title, buttonLabels, components
   };
 
   const ActiveComponent = components[active]; // Dynamically select the active component
-
   return (
     <div>
       {/* Title */}
-      <h2 className="text-heading text-2xl font-bold mb-4">{title}</h2>
+      <h2 className="text-white text-2xl font-bold mb-4">{title}</h2>
 
       {/* Toggle Switch */}
       <div className="flex space-x-4 mb-4">
@@ -23,8 +22,10 @@ export default function ToggleSwitch({ onSwitch, title, buttonLabels, components
             key={label}
             onClick={() => handleSwitch(label)}
             className={`px-4 py-2 ${
-              active === label ? 'bg-darkgreen text-white' : 'border.darkgreen text-darkgreen'
-            } rounded`}
+              active === label 
+                ? 'bg-darkgreen text-white' 
+                : 'bg-transparent border border-darkgreen text-white/70 hover:text-white'
+            } rounded transition-colors`}
           >
             {label}
           </button>

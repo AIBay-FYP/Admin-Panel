@@ -13,7 +13,11 @@
   --dark-green: #003333;
   --red1: #ff0000;
   
-
+  /* Text color variables */
+  --text-primary: rgba(255, 255, 255, 0.95);  /* Nearly white text for primary content */
+  --text-secondary: rgba(255, 255, 255, 0.7); /* Slightly dimmed for secondary content */
+  --text-tertiary: rgba(255, 255, 255, 0.5);  /* More dimmed for less important text */
+  --text-accent: #22d3ee;                     /* Cyan accent for highlights */
 }
 
 /* Add these styles to your global CSS file or in a style tag if using Tailwind CSS */
@@ -41,15 +45,20 @@
 
 /* Style the scrollbar track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Light background for the scrollbar track */
+  background: rgba(255, 255, 255, 0.05); /* Dark subtle background for the track */
   border-radius: 10px; /* Rounded corners for the track */
 }
 
 /* Style the scrollbar thumb (the draggable part) */
 ::-webkit-scrollbar-thumb {
-  background: #888; /* Default color of the thumb */
+  background: rgba(255, 255, 255, 0.2); /* Slightly visible thumb */
   border-radius: 10px; /* Rounded corners for the thumb */
 }
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3); /* More visible on hover */
+}
+
 
 /* Style the scrollbar thumb when hovered */
 ::-webkit-scrollbar-thumb:hover {

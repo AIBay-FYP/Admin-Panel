@@ -114,8 +114,7 @@ const MetricsCard = () => {
           className={`cursor-pointer transition-all duration-300 
             ${selectedCard === card.id ? 'h-[150px]' : 'h-[110px]'}
             w-[180px] ${card.color} rounded-lg flex flex-col items-center justify-between shadow-lg p-3`}
-        >
-          <div className="flex items-center justify-between w-full">
+        >          <div className="flex items-center justify-between w-full">
             <h1 className="text-3xl font-bold text-white">
               <CountUp
                 start={0}
@@ -127,7 +126,7 @@ const MetricsCard = () => {
             </h1>
             <FontAwesomeIcon icon={card.icon} className="text-white text-2xl" />
           </div>
-          <p className="text-sm text-white">{card.title}</p>
+          <p className="text-sm text-white/80">{card.title}</p>
         </div>
       ))}
     </div>
