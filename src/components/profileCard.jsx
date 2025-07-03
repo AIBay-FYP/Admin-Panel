@@ -84,7 +84,7 @@ const ProfileCard = ({ name, role, rating, email, location, contactNumber, profi
               approvedBy={approvedBy}
               rating={rating}
               role={role}
-              userId={userID}
+              UserID={userID}
             />
           </div>
         </div>

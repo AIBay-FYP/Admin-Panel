@@ -218,7 +218,9 @@ const ServiceDetails = ({ data: initialData, isFetch = true }) => {
             <span>{Location}</span>
             </div>
 
-            <div className="text-sm font-bold">{DaysAvailable} days available</div>
+            {ServiceType !== "Sale" && (
+              <div className="text-sm font-bold">{DaysAvailable} days available</div>
+            )}
             <button className="w-full bg-gray-200 text-sm py-2 mt-4 rounded text-greenbg">
               Contact Provider
             </button>
@@ -226,11 +228,11 @@ const ServiceDetails = ({ data: initialData, isFetch = true }) => {
             <div className="mt-6 space-y-2 text-xs text-light">
               <div className="flex justify-between">
                 <span>Security Fee</span>
-                <span>PKR {SecurityFee}</span>
+                <span>{SecurityFee}%</span>
               </div>
               <div className="flex justify-between">
                 <span>Cancellation Fee</span>
-                <span>PKR {CancellationFee}</span>
+                <span>{CancellationFee}%</span>
               </div>
             </div>
           </div>
