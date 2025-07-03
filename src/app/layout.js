@@ -25,11 +25,10 @@ export default async function RootLayout({ children }) {
         <body className={montserrat.className}>
           <ReactQueryProvider>
             <SignedIn>
-              {/* Show the admin panel for authenticated users */}
-              <div className="flex min-h-screen">
+              {/* Show the admin panel for authenticated users */}              <div className="flex min-h-screen bg-gradient-to-br from-[#0f1c2d] to-[#111827] text-white">
                 <Sidebar />
                 <main className="flex-1 ml-[20%]"> {/* Adjust 'ml-[20%]' to sidebar width */}
-                  <div className="w-[75%]">
+                  <div className="w-[75%] py-6">
                     {children}
                   </div>
                 </main>
