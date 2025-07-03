@@ -16,7 +16,7 @@ export async function GET(req, { params }) {
     const db = await connectToDatabase();
     const ReviewCollection = db.collection("Review");
     const BookingCollection = db.collection("Bookings");
-    const ListingCollection = db.collection("Listings");
+    const ListingCollection = db.collection("listings");
 
     // Count the number of reviews for the consumer
     const reviewCount = await ReviewCollection.countDocuments({

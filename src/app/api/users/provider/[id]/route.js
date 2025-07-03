@@ -16,7 +16,7 @@ export async function GET(req, { params }) {
     const db = await connectToDatabase();
     const ReviewCollection = db.collection("Review");
     const BookingCollection = db.collection("Bookings");
-    const ListingCollection = db.collection("Listings");
+    const ListingCollection = db.collection("listings");
 
     const reviewCount = await ReviewCollection.countDocuments({
       ReviewerID: new ObjectId(id),
@@ -56,7 +56,7 @@ export async function GET(req, { params }) {
 
     // Calculate the number of bookings with Status 'Approved' or 'Completed'
     const approvedOrCompletedBookings = userBookings.filter(
-      (booking) => booking.Status === "Approved" || booking.Status === "Completed"
+      (booking) => booking.Status === "Confirmed" || booking.Status === "Completed"
     ).length;
 
     // Calculate the service approval rate

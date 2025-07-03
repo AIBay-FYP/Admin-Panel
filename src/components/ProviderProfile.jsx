@@ -27,6 +27,7 @@ const ProviderProfile = ({ name, email, role, reviews, contactNumber, services, 
   const [monthlyEarnings, setMonthlyEarnings] = useState([0, 0, 0, 0, 0, 0, 0]); // Default monthly earnings for each month
 
   useEffect(() => {
+    console.log("Provider data:", data);
     if (data && data.bookings) {
       // Create an array of earnings for each month
       const earningsPerMonth = [0, 0, 0, 0, 0, 0, 0]; // Initialize earnings for each month
@@ -109,7 +110,7 @@ const ProviderProfile = ({ name, email, role, reviews, contactNumber, services, 
 
           {/* Progress Circle */}
           <div className="mt-4">
-            <ProgressCircle progress={progress} />
+            <ProgressCircle progress={serviceApprovalRate} />
           </div>
           <h5 className="text-gray-200 mt-2">Service Approval rate</h5>
         </div>
