@@ -1,3 +1,4 @@
+`use client`;
 import React, { useState } from 'react';
 import DisputePopup from '@/components/dispute';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
