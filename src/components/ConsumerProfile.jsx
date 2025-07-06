@@ -8,19 +8,19 @@ import { useQuery } from "@tanstack/react-query";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const fetchConsumer = async (id) => {
-  console.log(id);
-  const response = await fetch(`/api/users/consumer/${id}`);
+const fetchConsumer = async (UserID) => {
+  console.log(UserID);
+  const response = await fetch(`/api/users/consumer/${UserID}`);
   if (!response.ok) throw new Error("Failed to fetch users");
   return response.json();
 };
 
-const ConsumerProfile = ({ name, email, role,reviews, contactNumber, services, profilePicture, userId }) => {
+const ConsumerProfile = ({ name, email, role,reviews, contactNumber, services, profilePicture, UserID }) => {
   const [progress, setProgress] = useState(0);
   
   // Using react-query to fetch consumer data
   const { data, error, isLoading } = useQuery(
-    { queryKey: ["consumerProfile", userId], queryFn: () => fetchConsumer(userId) }
+    { queryKey: ["consumerProfile", UserID], queryFn: () => fetchConsumer(UserID) }
   );
   
   const { reviewCount, listings, servicesAvailable, servicesAvailed } = data || {};
