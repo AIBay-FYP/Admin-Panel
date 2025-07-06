@@ -15,11 +15,11 @@ const fetchProviderData = async (id) => {
   return response.json();
 };
 
-const ProviderProfile = ({ name, email, role, reviews, contactNumber, services, profilePicture, userId }) => {
+const ProviderProfile = ({ name, email, role, reviews, contactNumber, services, profilePicture, UserID }) => {
   const { data, error, isLoading } = useQuery(
     {
-      queryKey: ["providerData", userId],
-      queryFn: () => fetchProviderData(userId),
+      queryKey: ["providerData", UserID],
+      queryFn: () => fetchProviderData(UserID),
     }
   );
 
