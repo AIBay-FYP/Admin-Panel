@@ -143,7 +143,6 @@
 //         detailsPopup={ServiceResolution}
 //       />
 //     </div>
-//   );
 // }
 
 'use client'
@@ -245,7 +244,7 @@ export default function ContractMonitoring() {
     { header: 'Provider Name', accessor: (row) => row.providerDetails?.Name },
     { header: 'Service Name', accessor: (row) => row.listingDetails?.Title },
     { header: 'Date Created', accessor: (row) => formatDate(row.Timestamp) },
-    
+    { header: 'Dispute Nature', accessor: (row) => row.DisputeNature || '-' }, // <-- Add this line
   ];
 
 

@@ -27,9 +27,10 @@ export async function GET(request) {
             Description: 1,
             Status: 1,
             Date: 1,
-            Title:1,
-            "creatorDetails.Name": 1,
+            Title: 1,
             Evidence: 1,
+            AdminComment: 1, // <-- Add this line
+            "creatorDetails.Name": 1,
           },
         },
       ]).toArray();
@@ -60,10 +61,11 @@ export async function GET(request) {
             Description: 1,
             Status: 1,
             Date: 1,
-            Title:1,
+            Title: 1,
+            Evidence: 1,
+            AdminComment: 1, // <-- Add this line
             "creatorDetails.Name": 1,
-            Evidence: 1
-            },
+          },
         },
       ]).toArray();
 

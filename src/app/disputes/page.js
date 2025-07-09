@@ -10,11 +10,11 @@ const fetchDisputes = async () => {
   return response.json();
 };
 
-const updateDisputeStatus = async ({ id, status, resolutionAction }) => {
+const updateDisputeStatus = async ({ id, status, adminComment }) => {
   const response = await fetch(`/api/disputes/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status, resolutionAction }),
+    body: JSON.stringify({ status, adminComment }),
   });
   if (!response.ok) throw new Error('Failed to update dispute');
   return response.json();
@@ -37,9 +37,14 @@ const DisputesBoard = () => {
     
   const [selectedDispute, setSelectedDispute] = useState(null);
 
-  const handleSaveChanges = async (id, status, resolutionAction) => {
-    await mutation.mutateAsync({ id, status, resolutionAction });
-    setSelectedDispute(null);
+  const handleSaveChanges = async (id, status, adminComment) => {
+    try {
+      await mutation.mutateAsync({ id, status, adminComment });
+      setSelectedDispute(null); // Only close on success
+    } catch (error) {
+      // Optionally show error to user
+      console.error(error);
+    }
   };
 
   const handleDragStart = (e, dispute) => {
