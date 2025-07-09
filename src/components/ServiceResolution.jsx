@@ -73,6 +73,14 @@ const ServiceResolution = ({ onClose, contractId }) => {
   console.log(data)
   const isDisputed = data?.Status === "Disputed";
 
+  let documentUrl = data?.DocumentURL || "#";
+  if (data?.FinalMergedUrl) {
+    documentUrl = data.FinalMergedUrl;
+  } else if (data?.consumerSignedUrl && data?.ConsumerApproved) {
+    documentUrl = data.consumerSignedUrl;
+  } else if (data?.providerSignedUrl) {
+    documentUrl = data.providerSignedUrl;
+  }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -121,7 +129,7 @@ const ServiceResolution = ({ onClose, contractId }) => {
             <h2 className="text-2xl font-semibold">
               {data.listingDetails?.Title || "Service Name"}
             </h2>
-            {isDisputed && (
+            {data.DisputeNature && (
               <div>
                 <label className="block text-sm mb-1">Service Resolution</label>
                 <select
@@ -136,7 +144,11 @@ const ServiceResolution = ({ onClose, contractId }) => {
               </div>
             )}
             <div className="flex items-center cursor-pointer">
-              <a href={data.DocumentURL || "#"} target="_blank" rel="noopener noreferrer">
+              <a
+                href={`https://docs.google.com/viewer?url=${encodeURIComponent(documentUrl)}&embedded=true`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <i className="fas fa-file-contract text-gray-300" style={{ fontSize: "12px" }} />
                 <span className="text-sm ml-1">Contract</span>
               </a>
