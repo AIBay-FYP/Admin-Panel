@@ -1,7 +1,16 @@
+'use client'
 import { SignIn } from "@clerk/nextjs";
-import Image from "next/image";
+import { useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
 
 export default function Login() {
+  const { isSignedIn } = useUser();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      window.location.reload(); // did this cause there is a bug in Clerk where it doesn't redirect properly after sign-in
+    }
+  }, [isSignedIn]);
     return (
       <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-teal-900 to-indigo-900 relative overflow-hidden">
         {/* Animated decorative elements */}
