@@ -91,7 +91,7 @@ export default function Login() {
                     },
                     formFieldInput: {
                       borderColor: "rgba(255, 255, 255, 0.3)",
-                      color: "white",
+                      color: "black", // <-- Change to black
                       "&:focus": {
                         borderColor: "#22d3ee", // cyan-400
                         outline: "none"
