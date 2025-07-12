@@ -273,11 +273,11 @@ const ModeratorsRegistration = () => {
       <div className="flex items-center mb-6">
         <button
           onClick={() => router.back()}
-          className="text-gray-600 hover:text-gray-800 text-base mr-2"
+          className="text-white hover:text-gray-800 text-base mr-2"
         >
           &larr;
         </button>
-        <h1 className="text-xl font-bold text-gray-800">Moderators Registration</h1>
+        <h1 className="text-xl font-bold text-white-800">Moderators Registration</h1>
       </div>
 
       {/* Form Container */}

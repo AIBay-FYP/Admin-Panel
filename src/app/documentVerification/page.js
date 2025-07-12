@@ -106,7 +106,7 @@ const DocumentVerification = () => {
       /> */}
 
       {/* Page Header */}
-      <h1 className="text-heading text-2xl font-semibold mb-6">Document Verification</h1>
+      <h1 className="text-heading text-2xl text-white font-semibold mb-6">Document Verification</h1>
 
       {/* Table Component */}
       <Table 

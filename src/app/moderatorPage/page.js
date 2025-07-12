@@ -56,7 +56,7 @@ const ModeratorRegistration = () => {
 
       {/* Page Heading and Button */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-heading">Moderators</h1>
+        <h1 className="text-3xl font-bold text-heading text-white">Moderators</h1>
         <button
           onClick={handleNewRegistration}
           className="flex items-center gap-2 bg-darkgreen text-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-darkgreen hover:border-darkgreen border"
@@ -68,9 +68,9 @@ const ModeratorRegistration = () => {
 
       {/* Metrics Card */}
       <div className="mb-6">
-        <div className="w-[250px] h-[110px] border border-darkgreen text-heading rounded-lg p-4 flex flex-col justify-between hover:shadow-lg">
-          <h1 className="text-4xl font-bold">{moderators.length}</h1>
-          <p className="text-sm font-semibold">Total Registered</p>
+        <div className="w-[250px] h-[110px] border border-white text-heading bg-darkgreen rounded-lg p-4 flex flex-col justify-between hover:shadow-lg">
+          <h1 className="text-4xl font-bold text-white">{moderators.length}</h1>
+          <p className="text-sm font-semibold text-white">Total Registered</p>
         </div>
       </div>
 

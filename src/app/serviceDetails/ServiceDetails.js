@@ -221,9 +221,9 @@ const ServiceDetails = ({ data: initialData, isFetch = true }) => {
             {ServiceType !== "Sale" && (
               <div className="text-sm font-bold">{DaysAvailable} days available</div>
             )}
-            <button className="w-full bg-gray-200 text-sm py-2 mt-4 rounded text-greenbg">
+            {/* <button className="w-full bg-gray-200 text-sm py-2 mt-4 rounded text-greenbg">
               Contact Provider
-            </button>
+            </button> */}
 
             <div className="mt-6 space-y-2 text-xs text-light">
               <div className="flex justify-between">
