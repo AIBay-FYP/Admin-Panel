@@ -139,7 +139,7 @@ export default function ComplianceServices() {
   const handleDropdown = async (id, status) => {
     try {
       console.log("In dropdown: " + id + " " + status);
-  
+
       const response = await fetch("/api/complianceServices", {
         method: "PUT",
         headers: {
@@ -150,10 +150,28 @@ export default function ComplianceServices() {
           status,
         }),
       });
-  
+
       if (response.ok) {
         console.log("Status updated");
-  
+
+        // Find the row for this id to get ProviderId
+        const service = data.find(row => row._id === id || row.id === id);
+        if (service && service.ProviderId) {
+          // Create notification for ProviderId
+          await fetch('/api/notificationPost', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              UserID: service.ProviderId,
+              Message: `Your service status has been updated to "${status}".`,
+              Type: 'Compliance',
+              ReadStatus: false,
+            }),
+          });
+        }
+
         // 👉 Tell React Query to refetch fresh data
         await queryClient.invalidateQueries(['complianceServices'], { refetchActive: true });
       } else {
