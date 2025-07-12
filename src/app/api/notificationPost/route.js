@@ -12,7 +12,7 @@ export async function POST(req) {
 
 
     const notification = {
-      notificationID,
+      NotificationID: notificationID,
       UserID: new ObjectId(UserID), 
       Message,
       Type, 

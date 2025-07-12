@@ -1,92 +1,51 @@
 'use client';
-import { useUser } from '@clerk/nextjs';
-import { useState, useEffect } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useState } from 'react';
 
 const GenericModal = ({
   isOpen,
   onClose,
-  title = "Modal Title",
-  type,
+  selectedAction,
+  message,
   primaryAction,
-  primaryButtonText = "Confirm",
-  secondaryButtonText = "Cancel",
+  primaryButtonText,
+  secondaryButtonText,
 }) => {
-  const [editableMessage, setEditableMessage] = useState("");
-  const {user} = useUser()
-  const UserID = user?.publicMetadata.UserID
-
-  // Synchronize editableMessage with the `type` prop whenever it changes
-  useEffect(() => {
-    if (type) {
-      setEditableMessage(
-        `Status update: The status has been changed to '${type}' for the selected row. Please review the changes if needed.`
-      );
-    }
-  }, [type]);
-
-  const handleMessageChange = (e) => {
-    setEditableMessage(e.target.value);
-  };
-
-  const handleClose = () => {
-    toast.info("Modal closed without any changes.", {
-      position: "bottom-center",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "dark",
-    });
-    onClose();
-  };
+  const [input, setInput] = useState('');
 
   if (!isOpen) return null;
 
   return (
-    <>
-      <div
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-1000"
-        style={{ zIndex: 9999 }}
-      >
-        <div className="bg-[#1E3A3A] p-6 rounded-lg w-[500px] text-white">
-          {/* Title */}
-          <h2 className="text-lg font-semibold mb-4">{title}</h2>
-
-          {/* Editable Message */}
-          <div className="border border-gray-600 rounded p-4 bg-[#1E3A3A] text-sm">
-            <textarea
-              value={editableMessage}
-              onChange={handleMessageChange}
-              className="w-full h-32 bg-[#1E3A3A] text-white focus:outline-none resize-none"
-            />
-          </div>
-
-          {/* Buttons */}
-          <div className="flex justify-end space-x-4 mt-6">
-            <button
-              onClick={handleClose}
-              className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded"
-            >
-              {secondaryButtonText}
-            </button>
-            <button
-              onClick={() => {
-                primaryAction(UserID, editableMessage, type, false);
-              }}
-              className="bg-light-green hover:bg-dark-green text-white py-2 px-4 rounded"
-            >
-              {primaryButtonText}
-            </button>
-          </div>
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-md">
+        <h2 className="text-xl font-bold mb-2 text-gray-800">{selectedAction}</h2>
+        <p className="text-sm text-gray-600 mb-4">{message}</p>
+        <textarea
+          className="w-full text-black border border-gray-300 rounded p-2 mb-4"
+          rows="4"
+          placeholder="Write your message here..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <div className="flex justify-end gap-2">
+          <button
+            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            onClick={onClose}
+          >
+            {secondaryButtonText}
+          </button>
+          <button
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            onClick={() => {
+              if (input.trim() !== '') {
+                primaryAction(input.trim(), selectedAction, true); // ✅ Correct order
+              }
+            }}
+          >
+            {primaryButtonText}
+          </button>
         </div>
       </div>
-
-      {/* Snackbar */}
-      <ToastContainer />
-    </>
+    </div>
   );
 };
 
