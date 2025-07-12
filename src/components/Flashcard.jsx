@@ -4,7 +4,6 @@ import GenericModal from './genericModal';
 import { formatDate } from '@/utiks/formatDate';
 import { useQueryClient } from '@tanstack/react-query';
 
-
 const Flashcard = ({ id, title, date, givenBy, description, status, userID }) => {
   const queryClient = useQueryClient();
   const [isFlipped, setIsFlipped] = useState(false);
@@ -12,8 +11,6 @@ const Flashcard = ({ id, title, date, givenBy, description, status, userID }) =>
   const [selectedAction, setSelectedAction] = useState(status);
 
   const handleFlip = (e) => {
-    // Prevent flip if dropdown or button is clicked
-    console.log(status)
     if (e.target.tagName !== 'SELECT' && e.target.tagName !== 'OPTION') {
       setIsFlipped(!isFlipped);
     }
@@ -49,16 +46,15 @@ const Flashcard = ({ id, title, date, givenBy, description, status, userID }) =>
       if (response.ok) {
         console.log('Notification created:', result);
 
-        // Update feedback status
         const updateResponse = await fetch('/api/feedbacks', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-          feedbackID: id,    
-          status: selectedAction,
-          date: new Date().toISOString(),  
+            feedbackID: id,
+            status: selectedAction,
+            date: new Date().toISOString(),
           }),
         });
 
@@ -81,7 +77,6 @@ const Flashcard = ({ id, title, date, givenBy, description, status, userID }) =>
   return (
     <div className="flex justify-center items-center">
       <div className="relative w-48 h-64 perspective-1000">
-        {/* Container for the flip effect */}
         <div
           className={`relative w-full h-full transition-transform duration-700 transform-style-preserve ${
             isFlipped ? 'rotate-y-180' : ''
@@ -92,10 +87,7 @@ const Flashcard = ({ id, title, date, givenBy, description, status, userID }) =>
             className={`absolute w-full h-full ${
               status === 'Review' ? 'bg-customGray' : 'bg-[#6AA6A6]'
             } text-white rounded-lg p-4 shadow-lg backface-hidden z-10 cursor-pointer`}
-            style={{
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden',
-            }}
+            style={{ backfaceVisibility: 'hidden' }}
             onClick={handleFlip}
           >
             <h2 className="text-xl font-bold">{id}</h2>
@@ -111,11 +103,7 @@ const Flashcard = ({ id, title, date, givenBy, description, status, userID }) =>
             </div>
             <p className="mt-2 text-xs italic">Click to see the description</p>
 
-            {/* Actions Dropdown */}
-            <div
-              className="mt-4"
-              onClick={(e) => e.stopPropagation()} // Prevent flip on dropdown click
-            >
+            <div className="mt-4" onClick={(e) => e.stopPropagation()}>
               <select
                 className="w-full bg-white text-black p-2 rounded cursor-pointer focus:outline-none"
                 onChange={(e) => handleDropdownChange(e.target.value)}
@@ -132,10 +120,7 @@ const Flashcard = ({ id, title, date, givenBy, description, status, userID }) =>
           {/* Back Side */}
           <div
             className="absolute w-full h-full bg-midgreen text-white rounded-lg p-4 shadow-lg backface-hidden rotate-y-180 z-10 cursor-pointer"
-            style={{
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden',
-            }}
+            style={{ backfaceVisibility: 'hidden' }}
             onClick={handleFlip}
           >
             <h2 className="text-lg font-semibold mb-2">Description</h2>
@@ -146,11 +131,11 @@ const Flashcard = ({ id, title, date, givenBy, description, status, userID }) =>
         </div>
       </div>
 
-      {/* Generic Modal */}
+      {/* Modal */}
       <GenericModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selectedAction}
+        selectedAction={selectedAction}
         message={`You selected the "${selectedAction}" action. Write a message`}
         primaryAction={handlePrimaryAction}
         primaryButtonText="Confirm"
