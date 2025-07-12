@@ -4,7 +4,6 @@ export async function GET() {
   const db = await connectToDatabase();
  
   try {
-      // Fetch all contracts (previous functionality)
       const contracts = await db.collection("Contract").aggregate([
         {
           $lookup: {
@@ -42,16 +41,6 @@ export async function GET() {
           },
         },
         { $unwind: { path: "$providerDetails", preserveNullAndEmptyArrays: true } },
-        // {
-        //   $project: {
-        //     ContractID: 1,
-        //     "consumerDetails.Name": 1,
-        //     "providerDetails.Name": 1,
-        //     "listingDetails.Title": 1,
-        //     Timestamp: 1,
-        //     Status: 1,
-        //   },
-        // },
       ]).toArray();
 
       return new Response(JSON.stringify(contracts), { status: 200 });

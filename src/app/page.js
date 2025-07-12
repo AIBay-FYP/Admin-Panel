@@ -3,9 +3,6 @@ import ComplianceMonitoring from '@/app/complianceMonitoring/page';
 import { SignedIn, SignedOut } from '@clerk/nextjs';
 import Login from './sign-in/[[...sign-in]]/page';
 
-
-
-
 export default async function Home() {
 
   return (

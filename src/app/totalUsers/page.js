@@ -49,7 +49,7 @@ const TotalUsers = () => {
   const chartOptions = {
     plugins: {
       legend: {
-        display: false, // Hides the legend
+        display: false,
       },
     },
   };

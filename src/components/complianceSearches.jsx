@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { Chart, CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController } from 'chart.js';
 import Table from './Table';
 import { useQuery } from '@tanstack/react-query';
-import LoadingBar from 'react-top-loading-bar'; // Import the loading bar
+import LoadingBar from 'react-top-loading-bar';
 
 Chart.register(CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController);
 

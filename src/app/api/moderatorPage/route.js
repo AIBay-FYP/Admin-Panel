@@ -62,17 +62,6 @@ export async function POST(req) {
     let clerkUser;
     // Create the user in Clerk
     try {
-      // const clerkUser = await clerkClient.users.createUser({
-      //   emailAddress: [Email],
-      //   password: generatedPassword,
-      //   firstName: Name.split(" ")[0],
-      //   lastName: Name.split(" ").slice(1).join(" "),      
-      //   publicMetadata: {
-      //     role: RoleType ,
-      //     UserID: ApprovedBy ,
-      //   },
-      // });
-
       const clerk = await clerkClient();
       clerkUser = await clerk.users.createUser({
         
@@ -99,7 +88,6 @@ export async function POST(req) {
     // Create a new moderator document in MongoDB
     const newModerator = {
       UserID,
-      // ClerkUserID: clerkUser.id, // Store Clerk's User ID
       Name,
       Email,
       ContactNumber,
@@ -147,7 +135,7 @@ export async function PUT(req) {
       );
     }
 
-    const db = await connectToDatabase();  // Reuse the same connection
+    const db = await connectToDatabase();  
     const collection = db.collection("User");
 
     // Update the moderator's data

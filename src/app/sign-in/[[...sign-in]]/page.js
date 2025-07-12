@@ -8,7 +8,7 @@ export default function Login() {
 
   useEffect(() => {
     if (isSignedIn) {
-      window.location.reload(); // did this cause there is a bug in Clerk where it doesn't redirect properly after sign-in
+      window.location.reload(); 
     }
   }, [isSignedIn]);
     return (
@@ -90,9 +90,9 @@ export default function Login() {
                       color: "rgba(255, 255, 255, 0.8)"
                     },
                     formButtonPrimary: {
-                      backgroundColor: "#0d9488", // teal-600
+                      backgroundColor: "#0d9488", 
                       "&:hover": {
-                        backgroundColor: "#0f766e" // teal-700
+                        backgroundColor: "#0f766e" 
                       }
                     },
                     formFieldLabel: {
@@ -100,9 +100,9 @@ export default function Login() {
                     },
                     formFieldInput: {
                       borderColor: "rgba(255, 255, 255, 0.3)",
-                      color: "black", // <-- Change to black
+                      color: "black",
                       "&:focus": {
-                        borderColor: "#22d3ee", // cyan-400
+                        borderColor: "#22d3ee", 
                         outline: "none"
                       }
                     },

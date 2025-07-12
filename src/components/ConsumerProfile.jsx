@@ -35,7 +35,7 @@ const ConsumerProfile = ({ name, email, role,reviews, contactNumber, services, p
     const categoryCount = {};
 
     listings.forEach((listing) => {
-      const category = listing.Category; // Assuming 'Category' is the field name
+      const category = listing.Category;
       if (category) {
         categoryCount[category] = (categoryCount[category] || 0) + 1;
       }
@@ -88,8 +88,6 @@ const ConsumerProfile = ({ name, email, role,reviews, contactNumber, services, p
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-
-  // Destructuring the fetched data (reviewCount, bookings, listings)
 
   return (
     <div className="min-h-[80vh] flex justify-center items-center">

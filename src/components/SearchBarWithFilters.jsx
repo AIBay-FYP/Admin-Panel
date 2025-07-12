@@ -21,7 +21,7 @@ const SearchBarWithFilters = ({ placeholder, onSearch, onFilter, filterOptions }
   const handleFilterChange = (selectedOption) => {
     setFilterOption(selectedOption);
     if (onFilter) onFilter(selectedOption);
-    setIsFilterOpen(false); // Close the filter dropdown after selecting an option
+    setIsFilterOpen(false); 
   };
 
   if (!isClient) {

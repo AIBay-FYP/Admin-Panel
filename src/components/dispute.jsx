@@ -6,7 +6,7 @@ import GenericModal from './genericModal';
 const DisputePopup = ({ dispute, onClose, onSave }) => {
   const [resolutionAction, setResolutionAction] = useState(dispute?.Status || 'New');
   const [mainImageIndex, setMainImageIndex] = useState(0);
-  const [adminComment, setAdminComment] = useState(dispute?.AdminComment || ""); // <-- Initialize with existing comment
+  const [adminComment, setAdminComment] = useState(dispute?.AdminComment || ""); 
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const thumbnails = dispute?.Evidence || [];

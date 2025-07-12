@@ -17,7 +17,6 @@ const ModeratorsProfile = () => {
   };
 
   const handleSave = () => {
-    // Functionality to save changes (connect with backend API)
     console.log("Saved Data:", formData);
     alert("Changes have been saved!");
   };
@@ -115,15 +114,6 @@ const ModeratorsProfile = () => {
         >
             Change Password
         </a>
-
-        {/* <div className="flex justify-end"> */}
-        {/* <a
-            href="/change-password"
-            className="text-sm text-green-600 font-medium hover:underline"
-        >
-            Change Password
-        </a>
-        </div> */}
 
         {/* Buttons and Change Password Link */}
         <div className="flex justify-between items-center mt-6">

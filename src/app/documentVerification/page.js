@@ -49,7 +49,6 @@ const DocumentVerification = () => {
     { header: 'Submitted By', accessor: 'UserID' }, 
   ];
 
-  
   const handleDropdown = async (id, status) => {
     try {
       const response = await fetch("/api/documentVerification", {
@@ -93,17 +92,6 @@ const DocumentVerification = () => {
 
   return (
     <div className="flex flex-col py-10">
-      {/* Search Bar */}
-      {/* <SearchBarWithFilters
-        placeholder="Search documents..."
-        onSearch={(query) => console.log('Search query:', query)}
-        onFilter={(filter) => console.log('Selected filter:', filter)}
-        filterOptions={[
-          { label: 'Verified', value: 'Verified' },
-          { label: 'Pending', value: 'Pending' },
-          { label: 'Rejected', value: 'Rejected' },
-        ]}
-      /> */}
 
       {/* Page Header */}
       <h1 className="text-heading text-2xl text-white font-semibold mb-6">Document Verification</h1>

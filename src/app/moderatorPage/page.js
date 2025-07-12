@@ -41,18 +41,6 @@ const ModeratorRegistration = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Search Bar */}
-      <div className="mb-6">
-        {/* <SearchBarWithFilters
-          placeholder="Search Moderators"
-          filterOptions={[
-            { label: "By Name", value: "name" },
-            { label: "By Email", value: "email" },
-          ]}
-          onSearch={handleSearch}
-          onFilter={handleFilter}
-        /> */}
-      </div>
 
       {/* Page Heading and Button */}
       <div className="flex justify-between items-center mb-6">

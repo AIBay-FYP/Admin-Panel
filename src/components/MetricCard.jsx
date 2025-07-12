@@ -9,7 +9,7 @@ import { useUser } from '@clerk/nextjs'; // Import to get the logged-in user
 
 // API to fetch the counts
 const fetchCounts = async () => {
-  const response = await fetch('/api/metricCards'); // Update with your API endpoint
+  const response = await fetch('/api/metricCards');
   if (!response.ok) {
     throw new Error('Failed to fetch counts');
   }
@@ -29,8 +29,8 @@ const MetricsCard = () => {
   const [selectedCard, setSelectedCard] = useState(null);
   const [selectedSidebar, setSelectedSidebar] = useState(null);
   
-  const { user } = useUser(); // Get user data (assuming user object contains role)
-  const userRole = user?.publicMetadata.role; // Assuming role is stored in publicMetadata
+  const { user } = useUser(); 
+  const userRole = user?.publicMetadata.role; 
   
   // Sync with localStorage on mount
   useEffect(() => {

@@ -1,11 +1,11 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
 import { Chart, CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController } from 'chart.js';
-import Table from './Table'; // Import the Table component
+import Table from './Table'; 
 import ServiceDetails from '@/app/serviceDetails/ServiceDetails';
 import { useQuery } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
-import LoadingBar from 'react-top-loading-bar'; // Import the loading bar
+import LoadingBar from 'react-top-loading-bar'; 
 
 // Register required components for Chart.js
 Chart.register(CategoryScale, BarElement, Title, Tooltip, Legend, LinearScale, BarController);
@@ -18,9 +18,6 @@ const fetchComplianceData = async () => {
   }
   return response.json();
 };
-
-
-
 
 const columns = [
   { header: 'Service Name', accessor: 'ServiceName' },
@@ -65,7 +62,7 @@ export default function ComplianceServices() {
     datasets: [
       {
         label: 'Status',
-        data: [0, 0, 0, 0], // Start with 0 for all categories
+        data: [0, 0, 0, 0], 
         backgroundColor: ['#008000','#B24545', '#EDCC48', '#3DA3EB'],
         borderColor: ['#008000','#B24545', '#EDCC48', '#3DA3EB'],
         borderWidth: 1,
@@ -191,7 +188,7 @@ export default function ComplianceServices() {
       </div>
       <Table
         columns={columns}
-        data={data} // Pass fetched data to Table
+        data={data} 
         dropdownOptions={dropdownOptions}
         openPopup={true}
         details={true}

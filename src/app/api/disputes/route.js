@@ -29,7 +29,7 @@ export async function GET(request) {
             Date: 1,
             Title: 1,
             Evidence: 1,
-            AdminComment: 1, // <-- Add this line
+            AdminComment: 1, 
             "creatorDetails.Name": 1,
           },
         },
@@ -63,7 +63,7 @@ export async function GET(request) {
             Date: 1,
             Title: 1,
             Evidence: 1,
-            AdminComment: 1, // <-- Add this line
+            AdminComment: 1, 
             "creatorDetails.Name": 1,
           },
         },

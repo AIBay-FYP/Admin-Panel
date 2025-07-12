@@ -1,9 +1,7 @@
-// app/api/listings/route.js
 import { connectToDatabase } from '@/lib/mongodb';
 
 export async function GET() {
   try {
-    // Connect to the database
     const db = await connectToDatabase();
 
     const collection = db.collection('listings');

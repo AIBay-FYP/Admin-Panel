@@ -1,4 +1,4 @@
-import { connectToDatabase } from "@/lib/mongodb"; // Replace with your database connection logic
+import { connectToDatabase } from "@/lib/mongodb"; 
 import { ObjectId } from "mongodb";
 
 export async function GET(req, { params }) {

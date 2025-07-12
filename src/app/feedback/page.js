@@ -3,7 +3,7 @@ import React, { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import FlashCard from "@/components/Flashcard";
 import SearchBarWithFilters from "@/components/SearchBarWithFilters";
-import LoadingBar from "react-top-loading-bar"; // Import the LoadingBar component
+import LoadingBar from "react-top-loading-bar"; 
 
 // Function to fetch feedbacks data
 const fetchFeedbacks = async () => {
@@ -18,20 +18,6 @@ const fetchFeedbacks = async () => {
   }
   return response.json();
 };
-
-// export const updateFeedbackStatus = async (feedbackID, newStatus) => {
-//   const response = await fetch(`/api/feedbacks/${feedbackID}`, {
-//     method: 'PUT',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({ Status: newStatus }),
-//   });
-//   if (!response.ok) {
-//     throw new Error('Failed to update feedback status');
-//   }
-//   return response.json();
-// };
 
 const FeedbackPage = () => {
   const loadingBarRef = useRef(null); // Create a reference for the loading bar
@@ -100,12 +86,6 @@ const FeedbackPage = () => {
   return (
     <div className="p-6 min-h-screen">
       <LoadingBar color="#f11946" ref={loadingBarRef} /> {/* Show loading bar */}
-      {/* <SearchBarWithFilters
-        placeholder="Search Feedbacks by id or name"
-        filterOptions={filterOptions}
-        onSearch={handleSearch}
-        onFilter={handleFilter}
-      /> */}
       <h1 className="text-heading align-left text-3xl font-bold mb-8 text-white">Feedback</h1>
 
       {/* Responsive Grid Layout */}

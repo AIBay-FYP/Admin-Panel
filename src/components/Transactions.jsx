@@ -13,7 +13,7 @@ export default function TransactionsComponent({ chartData, tableData, tableColum
 
     useEffect(() => {
         if (chartInstance.current) {
-            chartInstance.current.destroy(); // Destroy previous chart instance
+            chartInstance.current.destroy();
         }
 
         if (chartRef.current) {

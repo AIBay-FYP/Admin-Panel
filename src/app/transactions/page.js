@@ -10,7 +10,7 @@ import { formatDate } from '@/utiks/formatDate';
 
 // Fetch transaction data from the API
 const fetchTransactions = async () => {
-  const response = await fetch('/api/transactions'); // Replace with your API route
+  const response = await fetch('/api/transactions'); 
   if (!response.ok) throw new Error('Failed to fetch transactions');
   return response.json();
 };
@@ -114,8 +114,8 @@ export default function Transactions() {
         components={{
           Transactions: () => (
             <TransactionsComponent
-              chartData={chartData} // Dynamically updated chart data
-              tableData={data.transactions} // Dynamically fetched data
+              chartData={chartData} 
+              tableData={data.transactions} 
               tableColumns={tableColumns}
               dropdownOptions={dropdownOptions}
             />

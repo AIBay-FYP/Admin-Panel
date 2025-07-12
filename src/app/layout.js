@@ -1,7 +1,7 @@
 import { Montserrat } from 'next/font/google';
 import "./globals.css";
 import Sidebar from '../components/Sidebar';
-import Sidebaroo from '../components/Sidebar2'; // Optional, if you're using a second sidebar
+import Sidebaroo from '../components/Sidebar2'; 
 import ReactQueryProvider from './services/react-query/queryClient';
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import Login from './sign-in/[[...sign-in]]/page';
@@ -27,7 +27,7 @@ export default async function RootLayout({ children }) {
             <SignedIn>
               {/* Show the admin panel for authenticated users */}              <div className="flex min-h-screen bg-gradient-to-br from-[#0f1c2d] to-[#111827] text-white">
                 <Sidebar />
-                <main className="flex-1 ml-[20%]"> {/* Adjust 'ml-[20%]' to sidebar width */}
+                <main className="flex-1 ml-[20%]">s
                   <div className="w-[75%] py-6">
                     {children}
                   </div>

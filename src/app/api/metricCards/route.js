@@ -2,7 +2,6 @@ import { connectToDatabase } from "@/lib/mongodb";
 
 export async function GET() {
     try {
-        // Connect to the database
         const db = await connectToDatabase();
         const usercollection = db.collection('User');
         const paycollection = db.collection('Payment');

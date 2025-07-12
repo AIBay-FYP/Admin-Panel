@@ -3,7 +3,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 export async function PATCH(req, context) {
   try {
     const { params } = context;
-    const id = params.id; // ✅ Properly accessed now
+    const id = params.id; 
 
     const db = await connectToDatabase();
 
@@ -25,7 +25,7 @@ export async function PATCH(req, context) {
 
     console.log("Dispute Update Result:", disputeUpdate);
 
-    // 🛠️ Prevent crash if ContractID is missing
+    // Prevent crash if ContractID is missing
     const contractId = disputeUpdate?.value?.ContractID;
 
     if (status === "Resolved" && contractId) {
@@ -36,7 +36,7 @@ export async function PATCH(req, context) {
       console.log("Contract Update Result:", contractUpdate);
     }
 
-    // 📩 Notification
+    // Notification
     if (disputeUpdate?.value?.CreatedBy) {
       const notification = {
         UserID: disputeUpdate.value.CreatedBy,

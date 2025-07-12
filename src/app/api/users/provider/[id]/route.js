@@ -1,9 +1,9 @@
-import { connectToDatabase } from "@/lib/mongodb"; // Your DB connection function
+import { connectToDatabase } from "@/lib/mongodb"; 
 import { ObjectId } from "mongodb";
 
 export async function GET(req, { params }) {
   try {
-    const { id } = await params; // Destructure correctly
+    const { id } = await params; 
     console.log("IDDD", id);
 
     if (!ObjectId.isValid(id)) {

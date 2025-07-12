@@ -2,10 +2,10 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useRef } from 'react';
 const { default: ListedServiceCard } = require("@/components/ListedServiceCard");
-import LoadingBar from 'react-top-loading-bar'; // Import the loading bar
+import LoadingBar from 'react-top-loading-bar'; 
 
 const ListedServices = () => {
-  const loadingBarRef = useRef(null); // Ref for the loading bar
+  const loadingBarRef = useRef(null); 
 
   // Fetch services
   const fetchServices = async () => {
@@ -22,12 +22,12 @@ const ListedServices = () => {
     queryFn: fetchServices,
     onSuccess: () => {
       if (loadingBarRef.current) {
-        loadingBarRef.current.complete(); // Complete the loading bar when data is fetched
+        loadingBarRef.current.complete(); 
       }
     },
     onError: () => {
       if (loadingBarRef.current) {
-        loadingBarRef.current.complete(); // Complete the loading bar in case of an error
+        loadingBarRef.current.complete();
       }
     }
   });
@@ -60,7 +60,7 @@ const ListedServices = () => {
           />
         ))
       ) : (
-        <span>No services available</span> // Display a message if no data
+        <span>No services available</span>
       )}
     </div>
   );

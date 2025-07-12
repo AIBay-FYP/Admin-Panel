@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 
 // GET method handler
 export async function GET(req) {
-  const db = await connectToDatabase(); // Using the connectToDatabase function to establish connection
+  const db = await connectToDatabase(); 
   const feedbacksCollection = db.collection("Feedbacks");
   const usersCollection = db.collection("User");
 
@@ -30,7 +30,7 @@ export async function PUT(req) {
   const feedbacksCollection = db.collection("Feedbacks");
 
   try {
-    const { feedbackID, status, date } = await req.json(); // Using the .json() method on the request object
+    const { feedbackID, status, date } = await req.json(); 
 
     if (!feedbackID || !status || !date) {
       return new Response(JSON.stringify({ message: "Invalid request data" }), { status: 400 });

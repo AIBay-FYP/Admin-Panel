@@ -96,7 +96,7 @@ const ProviderProfile = ({ name, email, role, reviews, contactNumber, services, 
         {/* Left Section */}
         <div className="flex flex-col justify-center items-center bg-darkgreen p-6 rounded-lg shadow-md w-full lg:w-1/3">
           <img
-            src={profilePicture || "/assets/no-pfp.jpg"} // Use profile picture from the API or fallback
+            src={profilePicture || "/assets/no-pfp.jpg"} 
             alt="Provider"
             className="w-24 h-24 rounded-full mb-4"
           />
@@ -139,7 +139,7 @@ const ProviderProfile = ({ name, email, role, reviews, contactNumber, services, 
           {/* Service Listing */}
           <div
             className="flex flex-col space-y-4 overflow-y-auto"
-            style={{ maxHeight: "calc(100vh - 300px)" }} // Adjust height to prevent shrinking
+            style={{ maxHeight: "calc(100vh - 300px)" }} 
           >
             {listings.map((service) => (
               <ListedServiceCard key={service.id} data={service} />
