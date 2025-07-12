@@ -19,6 +19,20 @@ const fetchFeedbacks = async () => {
   return response.json();
 };
 
+// export const updateFeedbackStatus = async (feedbackID, newStatus) => {
+//   const response = await fetch(`/api/feedbacks/${feedbackID}`, {
+//     method: 'PUT',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({ Status: newStatus }),
+//   });
+//   if (!response.ok) {
+//     throw new Error('Failed to update feedback status');
+//   }
+//   return response.json();
+// };
+
 const FeedbackPage = () => {
   const loadingBarRef = useRef(null); // Create a reference for the loading bar
   const { data: feedbacks, error, isLoading } = useQuery({
@@ -105,6 +119,7 @@ const FeedbackPage = () => {
               givenBy={item.RoleType}
               description={item.Description}
               status={item.Status}
+              userID={item.User}
             />
           </div>
         ))}

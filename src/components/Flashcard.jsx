@@ -5,7 +5,7 @@ import { formatDate } from '@/utiks/formatDate';
 import { useQueryClient } from '@tanstack/react-query';
 
 
-const Flashcard = ({ id, title, date, givenBy, description, status }) => {
+const Flashcard = ({ id, title, date, givenBy, description, status, userID }) => {
   const queryClient = useQueryClient();
   const [isFlipped, setIsFlipped] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,7 +26,7 @@ const Flashcard = ({ id, title, date, givenBy, description, status }) => {
     }
   };
 
-  const handlePrimaryAction = async (userID, message, type, readStatus) => {
+  const handlePrimaryAction = async (message, type, readStatus) => {
     const notification = {
       UserID: userID,
       Message: message,
