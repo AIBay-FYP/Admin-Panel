@@ -42,7 +42,7 @@ const DocumentVerification = () => {
   // Columns configuration
   const columns = [
     { header: 'Document Name', accessor: 'DocumentID' },
-    { header: 'Service ID', accessor: 'ListingID' },
+    { header: 'Service ID', accessor: 'ServiceID' },
     { header: 'Date', accessor: 'LastReviewed' },
     { header: 'Time', accessor: 'Time' },
     { header: 'Verified By', accessor: 'VerifiedBy' },
@@ -73,6 +73,17 @@ const DocumentVerification = () => {
     }
   };
   
+  // create a new array with File property (Google Docs viewer URL)
+  const documentsWithFile = documents?.map(doc => {
+    const originalUrl = doc.DocumentUrl || doc.FileUrl || doc.File;  // use actual field containing your PDF URL
+    return {
+      ...doc,
+      File: originalUrl 
+        ? `https://docs.google.com/viewer?url=${encodeURIComponent(originalUrl)}&embedded=true`
+        : null
+    };
+  }) || [];
+
   // Error and loading states
   if (isLoading) {
     return (
@@ -100,7 +111,7 @@ const DocumentVerification = () => {
       <Table 
         className="text-sm"
         columns={columns} 
-        data={documents} 
+        data={documentsWithFile} 
         dropdownOptions={dropdownOptions}
         openPopup={true}
         handleDropdown={handleDropdown}
