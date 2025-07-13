@@ -49,9 +49,7 @@ const handleDropdown = async (id, status) => {
 
     if (response.ok) {
       console.log("Status updated");
-    } else {
-      console.error("Failed to update feedback status");
-    }
+    } 
   } catch (error) {
     console.error("Error posting notification:", error);
   }

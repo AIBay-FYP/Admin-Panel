@@ -7,7 +7,7 @@ export async function GET() {
     // Connect to the database
     const db = await connectToDatabase();
 
-    const collection = db.collection('ComplianceSearch');
+    const collection = db.collection('ComplianceSearches');
     const searches = await collection
     .aggregate([
       {
@@ -50,7 +50,7 @@ export async function GET() {
 
 export async function PUT(req) {
   const db = await connectToDatabase();
-  const complianceSearch = db.collection("ComplianceSearch");
+  const complianceSearch = db.collection("ComplianceSearches");
 
   try {
     const { id, status } = await req.json();

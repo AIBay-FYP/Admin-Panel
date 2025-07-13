@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 export default function ToggleSwitch({ onSwitch, title, buttonLabels, components }) {
-  const [active, setActive] = useState(buttonLabels[0]); // Default to the first button
+  const [active, setActive] = useState(buttonLabels[0]);
 
   const handleSwitch = (tab) => {
     setActive(tab);

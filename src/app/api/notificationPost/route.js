@@ -1,6 +1,10 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
+function isValidObjectId(id) {
+  return ObjectId.isValid(id) && (String)(new ObjectId(id)) === id;
+}
+
 export async function POST(req) {
   try {
     const { UserID, Message, Type, ReadStatus} = await req.json();
@@ -13,7 +17,7 @@ export async function POST(req) {
 
     const notification = {
       NotificationID: notificationID,
-      UserID: new ObjectId(UserID), 
+      UserID: isValidObjectId(UserID) ? new ObjectId(UserID) : UserID,  
       Message,
       Type, 
       ReadStatus,

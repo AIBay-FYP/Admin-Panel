@@ -211,6 +211,7 @@ const Dropdown = ({ options, openPopup, row, handleDropdown }) => {
         onClose={closeModal}
         title="Confirm Your Action"
         type={selected}
+        message={`You selected "${selected.toLowerCase()}." `}
         primaryAction={handlePrimaryAction}
         primaryButtonText="Yes, Confirm"
         secondaryButtonText="Cancel"
